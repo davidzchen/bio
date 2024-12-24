@@ -1,9 +1,9 @@
-load("//bazel:repository.bzl", "github_archive")
+load("//tools:repository.bzl", "github_archive")
 
 def abxl_dependency():
     github_archive(
         name = "abxl",
-        commit = "021cc69ac994ae965a7eab15cdba9cd00e7b6908",
+        commit = "73767dbeac1fb5fd28943905fb3cd46dbb3fb01c",
         repo_name = "davidzchen/abxl",
     )
 

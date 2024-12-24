@@ -1,4 +1,4 @@
-load("//bazel:repository.bzl", "github_archive")
+load("//tools:repository.bzl", "github_archive")
 
 def _dependency():
     github_archive(

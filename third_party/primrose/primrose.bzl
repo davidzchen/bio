@@ -1,4 +1,4 @@
-load("//bazel:repository.bzl", "github_archive")
+load("//tools:repository.bzl", "github_archive")
 
 def primrose_dependency():
     github_archive(

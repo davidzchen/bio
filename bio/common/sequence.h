@@ -1,13 +1,12 @@
-#ifndef BIO_SEQ_H_
-#define BIO_SEQ_H_
+#ifndef BIO_SEQUENCE_H_
+#define BIO_SEQUENCE_H_
 
-#include <cstdint>
 #include <string>
 
 namespace bio {
 
 // Represents a sequence.
-struct Seq {
+struct Sequence {
   // Name of sequnce.
   std::string name;
 
@@ -16,11 +15,8 @@ struct Seq {
 
   // Size of sequence.
   int size;
-
-  // Repeat mask (optional)
-  uint8_t* mask;
 };
 
 }  // namespace bio
 
-#endif  // BIO_SEQ_H_
+#endif  // BIO_SEQUENCE_H_
