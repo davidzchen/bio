@@ -5,6 +5,7 @@ cc_library(
     srcs = ["fasta-parser.cc"],
     hdrs = ["fasta-parser.h"],
     deps = [
+        "//bio/common:line-parser-base",
         "//bio/common:sequence",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/memory",
@@ -12,7 +13,6 @@ cc_library(
         "@abseil-cpp//absl/status:statusor",
         "@abseil-cpp//absl/strings",
         "@abxl//abxl/file",
-        "@abxl//abxl/file:filelineiter",
         "@abxl//abxl/status:status_macros",
     ],
 )

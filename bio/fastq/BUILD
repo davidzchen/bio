@@ -5,6 +5,7 @@ cc_library(
     srcs = ["fastq-parser.cc"],
     hdrs = ["fastq-parser.h"],
     deps = [
+        "//bio/common:line-parser-base",
         "//bio/common:sequence",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/memory",
@@ -13,7 +14,6 @@ cc_library(
         "@abseil-cpp//absl/strings",
         "@abseil-cpp//absl/strings:str_format",
         "@abxl//abxl/file",
-        "@abxl//abxl/file:filelineiter",
         "@abxl//abxl/status:status_macros",
     ],
 )

@@ -41,22 +41,6 @@ auto MaybeTruncateName(absl::string_view line, bool truncate_name)
 
 }  // namespace
 
-auto FastaParser::NextLine() -> std::optional<std::string> {
-  if (!saved_lines_.empty()) {
-    std::string line = saved_lines_.front();
-    saved_lines_.pop();
-    return line;
-  }
-  if (it_ == file_lines_.end()) {
-    return std::nullopt;
-  }
-  std::string line = *it_;
-  ++it_;
-  return line;
-}
-
-auto FastaParser::PutBack(std::string line) -> void { saved_lines_.push(line); }
-
 auto FastaParser::NextSequence(bool truncate_name)
     -> std::optional<std::unique_ptr<Sequence>> {
   if (it_ == file_lines_.end()) {

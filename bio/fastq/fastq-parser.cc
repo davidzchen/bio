@@ -43,22 +43,6 @@ auto MaybeTruncateName(absl::string_view line, bool truncate_name)
 
 }  // namespace
 
-auto FastqParser::NextLine() -> std::optional<std::string> {
-  if (!saved_lines_.empty()) {
-    std::string line = saved_lines_.front();
-    saved_lines_.pop();
-    return line;
-  }
-  if (it_ == file_lines_.end()) {
-    return std::nullopt;
-  }
-  std::string line = *it_;
-  ++it_;
-  return line;
-}
-
-auto FastqParser::PutBack(std::string line) -> void { saved_lines_.push(line); }
-
 auto FastqParser::NextSequence(bool truncate_name)
     -> absl::StatusOr<std::unique_ptr<FastqSequence>> {
   if (it_ == file_lines_.end()) {

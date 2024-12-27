@@ -41,7 +41,6 @@ class LineParserBase {
   // Saves the line in the saved_lines_ queue.
   auto PutBack(std::string line) -> void { saved_lines_.push(line); }
 
- private:
   abxl::File* file_;
   abxl::FileLines file_lines_;
   abxl::FileLineIterator it_;

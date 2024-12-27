@@ -2,17 +2,14 @@
 #define BIO_FASTQ_FASTQ_PARSER_H_
 
 #include <memory>
-#include <optional>
-#include <queue>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "absl/base/nullability.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
-#include "abxl/file/filelineiter.h"
+#include "bio/common/line-parser-base.h"
 #include "bio/common/sequence.h"
 
 namespace bio {
@@ -41,12 +38,10 @@ struct FastqSequence {
 //   }
 //   std::unique_ptr<FastqSequence> sequence = sequence_or.value();
 // }
-class FastqParser {
+class FastqParser : public LineParserBase {
  public:
   explicit FastqParser(absl::Nonnull<abxl::File*> file)
-      : file_(file),
-        file_lines_(abxl::FileLines(file_->filename(), file_)),
-        it_(file_lines_.begin()) {}
+      : LineParserBase(file) {}
 
   ~FastqParser() = default;
 
@@ -65,19 +60,6 @@ class FastqParser {
   // Returns a vector of all sequences in the file.
   auto ReadAllSequences(bool truncate_name = false)
       -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>>;
-
- private:
-  // Returns the next line or std::nullopt if EOF has been reached. If there are
-  // saved lines from calls to PutBack(), these lines will be returned first.
-  auto NextLine() -> std::optional<std::string>;
-
-  // Saves the line in the saved_lines_ queue.
-  auto PutBack(std::string line) -> void;
-
-  abxl::File* file_;
-  abxl::FileLines file_lines_;
-  abxl::FileLineIterator it_;
-  std::queue<std::string> saved_lines_;
 };
 
 }  // namespace bio
