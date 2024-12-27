@@ -29,3 +29,22 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "strings",
+    srcs = ["strings.cc"],
+    hdrs = ["strings.h"],
+    deps = [
+        "@abseil-cpp//absl/strings",
+    ],
+)
+
+cc_test(
+    name = "strings_test",
+    srcs = ["strings_test.cc"],
+    deps = [
+        ":strings",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

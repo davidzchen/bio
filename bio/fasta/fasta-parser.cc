@@ -8,17 +8,19 @@
 
 #include "absl/memory/memory.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/ascii.h"
 #include "absl/strings/match.h"
-#include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
 #include "bio/common/sequence.h"
+#include "bio/common/strings.h"
 
 namespace bio {
+namespace {
 
 namespace file = abxl::file;
+
+}  // namespace
 
 auto FastaParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<FastaParser>> {
@@ -26,20 +28,6 @@ auto FastaParser::New(absl::string_view path)
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<FastaParser>(file);
 }
-
-namespace {
-
-auto MaybeTruncateName(absl::string_view line, bool truncate_name)
-    -> std::string {
-  if (!truncate_name) {
-    return std::string(line);
-  }
-  absl::string_view trimmed = absl::StripLeadingAsciiWhitespace(line);
-  const std::vector<std::string> parts = absl::StrSplit(trimmed, " ");
-  return parts[0];
-}
-
-}  // namespace
 
 auto FastaParser::NextSequence(bool truncate_name)
     -> std::optional<std::unique_ptr<Sequence>> {
@@ -60,7 +48,7 @@ auto FastaParser::NextSequence(bool truncate_name)
       ++count;
       if (count == 1) {
         // Save the description line.
-        sequence->name = MaybeTruncateName(*line, truncate_name);
+        sequence->name = truncate_name ? FirstWord(*line) : *line;
         continue;
       } else if (count == 2) {
         // The second occurrence we find a line starting with ">". This

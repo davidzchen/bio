@@ -6,21 +6,22 @@
 #include <utility>
 #include <vector>
 
-#include "absl/memory/memory.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/ascii.h"
 #include "absl/strings/match.h"
 #include "absl/strings/str_format.h"
-#include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
 #include "bio/common/sequence.h"
+#include "bio/common/strings.h"
 
 namespace bio {
+namespace {
 
 namespace file = abxl::file;
+
+}  // namespace
 
 auto FastqParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<FastqParser>> {
@@ -28,20 +29,6 @@ auto FastqParser::New(absl::string_view path)
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<FastqParser>(file);
 }
-
-namespace {
-
-auto MaybeTruncateName(absl::string_view line, bool truncate_name)
-    -> std::string {
-  if (!truncate_name) {
-    return std::string(line);
-  }
-  absl::string_view trimmed = absl::StripLeadingAsciiWhitespace(line);
-  const std::vector<std::string> parts = absl::StrSplit(trimmed, " ");
-  return parts[0];
-}
-
-}  // namespace
 
 auto FastqParser::NextSequence(bool truncate_name)
     -> absl::StatusOr<std::unique_ptr<FastqSequence>> {
@@ -60,7 +47,7 @@ auto FastqParser::NextSequence(bool truncate_name)
     }
 
     // Read sequence identifier line.
-    fastq_sequence->sequence.name = MaybeTruncateName(*line, truncate_name);
+    fastq_sequence->sequence.name = truncate_name ? FirstWord(*line) : *line;
 
     // Read sequence line.
     std::optional<std::string> sequence_line = NextLine();
