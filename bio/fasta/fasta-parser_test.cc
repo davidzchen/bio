@@ -21,7 +21,7 @@ TEST(FastaParser, NextSequenceEmpty) {
   std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
 
   std::optional<std::unique_ptr<Sequence>> sequence =
-      parser->NextSequence(/*truncate_name*/ false);
+      parser->NextSequence(/*truncate_name=*/false);
   EXPECT_FALSE(sequence.has_value());
 }
 
@@ -32,7 +32,7 @@ TEST(FastaParser, NextSequenceSingleSequence) {
   std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
 
   std::optional<std::unique_ptr<Sequence>> actual_opt =
-      parser->NextSequence(/*truncate_name*/ false);
+      parser->NextSequence(/*truncate_name=*/false);
   EXPECT_TRUE(actual_opt.has_value());
   std::unique_ptr<Sequence> actual = std::move(actual_opt.value());
 
