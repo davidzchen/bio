@@ -26,8 +26,8 @@ TEST(FastqParser, NextSequenceEmpty) {
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
       parser->NextSequence(/*truncate_name=*/false);
-  EXPECT_THAT(sequence, StatusIs(absl::StatusCode::kResourceExhausted,
-                                 HasSubstr("Reached EOF")));
+  EXPECT_EQ(*sequence, nullptr);
+  EXPECT_TRUE(parser->eof());
 }
 
 void CheckSequenceEquals(const FastqSequence& expected,

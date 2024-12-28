@@ -33,7 +33,7 @@ auto FastqParser::New(absl::string_view path)
 auto FastqParser::NextSequence(bool truncate_name)
     -> absl::StatusOr<std::unique_ptr<FastqSequence>> {
   if (it_ == file_lines_.end()) {
-    return absl::ResourceExhaustedError("Reached EOF");
+    return nullptr;
   }
 
   auto fastq_sequence = std::make_unique<FastqSequence>();

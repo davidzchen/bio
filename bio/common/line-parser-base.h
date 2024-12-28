@@ -21,6 +21,9 @@ class LineParserBase {
         file_lines_(abxl::FileLines(file_->filename(), file_)),
         it_(file_lines_.begin()) {}
 
+  // Returns whether the end of file has been reached.
+  auto eof() const -> bool { return it_ == file_lines_.end(); }
+
  protected:
   // Returns the next line or std::nullopt if EOF has been reached. If there are
   // saved lines from calls to PutBack(), these lines will be returned first.

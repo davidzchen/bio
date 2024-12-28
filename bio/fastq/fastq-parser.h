@@ -28,15 +28,23 @@ struct FastqSequence {
 // See https://maq.sourceforge.net/fastq.shtml
 //
 // auto parser = FastqParser::New("path/to/file.fastq");
-// while (true) {
+// while (!parser.eof()) {
 //   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence_or =
 //       parser->NextSequence(/*truncate_name=*/true);
-//   if (absl::IsOutOfRange(sequence_or.status())) {
-//     break;
-//   } else if (!sequence_or.ok()) {
-//     // handle error
+//   if (!sequence_or.ok()) {
+//     // Handle error.
 //   }
-//   std::unique_ptr<FastqSequence> sequence = sequence_or.value();
+//   std::unique_ptr<FastqSequence> sequence = std::move(sequence_or.value());
+//   // Do stuff with sequence.
+// }
+//
+// Or if using status macros:
+//
+// auto parser = FastqParser::New("path/to/file.fastq");
+// while (!parser.eof()) {
+//   ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
+//                    parser->NextSequence(/*truncate_name=*/true));
+//   // Do stuff with sequence.
 // }
 class FastqParser : public LineParserBase {
  public:
