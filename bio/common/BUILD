@@ -1,11 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "sequence",
-    hdrs = ["sequence.h"],
-)
-
-cc_library(
     name = "line-parser-base",
     hdrs = ["line-parser-base.h"],
     deps = [

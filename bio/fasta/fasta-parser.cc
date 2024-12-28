@@ -12,7 +12,6 @@
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
-#include "bio/common/sequence.h"
 #include "bio/common/strings.h"
 
 namespace bio {
@@ -30,13 +29,13 @@ auto FastaParser::New(absl::string_view path)
 }
 
 auto FastaParser::NextSequence(bool truncate_name)
-    -> std::optional<std::unique_ptr<Sequence>> {
+    -> std::optional<std::unique_ptr<FastaSequence>> {
   if (it_ == file_lines_.end()) {
     return std::nullopt;
   }
 
   int count = 0;
-  auto* sequence = new Sequence();
+  auto sequence = std::make_unique<FastaSequence>();
   std::string buffer;
   for (std::optional<std::string> line = NextLine(); line.has_value();
        line = NextLine()) {
@@ -54,24 +53,22 @@ auto FastaParser::NextSequence(bool truncate_name)
         // The second occurrence we find a line starting with ">". This
         // denotes that a new Sequence is starting.
         sequence->sequence = buffer;
-        sequence->size = buffer.size();
         PutBack(*line);
-        return absl::WrapUnique(sequence);
+        return sequence;
       }
     }
     absl::StrAppend(&buffer, *line);
   }
 
   sequence->sequence = buffer;
-  sequence->size = buffer.size();
-  return absl::WrapUnique(sequence);
+  return sequence;
 }
 
 auto FastaParser::ReadAllSequences(bool truncate_name)
-    -> std::vector<std::unique_ptr<Sequence>> {
-  std::vector<std::unique_ptr<Sequence>> sequences;
+    -> std::vector<std::unique_ptr<FastaSequence>> {
+  std::vector<std::unique_ptr<FastaSequence>> sequences;
   while (true) {
-    std::optional<std::unique_ptr<Sequence>> sequence =
+    std::optional<std::unique_ptr<FastaSequence>> sequence =
         NextSequence(truncate_name);
     if (!sequence.has_value()) {
       break;

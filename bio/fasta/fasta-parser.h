@@ -1,8 +1,10 @@
 #ifndef BIO_FASTA_FASTA_PARSER_H_
 #define BIO_FASTA_FASTA_PARSER_H_
 
+#include <cstdlib>
 #include <memory>
 #include <optional>
+#include <string>
 #include <vector>
 
 #include "absl/base/nullability.h"
@@ -10,9 +12,20 @@
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "bio/common/line-parser-base.h"
-#include "bio/common/sequence.h"
 
 namespace bio {
+
+// Contains data from a FASTA file for a single sequence.
+struct FastaSequence {
+  // The sequence name.
+  std::string name;
+
+  // Sequence base by base.
+  std::string sequence;
+
+  // Returns the size of the sequence.
+  auto size() const -> size_t { return sequence.size(); }
+};
 
 // Parser for FASTA files.
 //
@@ -44,11 +57,11 @@ class FastaParser : public LineParserBase {
 
   // Returns the next sequence from the file.
   auto NextSequence(bool truncate_name = false)
-      -> std::optional<std::unique_ptr<Sequence>>;
+      -> std::optional<std::unique_ptr<FastaSequence>>;
 
   // Returns a vector of all sequences in the file.
   auto ReadAllSequences(bool truncate_name = false)
-      -> std::vector<std::unique_ptr<Sequence>>;
+      -> std::vector<std::unique_ptr<FastaSequence>>;
 };
 
 }  // namespace bio

@@ -13,7 +13,6 @@
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
-#include "bio/common/sequence.h"
 #include "bio/common/strings.h"
 
 namespace bio {
@@ -36,7 +35,7 @@ auto FastqParser::NextSequence(bool truncate_name)
     return nullptr;
   }
 
-  auto fastq_sequence = std::make_unique<FastqSequence>();
+  auto sequence = std::make_unique<FastqSequence>();
   for (std::optional<std::string> line = NextLine(); line.has_value();
        line = NextLine()) {
     if (line->empty()) {
@@ -47,15 +46,14 @@ auto FastqParser::NextSequence(bool truncate_name)
     }
 
     // Read sequence identifier line.
-    fastq_sequence->sequence.name = truncate_name ? FirstWord(*line) : *line;
+    sequence->name = truncate_name ? FirstWord(*line) : *line;
 
     // Read sequence line.
     std::optional<std::string> sequence_line = NextLine();
     if (!sequence_line.has_value()) {
       return absl::InvalidArgumentError("Expected sequence line but got EOF");
     }
-    fastq_sequence->sequence.sequence = std::move(sequence_line.value());
-    fastq_sequence->sequence.size = fastq_sequence->sequence.sequence.size();
+    sequence->sequence = std::move(sequence_line.value());
 
     // Read sequence name line.
     std::optional<std::string> quality_id_line = NextLine();
@@ -63,8 +61,8 @@ auto FastqParser::NextSequence(bool truncate_name)
       return absl::InvalidArgumentError("Expected quality ID line but got EOF");
     }
     if (!absl::StartsWith(*quality_id_line, "+")) {
-      return absl::InvalidArgumentError(absl::StrFormat(
-          "Expected quality ID: '+' or '+%s'", fastq_sequence->sequence.name));
+      return absl::InvalidArgumentError(
+          absl::StrFormat("Expected quality ID: '+' or '+%s'", sequence->name));
     }
 
     // Read quality line.
@@ -72,10 +70,10 @@ auto FastqParser::NextSequence(bool truncate_name)
     if (!quality_line.has_value()) {
       return absl::InvalidArgumentError("Expected quality line but got EOF");
     }
-    fastq_sequence->quality = std::move(quality_line.value());
+    sequence->quality = std::move(quality_line.value());
     break;
   }
-  return fastq_sequence;
+  return sequence;
 }
 
 auto FastqParser::ReadAllSequences(bool truncate_name)
