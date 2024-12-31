@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <optional>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -9,6 +10,30 @@
 
 namespace bio {
 namespace {
+
+TEST(FastaSequence, StringEmptySequence) {
+  FastaSequence sequence = {
+      .name = "SEQUENCE",
+      .sequence = "",
+  };
+  EXPECT_EQ(sequence.string(), ">SEQUENCE\n\n");
+}
+
+TEST(FastaSequence, String) {
+  FastaSequence sequence = {
+      .name = "MCHU",
+      .sequence =
+          "MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADGNGTIDFPE"
+          "FLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQ"
+          "VNYEEFVQMMTAK*",
+  };
+  const std::string expected = R"(>MCHU
+MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADG
+NGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDE
+EVDEMIREADIDGDGQVNYEEFVQMMTAK*
+)";
+  EXPECT_EQ(sequence.string(), expected);
+}
 
 TEST(FastaParser, NextSequenceEmpty) {
   std::unique_ptr<FastaParser> parser =
