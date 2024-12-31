@@ -35,13 +35,14 @@ struct FastqSequence {
 //
 // Example usage:
 //
+// ```cpp
 // absl::StatusOr<std::unique_ptr<FastqParser>> parser_or =
 //     FastqParser::New("path/to/file.fastq");
-// if (!parser.ok()) {
+// if (!parser_or.ok()) {
 //   // handle error.
 // }
 // std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
-// while (!parser.eof()) {
+// while (!parser->eof()) {
 //   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence_or =
 //       parser->NextSequence(/*truncate_name=*/true);
 //   if (!sequence_or.ok()) {
@@ -50,16 +51,19 @@ struct FastqSequence {
 //   std::unique_ptr<FastqSequence> sequence = std::move(sequence_or.value());
 //   // Do stuff with sequence.
 // }
+// ```
 //
 // Or if using status macros:
 //
+// ```cpp
 // ASSIGN_OR_RETURN(std::unique_ptr<FastqParser> parser,
 //                  FastqParser::New("path/to/file.fastq"));
-// while (!parser.eof()) {
+// while (!parser->eof()) {
 //   ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
 //                    parser->NextSequence(/*truncate_name=*/true));
 //   // Do stuff with sequence.
 // }
+// ```
 class FastqParser : public LineParserBase {
  public:
   explicit FastqParser(absl::Nonnull<abxl::File*> file)

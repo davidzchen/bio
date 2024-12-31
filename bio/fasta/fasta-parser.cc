@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-#include "absl/memory/memory.h"
+#include "absl/log/check.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/match.h"
 #include "absl/strings/string_view.h"
@@ -26,6 +26,13 @@ auto FastaParser::New(absl::string_view path)
   abxl::File* file;
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<FastaParser>(file);
+}
+
+auto FastaParser::NewOrDie(absl::string_view path)
+    -> std::unique_ptr<FastaParser> {
+  absl::StatusOr<std::unique_ptr<FastaParser>> parser = New(path);
+  CHECK_OK(parser.status());
+  return std::move(parser.value());
 }
 
 auto FastaParser::NextSequence(bool truncate_name)

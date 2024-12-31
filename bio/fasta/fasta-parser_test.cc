@@ -14,10 +14,8 @@ namespace {
 using ::absl_testing::IsOk;
 
 TEST(FastaParser, NextSequenceEmpty) {
-  absl::StatusOr<std::unique_ptr<FastaParser>> parser_or =
-      FastaParser::New("bio/fasta/testdata/empty.fasta");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
+  std::unique_ptr<FastaParser> parser =
+      FastaParser::NewOrDie("bio/fasta/testdata/empty.fasta");
 
   std::optional<std::unique_ptr<FastaSequence>> sequence =
       parser->NextSequence(/*truncate_name=*/false);
@@ -25,10 +23,8 @@ TEST(FastaParser, NextSequenceEmpty) {
 }
 
 TEST(FastaParser, NextSequenceSingleSequence) {
-  absl::StatusOr<std::unique_ptr<FastaParser>> parser_or =
-      FastaParser::New("bio/fasta/testdata/single-sequence.fasta");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
+  std::unique_ptr<FastaParser> parser =
+      FastaParser::NewOrDie("bio/fasta/testdata/single-sequence.fasta");
 
   std::optional<std::unique_ptr<FastaSequence>> actual_opt =
       parser->NextSequence(/*truncate_name=*/false);
@@ -47,10 +43,8 @@ TEST(FastaParser, NextSequenceSingleSequence) {
 }
 
 TEST(FastaParser, NextSequenceMultiSequence) {
-  absl::StatusOr<std::unique_ptr<FastaParser>> parser_or =
-      FastaParser::New("bio/fasta/testdata/multi-sequence.fasta");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
+  std::unique_ptr<FastaParser> parser =
+      FastaParser::NewOrDie("bio/fasta/testdata/multi-sequence.fasta");
 
   {
     std::optional<std::unique_ptr<FastaSequence>> actual_opt =
