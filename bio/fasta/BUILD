@@ -1,10 +1,30 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "fasta",
+    hdrs = ["fasta.h"],
+    deps = [
+        "//bio/common:strings",
+        "@abseil-cpp//absl/strings:str_format",
+    ],
+)
+
+cc_test(
+    name = "fasta_test",
+    srcs = ["fasta_test.cc"],
+    deps = [
+        ":fasta",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_library(
     name = "fasta-parser",
     srcs = ["fasta-parser.cc"],
     hdrs = ["fasta-parser.h"],
     deps = [
+        ":fasta",
         "//bio/common:line-parser-base",
         "//bio/common:strings",
         "@abseil-cpp//absl/base:nullability",
@@ -22,6 +42,7 @@ cc_test(
     srcs = ["fasta-parser_test.cc"],
     data = ["//bio/fasta/testdata"],
     deps = [
+        ":fasta",
         ":fasta-parser",
         "@googletest//:gtest",
         "@googletest//:gtest_main",

@@ -4,40 +4,16 @@
 #include <cstdlib>
 #include <memory>
 #include <optional>
-#include <string>
 #include <vector>
 
 #include "absl/base/nullability.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/str_format.h"
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "bio/common/line-parser-base.h"
-#include "bio/common/strings.h"
+#include "bio/fasta/fasta.h"
 
 namespace bio {
-
-// The number of characters per line when serializing a FASTA sequence to a
-// string.
-static constexpr size_t kCharsPerLine = 60;
-
-// Contains data from a FASTA file for a single sequence.
-struct FastaSequence {
-  // The sequence name.
-  std::string name;
-
-  // Sequence base by base.
-  std::string sequence;
-
-  // Returns the size of the sequence.
-  auto size() const -> size_t { return sequence.size(); }
-
-  // Serializes the sequence to its string format.
-  auto string() const -> std::string {
-    std::string seq = InsertWordEveryNthPosition(sequence, "\n", kCharsPerLine);
-    return absl::StrFormat(">%s\n%s\n", name, seq);
-  }
-};
 
 // Parser for FASTA files.
 //
