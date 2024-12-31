@@ -34,6 +34,61 @@ void CheckSequenceEquals(const FastqSequence& expected,
   EXPECT_EQ(expected.quality, actual->quality);
 }
 
+TEST(FastqParser, NextSequenceMissingSequenceLine) {
+  std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
+      "bio/fastq/testdata/invalid-missing-sequence-line.fastq");
+
+  absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
+      parser->NextSequence(/*truncate_name=*/false);
+  EXPECT_THAT(sequence.status(),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Expected sequence line but got EOF")));
+}
+
+TEST(FastqParser, NextSequenceMissingQualityIdLine) {
+  std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
+      "bio/fastq/testdata/invalid-missing-quality-id-line.fastq");
+
+  absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
+      parser->NextSequence(/*truncate_name=*/false);
+  EXPECT_THAT(sequence.status(),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Expected quality ID line but got EOF")));
+}
+
+TEST(FastqParser, NextSequenceInvalidQualityIdLine) {
+  std::unique_ptr<FastqParser> parser =
+      FastqParser::NewOrDie("bio/fastq/testdata/invalid-quality-id-line.fastq");
+
+  absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
+      parser->NextSequence(/*truncate_name=*/false);
+  EXPECT_THAT(sequence.status(),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Expected quality ID: '+' or")));
+}
+
+TEST(FastqParser, NextSequenceMissingQualityLine) {
+  std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
+      "bio/fastq/testdata/invalid-missing-quality-line.fastq");
+
+  absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
+      parser->NextSequence(/*truncate_name=*/false);
+  EXPECT_THAT(sequence.status(),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Expected quality line but got EOF")));
+}
+
+TEST(FastqParser, NextSequenceInvalidQualityLineLength) {
+  std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
+      "bio/fastq/testdata/invalid-quality-line-length.fastq");
+
+  absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
+      parser->NextSequence(/*truncate_name=*/false);
+  EXPECT_THAT(sequence.status(),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("does not match quality line length")));
+}
+
 TEST(FastqParser, NextSequenceSingleSequenceWithoutQualityId) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/single-sequence-without-quality-id.fastq");

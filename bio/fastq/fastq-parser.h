@@ -33,6 +33,8 @@ struct FastqSequence {
 //
 // See https://maq.sourceforge.net/fastq.shtml
 //
+// Example usage:
+//
 // absl::StatusOr<std::unique_ptr<FastqParser>> parser_or =
 //     FastqParser::New("path/to/file.fastq");
 // if (!parser.ok()) {
