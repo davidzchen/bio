@@ -93,12 +93,9 @@ auto FastqParser::NextSequence(bool truncate_name)
 auto FastqParser::ReadAllSequences(bool truncate_name)
     -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> {
   std::vector<std::unique_ptr<FastqSequence>> sequences;
-  while (true) {
+  while (!eof()) {
     ASSIGN_OR_RETURN(std::optional<std::unique_ptr<FastqSequence>> sequence,
                      NextSequence(truncate_name));
-    if (!sequence.has_value()) {
-      break;
-    }
     sequences.push_back(std::move(sequence.value()));
   }
   return sequences;
