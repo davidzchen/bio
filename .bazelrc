@@ -4,14 +4,10 @@
 test --test_output=errors
 
 # Use C++20
-build --cxxopt="-std=c++20"
-test --cxxopt="-std=c++20"
-run --cxxopt="-std=c++20"
+common --cxxopt="-std=c++20"
 
 # Enable layering check
-build --features=layering_check
-test --features=layering_check
-run --features=layering_check
+common --features=layering_check
 
 # Support running clang-tidy with:
 #   bazel build --config=clang-tidy -k //...

@@ -1,8 +1,8 @@
 #include "bio/fastq/fastq-parser.h"
 
 #include <memory>
-#include <optional>
 #include <utility>
+#include <vector>
 
 #include "absl/status/status.h"
 #include "absl/status/status_matchers.h"
@@ -27,8 +27,8 @@ TEST(FastqParser, NextSequenceEmpty) {
   EXPECT_TRUE(parser->eof());
 }
 
-void CheckSequenceEquals(const FastqSequence& expected,
-                         const FastqSequence* actual) {
+auto CheckSequenceEquals(const FastqSequence& expected,
+                         const FastqSequence* actual) -> void {
   EXPECT_EQ(expected.name, actual->name);
   EXPECT_EQ(expected.sequence, actual->sequence);
   EXPECT_EQ(expected.quality, actual->quality);
@@ -174,9 +174,9 @@ TEST(FastqParser, ReadAllSequencesEmpty) {
   EXPECT_TRUE(sequences->empty());
 }
 
-void CheckSequencesEquals(
+auto CheckSequencesEquals(
     const std::vector<FastqSequence>& expected,
-    const std::vector<std::unique_ptr<FastqSequence>>& actual) {
+    const std::vector<std::unique_ptr<FastqSequence>>& actual) -> void {
   EXPECT_EQ(expected.size(), actual.size());
   for (int i = 0; i < actual.size(); ++i) {
     CheckSequenceEquals(expected[i], actual[i].get());

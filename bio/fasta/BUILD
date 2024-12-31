@@ -23,9 +23,6 @@ cc_test(
     data = ["//bio/fasta/testdata"],
     deps = [
         ":fasta-parser",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/status:status_matchers",
-        "@abseil-cpp//absl/status:statusor",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
