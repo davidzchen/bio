@@ -18,10 +18,8 @@ using ::absl_testing::StatusIs;
 using ::testing::HasSubstr;
 
 TEST(FastqParser, NextSequenceEmpty) {
-  absl::StatusOr<std::unique_ptr<FastqParser>> parser_or =
-      FastqParser::New("bio/fastq/testdata/empty.fastq");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
+  std::unique_ptr<FastqParser> parser =
+      FastqParser::NewOrDie("bio/fastq/testdata/empty.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
       parser->NextSequence(/*truncate_name=*/false);
@@ -37,10 +35,8 @@ void CheckSequenceEquals(const FastqSequence& expected,
 }
 
 TEST(FastqParser, NextSequenceSingleSequenceWithoutQualityId) {
-  absl::StatusOr<std::unique_ptr<FastqParser>> parser_or = FastqParser::New(
+  std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/single-sequence-without-quality-id.fastq");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =
       parser->NextSequence(/*truncate_name=*/false);
@@ -58,10 +54,8 @@ TEST(FastqParser, NextSequenceSingleSequenceWithoutQualityId) {
 }
 
 TEST(FastqParser, NextSequenceSingleSequenceWithQualityId) {
-  absl::StatusOr<std::unique_ptr<FastqParser>> parser_or = FastqParser::New(
+  std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/single-sequence-with-quality-id.fastq");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =
       parser->NextSequence(/*truncate_name=*/false);
@@ -77,10 +71,8 @@ TEST(FastqParser, NextSequenceSingleSequenceWithQualityId) {
 }
 
 TEST(FastqParser, NextSequenceMultiSequnce) {
-  absl::StatusOr<std::unique_ptr<FastqParser>> parser_or =
-      FastqParser::New("bio/fastq/testdata/multiple-sequence.fastq");
-  EXPECT_THAT(parser_or.status(), IsOk());
-  std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
+  std::unique_ptr<FastqParser> parser =
+      FastqParser::NewOrDie("bio/fastq/testdata/multiple-sequence.fastq");
 
   {
     absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =

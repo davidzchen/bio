@@ -6,6 +6,7 @@
 #include <utility>
 #include <vector>
 
+#include "absl/log/check.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/match.h"
@@ -27,6 +28,13 @@ auto FastqParser::New(absl::string_view path)
   abxl::File* file;
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<FastqParser>(file);
+}
+
+auto FastqParser::NewOrDie(absl::string_view path)
+    -> std::unique_ptr<FastqParser> {
+  absl::StatusOr<std::unique_ptr<FastqParser>> parser = New(path);
+  CHECK_OK(parser.status());
+  return std::move(parser.value());
 }
 
 auto FastqParser::NextSequence(bool truncate_name)
@@ -71,6 +79,12 @@ auto FastqParser::NextSequence(bool truncate_name)
       return absl::InvalidArgumentError("Expected quality line but got EOF");
     }
     sequence->quality = std::move(quality_line.value());
+    if (sequence->quality.size() != sequence->sequence.size()) {
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Sequence line length %d does not match quality line length %d",
+          sequence->sequence.size(), sequence->quality.size()));
+    }
+
     break;
   }
   return sequence;

@@ -8,6 +8,7 @@ cc_library(
         "//bio/common:line-parser-base",
         "//bio/common:strings",
         "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/log:check",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:statusor",
         "@abseil-cpp//absl/strings",

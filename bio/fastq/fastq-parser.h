@@ -33,7 +33,12 @@ struct FastqSequence {
 //
 // See https://maq.sourceforge.net/fastq.shtml
 //
-// auto parser = FastqParser::New("path/to/file.fastq");
+// absl::StatusOr<std::unique_ptr<FastqParser>> parser_or =
+//     FastqParser::New("path/to/file.fastq");
+// if (!parser.ok()) {
+//   // handle error.
+// }
+// std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
 // while (!parser.eof()) {
 //   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence_or =
 //       parser->NextSequence(/*truncate_name=*/true);
@@ -46,7 +51,8 @@ struct FastqSequence {
 //
 // Or if using status macros:
 //
-// auto parser = FastqParser::New("path/to/file.fastq");
+// ASSIGN_OR_RETURN(std::unique_ptr<FastqParser> parser,
+//                  FastqParser::New("path/to/file.fastq"));
 // while (!parser.eof()) {
 //   ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
 //                    parser->NextSequence(/*truncate_name=*/true));
@@ -63,11 +69,11 @@ class FastqParser : public LineParserBase {
   static auto New(absl::string_view path)
       -> absl::StatusOr<std::unique_ptr<FastqParser>>;
 
+  // Constructs a new FastqParser from the specified file path or terminates the
+  // program if constructing the parser fails.
+  static auto NewOrDie(absl::string_view path) -> std::unique_ptr<FastqParser>;
+
   // Returns the next FASTQ entry from the file.
-  //
-  // Returns:
-  //   * OK if the sequence was read successfully.
-  //   * OUT_OF_RANGE if EOF has been reached
   auto NextSequence(bool truncate_name = false)
       -> absl::StatusOr<std::unique_ptr<FastqSequence>>;
 
