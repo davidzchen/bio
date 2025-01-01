@@ -11,14 +11,18 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
+#include "absl/strings/strip.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
 #include "bio/common/strings.h"
+#include "bio/fasta/fasta.h"
 
 namespace bio {
 namespace {
 
 namespace file = abxl::file;
+
+static constexpr char kDescriptionPrefix[] = ">";
 
 }  // namespace
 
@@ -51,11 +55,12 @@ auto FastaParser::NextSequence(bool truncate_name)
       continue;
     }
 
-    if (absl::StartsWith(*line, ">")) {
+    if (absl::StartsWith(*line, kDescriptionPrefix)) {
       ++count;
       if (count == 1) {
         // Save the description line.
-        sequence->name = truncate_name ? FirstWord(*line) : *line;
+        const std::string name = truncate_name ? FirstWord(*line) : *line;
+        sequence->name = absl::StripPrefix(name, kDescriptionPrefix);
         continue;
       } else if (count == 2) {
         // The second occurrence we find a line starting with ">". This

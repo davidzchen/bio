@@ -30,7 +30,7 @@ TEST(FastaParser, NextSequenceSingleSequence) {
   std::unique_ptr<FastaSequence> actual = std::move(actual_opt.value());
 
   FastaSequence expected = {
-      .name = ">MCHU - Calmodulin - Human, rabbit, bovine, rat, and chicken",
+      .name = "MCHU - Calmodulin - Human, rabbit, bovine, rat, and chicken",
       .sequence =
           "MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADGNGTIDFPE"
           "FLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQ"
@@ -51,7 +51,7 @@ TEST(FastaParser, NextSequenceMultiSequence) {
     std::unique_ptr<FastaSequence> actual = std::move(actual_opt.value());
 
     FastaSequence expected = {
-        .name = ">SEQUENCE_1",
+        .name = "SEQUENCE_1",
         .sequence =
             "MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEGLVSVKV"
             "SDDFTIAAMRPSYLSYEDLDMTFVENEYKALVAELEKENEERRRLKDPNKPEHKIPQFASRKQLSD"
@@ -68,7 +68,7 @@ TEST(FastaParser, NextSequenceMultiSequence) {
     std::unique_ptr<FastaSequence> actual = std::move(actual_opt.value());
 
     FastaSequence expected = {
-        .name = ">SEQUENCE_2",
+        .name = "SEQUENCE_2",
         .sequence =
             "SATVSEINSETDFVAKNDQFIALTKDTTAHIQSNSLQSVEELHSSTINGVKFEEYLKSQIATIGEN"
             "LVVRRFATLKAGANGVVNGYIHTNGRVGVVIAAACDSAEVASKSRDLLRQICMH",
@@ -103,13 +103,13 @@ TEST(FastaParser, ReadAllSequences) {
       parser->ReadAllSequences(/*truncate_name=*/false);
 
   std::vector<FastaSequence> expected_sequences = {
-      {.name = ">SEQUENCE_1",
+      {.name = "SEQUENCE_1",
        .sequence =
            "MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEGLVSVKV"
            "SDDFTIAAMRPSYLSYEDLDMTFVENEYKALVAELEKENEERRRLKDPNKPEHKIPQFASRKQLSD"
            "AILKEAEEKIKEELKAQGKPEKIWDNIIPGKMNSFIADNSQLDSKLTLMGQFYVMDDKKTVEQVIA"
            "EKEKEFGGKIKIVEFICFEVGEGLEKKTEDFAAEVAAQL"},
-      {.name = ">SEQUENCE_2",
+      {.name = "SEQUENCE_2",
        .sequence =
            "SATVSEINSETDFVAKNDQFIALTKDTTAHIQSNSLQSVEELHSSTINGVKFEEYLKSQIATIGEN"
            "LVVRRFATLKAGANGVVNGYIHTNGRVGVVIAAACDSAEVASKSRDLLRQICMH"},
