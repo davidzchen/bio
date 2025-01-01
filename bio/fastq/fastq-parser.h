@@ -11,23 +11,9 @@
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "bio/common/line-parser-base.h"
+#include "bio/fastq/fastq.h"
 
 namespace bio {
-
-// Contains data from a FASTQ file for a single sequence.
-struct FastqSequence {
-  // The sequence name.
-  std::string name;
-
-  // Sequence base by base.
-  std::string sequence;
-
-  // The quality values for the sequence.
-  std::string quality;
-
-  // Returns the size of the sequence.
-  auto size() const -> size_t { return sequence.size(); }
-};
 
 // Parser for FASTQ files.
 //

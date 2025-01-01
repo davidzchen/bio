@@ -23,7 +23,7 @@ namespace bio {
 // if (!writer_or.ok()) {
 //   // Handle error.
 // }
-// std::unique_ptr<FastaWriter>> writer = std::move(writer_or.value());
+// std::unique_ptr<FastaWriter> writer = std::move(writer_or.value());
 //
 // std::vector<FastaSequence> sequences = {/*FASTA sequences*/};
 // absl::Status status = writer->Write(sequences);

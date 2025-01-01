@@ -7,6 +7,7 @@
 #include "absl/status/status.h"
 #include "absl/status/status_matchers.h"
 #include "absl/status/statusor.h"
+#include "bio/fastq/fastq.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

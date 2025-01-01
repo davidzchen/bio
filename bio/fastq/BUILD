@@ -1,10 +1,16 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "fastq",
+    hdrs = ["fastq.h"],
+)
+
+cc_library(
     name = "fastq-parser",
     srcs = ["fastq-parser.cc"],
     hdrs = ["fastq-parser.h"],
     deps = [
+        ":fastq",
         "//bio/common:line-parser-base",
         "//bio/common:strings",
         "@abseil-cpp//absl/base:nullability",
@@ -23,6 +29,7 @@ cc_test(
     srcs = ["fastq-parser_test.cc"],
     data = ["//bio/fastq/testdata"],
     deps = [
+        ":fastq",
         ":fastq-parser",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:status_matchers",
