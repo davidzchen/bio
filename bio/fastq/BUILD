@@ -3,6 +3,20 @@ package(default_visibility = ["//visibility:public"])
 cc_library(
     name = "fastq",
     hdrs = ["fastq.h"],
+    deps = [
+        "@abseil-cpp//absl/strings",
+    ],
+)
+
+cc_test(
+    name = "fastq_test",
+    srcs = ["fastq_test.cc"],
+    deps = [
+        ":fastq",
+        "@abseil-cpp//absl/strings:str_format",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
 )
 
 cc_library(

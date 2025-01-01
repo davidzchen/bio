@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <string>
 
+#include "absl/strings/str_format.h"
+
 namespace bio {
 
 // Contains data from a FASTQ file for a single sequence.
@@ -19,6 +21,11 @@ struct FastqSequence {
 
   // Returns the size of the sequence.
   auto size() const -> size_t { return sequence.size(); }
+
+  // Serializes the sequence to its string format.
+  auto string() const -> std::string {
+    return absl::StrFormat("@%s\n%s\n+\n%s", name, sequence, quality);
+  }
 };
 
 }  // namespace bio
