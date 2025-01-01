@@ -48,3 +48,34 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "fasta-writer",
+    srcs = ["fasta-writer.cc"],
+    hdrs = ["fasta-writer.h"],
+    deps = [
+        ":fasta",
+        "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abxl//abxl/file",
+        "@abxl//abxl/status:status_macros",
+    ],
+)
+
+cc_test(
+    name = "fasta-writer_test",
+    srcs = ["fasta-writer_test.cc"],
+    deps = [
+        ":fasta",
+        ":fasta-writer",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abxl//abxl/file",
+        "@abxl//abxl/file:path",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

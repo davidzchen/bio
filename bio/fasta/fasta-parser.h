@@ -22,10 +22,10 @@ namespace bio {
 // Example usage:
 //
 // ```
-// absl::StatusOr<std::unique_ptr<FastaParser> parser_or =
-//     FastaParser::New("path/to/file.fasta");
+// absl::StatusOr<std::unique_ptr<FastaParser>> parser_or =
+//     FastaParser::New("path/to/in.fasta");
 // if (!parser_or.ok()) {
-//   // handle error.
+//   // Handle error.
 // }
 // std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
 // while (!parser->eof()) {
@@ -42,7 +42,7 @@ namespace bio {
 //
 // ```
 // ASSIGN_OR_RETURN(std::unique_ptr<FastaParser> parser,
-//                  FastaParser::New("path/to/file.fasta"));
+//                  FastaParser::New("path/to/in.fasta"));
 // while (!parser->eof()) {
 //   std::optional<std::unique_ptr<Sequence>> sequence =
 //       parser->NextSequence(/*truncate_name=*/true);
@@ -64,7 +64,7 @@ class FastaParser : public LineParserBase {
   static auto New(absl::string_view path)
       -> absl::StatusOr<std::unique_ptr<FastaParser>>;
 
-  // Constructs a new FastqParser from the specified file path or terminates the
+  // Constructs a new FastaParser from the specified file path or terminates the
   // program if constructing the parser fails.
   static auto NewOrDie(absl::string_view path) -> std::unique_ptr<FastaParser>;
 
