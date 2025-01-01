@@ -99,7 +99,7 @@ TEST(FastqParser, NextSequenceSingleSequenceWithoutQualityId) {
   std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
   FastqSequence expected = {
-      .name = "@SEQ_ID",
+      .name = "SEQ_ID",
       .sequence =
           "GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACT"
           "CACAGTTT",
@@ -118,7 +118,7 @@ TEST(FastqParser, NextSequenceSingleSequenceWithQualityId) {
   std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
   FastqSequence expected = {
-      .name = "@SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=36",
+      .name = "SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=36",
       .sequence = "GGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACC",
       .quality = "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9IC",
   };
@@ -136,7 +136,7 @@ TEST(FastqParser, NextSequenceMultiSequnce) {
     std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
     FastqSequence expected = {
-        .name = "@SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72",
+        .name = "SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72",
         .sequence =
             "GGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACCAAGTTACCCTTAACAAC"
             "TTAAGGGTTTTCAAATAGA",
@@ -153,7 +153,7 @@ TEST(FastqParser, NextSequenceMultiSequnce) {
     std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
     FastqSequence expected = {
-        .name = "@SRR001666.2 071112_SLXA-EAS1_s_7:5:1:801:338 length=72",
+        .name = "SRR001666.2 071112_SLXA-EAS1_s_7:5:1:801:338 length=72",
         .sequence =
             "GTTCAGGGATACGACGTTTGTATTTTAAGAATCTGAAGCAGAAGTCGATGATA"
             "ATACGCGTCGTTTTATCAT",
@@ -191,13 +191,13 @@ TEST(FastqParser, ReadAllSequences) {
       parser->ReadAllSequences();
 
   std::vector<FastqSequence> expected_sequences = {
-      {.name = "@SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72",
+      {.name = "SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72",
        .sequence = "GGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACCAAGTTACCCTTAACAAC"
                    "TTAAGGGTTTTCAAATAGA",
        .quality = "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9ICIIIIIIIIIIIIIIIIIIIID"
                   "IIIIIII>"
                   "IIIIII/"},
-      {.name = "@SRR001666.2 071112_SLXA-EAS1_s_7:5:1:801:338 length=72",
+      {.name = "SRR001666.2 071112_SLXA-EAS1_s_7:5:1:801:338 length=72",
        .sequence = "GTTCAGGGATACGACGTTTGTATTTTAAGAATCTGAAGCAGAAGTCGATGATA"
                    "ATACGCGTCGTTTTATCAT",
        .quality =

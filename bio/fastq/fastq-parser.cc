@@ -12,6 +12,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/string_view.h"
+#include "absl/strings/strip.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
 #include "bio/common/strings.h"
@@ -20,6 +21,9 @@ namespace bio {
 namespace {
 
 namespace file = abxl::file;
+
+static constexpr char kIdentifierPrefix[] = "@";
+static constexpr char kQualityIdPrefix[] = "+";
 
 }  // namespace
 
@@ -49,12 +53,13 @@ auto FastqParser::NextSequence(bool truncate_name)
     if (line->empty()) {
       continue;
     }
-    if (!absl::StartsWith(*line, "@")) {
+    if (!absl::StartsWith(*line, kIdentifierPrefix)) {
       continue;
     }
 
     // Read sequence identifier line.
-    sequence->name = truncate_name ? FirstWord(*line) : *line;
+    const std::string name = truncate_name ? FirstWord(*line) : *line;
+    sequence->name = absl::StripPrefix(name, kIdentifierPrefix);
 
     // Read sequence line.
     std::optional<std::string> sequence_line = NextLine();
@@ -68,9 +73,10 @@ auto FastqParser::NextSequence(bool truncate_name)
     if (!quality_id_line.has_value()) {
       return absl::InvalidArgumentError("Expected quality ID line but got EOF");
     }
-    if (!absl::StartsWith(*quality_id_line, "+")) {
+    if (!absl::StartsWith(*quality_id_line, kQualityIdPrefix)) {
       return absl::InvalidArgumentError(
-          absl::StrFormat("Expected quality ID: '+' or '+%s'", sequence->name));
+          absl::StrFormat("Expected quality ID: '%s' or '+%s'",
+                          kQualityIdPrefix, sequence->name));
     }
 
     // Read quality line.
