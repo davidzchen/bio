@@ -24,7 +24,7 @@ struct FastqSequence {
 
   // Serializes the sequence to its string format.
   auto string() const -> std::string {
-    return absl::StrFormat("@%s\n%s\n+\n%s", name, sequence, quality);
+    return absl::StrFormat("@%s\n%s\n+\n%s\n", name, sequence, quality);
   }
 };
 
