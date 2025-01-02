@@ -30,6 +30,7 @@
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
 #include "bio/common/strings.h"
+#include "bio/fastq/fastq.h"
 
 namespace bio {
 namespace {
@@ -114,9 +115,9 @@ auto FastqParser::ReadAllSequences(bool truncate_name)
     -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> {
   std::vector<std::unique_ptr<FastqSequence>> sequences;
   while (!eof()) {
-    ASSIGN_OR_RETURN(std::optional<std::unique_ptr<FastqSequence>> sequence,
+    ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
                      NextSequence(truncate_name));
-    sequences.push_back(std::move(sequence.value()));
+    sequences.push_back(std::move(sequence));
   }
   return sequences;
 }
