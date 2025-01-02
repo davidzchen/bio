@@ -1,14 +1,9 @@
-# Bazel C++ Project Template
+# bio - Library for Bioinformatics
 
-This is a template repository for C++ projects built with Bazel. The repository
-boilerplate provides the following:
+`bio` is a C++ library that provides parsers for various file formats and other
+utilities for bioinformatics. It is partly based on [libbios][libbios], which is
+written in C.
 
-* `.bazelrc` with C++20, clang-tidy, and sanitizer builds
-* `.clang-format` to automatically format according to the Google C++ style
-  guide.
-* `.clang-tidy` with a full suite of clang-tidy checks.
-* `.clangd` enforcing strict header includes
-* `WORKSPACE` file pulling in external dependencies, including gTest, Abseil
-  Protocol Buffers, LLVM (for clang-tidy), etc.
-* Root `BUILD` file with target to generate `compile-commands.json`
-* And more.
+[libbios]: https://github.com/sbonerlab/libbios
+
+This library is in early active development and is not yet production ready.
