@@ -16,41 +16,63 @@
 #define BIO_BED_BED_H_
 
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace bio {
 
+// Represents a subfeature within a feature.
 struct BedSubBlock {
+  // Block size.
   uint64_t size;
 
-  // Relative to Bed::start.
+  // Block start position, relative to Bed::start.
   uint64_t start;
 };
 
-struct Bed {
+// Represents the strand that the feature appears on.
+enum class BedStrand {
+  kSense,
+  kAntisense,
+};
+
+// Represents a BED entry.
+struct BedEntry {
+  // Chromosome name. The name must be between 1 and 255 charcters long,
+  // inclusive.
   std::string chromosome;
+
+  // Feature start position.
   uint64_t start;
+
+  // Feature end position.
   uint64_t end;
-  bool extended;
 
-  // Optional fields
-  std::string name;
+  // Feature description. The description must be between 1 and 255 characters
+  // long, inclusive.
+  std::optional<std::string> name;
 
-  // [0, 1000]
-  uint32_t score;
+  // A numerical value between 0 and 1000 inclusive.
+  std::optional<uint32_t> score;
 
-  // '+'or '-'
-  char strand;
+  // Feature strand. This is parsed from '+' (sense or coding ) or '-'
+  // (antisense or complement) from the file.
+  std::optional<BedStrand> strand;
 
-  uint64_t thick_start;
-  uint64_t thick_end;
+  // Thick start position.
+  std::optional<uint64_t> thick_start;
 
-  // e.x. 255,0,0
-  std::string item_rgb;
+  // Thick end position.
+  std::optional<uint64_t> thick_end;
 
-  uint64_t block_count;
+  // Display color. This consists of a triple of integers between 0 and 255
+  // inclusive separated by commas (e.x. 255,0,0). Note taht an `item_rgb` of 0
+  // is a special case and is visualized differently from a value of 0,0,0.
+  std::optional<std::string> item_rgb;
 
+  // Blocks, linear subfeatures within a feature. The block count is given by
+  // `sub_blocks.size()`.
   std::vector<BedSubBlock> sub_blocks;
 };
 
