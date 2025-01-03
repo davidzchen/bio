@@ -52,3 +52,34 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "bed-writer",
+    srcs = ["bed-writer.cc"],
+    hdrs = ["bed-writer.h"],
+    deps = [
+        ":bed",
+        "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abxl//abxl/file",
+        "@abxl//abxl/status:status_macros",
+    ],
+)
+
+cc_test(
+    name = "bed-writer_test",
+    srcs = ["bed-writer_test.cc"],
+    deps = [
+        ":bed",
+        ":bed-writer",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abxl//abxl/file",
+        "@abxl//abxl/file:path",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

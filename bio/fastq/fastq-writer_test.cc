@@ -20,6 +20,7 @@
 #include "absl/status/status_matchers.h"
 #include "abxl/file/file.h"
 #include "abxl/file/path.h"
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 namespace bio {
@@ -105,7 +106,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII6IBIIIIIIIIIIIIIIIIIIIIIIIGII>IIIII-I)8I
 )");
 }
 
-TEST(FastqWriter, WriteArray) {
+TEST(FastqWriter, WriteVector) {
   const std::string output_path = abxl::JoinPath(TempDir(), "out.fastq");
   std::unique_ptr<FastqWriter> writer = FastqWriter::NewOrDie(output_path);
 

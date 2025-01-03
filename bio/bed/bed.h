@@ -77,10 +77,10 @@ struct BedEntry {
   std::vector<BedSubBlock> sub_blocks;
 
   // Returns the number of sub blocks in this entry.
-  auto block_count() -> size_t { return sub_blocks.size(); }
+  auto block_count() const -> size_t { return sub_blocks.size(); }
 
   // Serializes this BedEntry to its BED string format.
-  auto string() -> std::string;
+  auto string() const -> std::string;
 };
 
 }  // namespace bio

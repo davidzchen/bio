@@ -99,11 +99,11 @@ TEST(BedEntry, StringBed12) {
       .thick_start = 50,
       .thick_end = 1000,
       .item_rgb = "255,0,0",
-      .sub_blocks = {{.size = 567, .start = 0}, {.size = 488, .start = 3512}},
+      .sub_blocks = {{.size = 567, .start = 0}, {.size = 488, .start = 588}},
   };
   EXPECT_EQ(
       entry.string(),
-      "chr7\t0\t1000\tTest\t900\t+\t50\t1000\t255,0,0\t2\t567,488\t0,3512");
+      "chr7\t0\t1000\tTest\t900\t+\t50\t1000\t255,0,0\t2\t567,488\t0,588");
 }
 
 }  // namespace

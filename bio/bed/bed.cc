@@ -29,7 +29,7 @@ static constexpr char kStrandAntisense[] = "-";
 
 }  // namespace
 
-auto BedEntry::string() -> std::string {
+auto BedEntry::string() const -> std::string {
   std::vector<std::string> parts;
   parts.push_back(chromosome);
   parts.push_back(absl::StrCat(start));
