@@ -18,6 +18,8 @@
 #include <cstdint>
 #include <string>
 
+#include "absl/strings/str_format.h"
+
 namespace bio {
 
 // Represents an entry in a BedGraph file.
@@ -33,6 +35,11 @@ struct BedGraphEntry {
 
   // Track data value.
   double value;
+
+  // Serializes the BedGraphEntry to its string representation.
+  auto string() const -> std::string {
+    return absl::StrFormat("%s\t%d\t%d\t%.2f", chromosome, start, end, value);
+  }
 };
 
 }  // namespace bio

@@ -87,4 +87,17 @@ cc_test(
 cc_library(
     name = "bedgraph",
     hdrs = ["bedgraph.h"],
+    deps = [
+        "@abseil-cpp//absl/strings:str_format",
+    ],
+)
+
+cc_test(
+    name = "bedgraph_test",
+    srcs = ["bedgraph_test.cc"],
+    deps = [
+        ":bedgraph",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
 )
