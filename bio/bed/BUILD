@@ -83,3 +83,8 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "bedgraph",
+    hdrs = ["bedgraph.h"],
+)
