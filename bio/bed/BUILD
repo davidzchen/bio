@@ -2,7 +2,22 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "bed",
+    srcs = ["bed.cc"],
     hdrs = ["bed.h"],
+    deps = [
+        "@abseil-cpp//absl/strings",
+    ],
+)
+
+cc_test(
+    name = "bed_test",
+    srcs = ["bed_test.cc"],
+    deps = [
+        ":bed",
+        "@abseil-cpp//absl/strings",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
 )
 
 cc_library(

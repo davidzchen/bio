@@ -16,6 +16,7 @@
 #define BIO_BED_BED_H_
 
 #include <cstdint>
+#include <cstdlib>
 #include <optional>
 #include <string>
 #include <vector>
@@ -74,6 +75,12 @@ struct BedEntry {
   // Blocks, linear subfeatures within a feature. The block count is given by
   // `sub_blocks.size()`.
   std::vector<BedSubBlock> sub_blocks;
+
+  // Returns the number of sub blocks in this entry.
+  auto block_count() -> size_t { return sub_blocks.size(); }
+
+  // Serializes this BedEntry to its BED string format.
+  auto string() -> std::string;
 };
 
 }  // namespace bio
