@@ -69,12 +69,12 @@ namespace {
 
 auto ParseUInt64(size_t line_number, absl::string_view str,
                  absl::string_view field) -> absl::StatusOr<uint64_t> {
-  uint64_t end = 0;
-  if (!absl::SimpleAtoi(str, &end)) {
+  uint64_t value = 0;
+  if (!absl::SimpleAtoi(str, &value)) {
     return absl::InvalidArgumentError(absl::StrFormat(
         "Line %d: Invalid %s format: '%s'", line_number, field, str));
   }
-  return end;
+  return value;
 }
 
 auto ParseScore(size_t line_number, absl::string_view str)

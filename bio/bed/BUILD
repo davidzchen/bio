@@ -41,7 +41,7 @@ cc_library(
 cc_test(
     name = "bed-parser_test",
     srcs = ["bed-parser_test.cc"],
-    data = ["//bio/bed/testdata"],
+    data = ["//bio/bed/testdata/bed"],
     deps = [
         ":bed",
         ":bed-parser",
@@ -97,6 +97,39 @@ cc_test(
     srcs = ["bedgraph_test.cc"],
     deps = [
         ":bedgraph",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "bedgraph-parser",
+    srcs = ["bedgraph-parser.cc"],
+    hdrs = ["bedgraph-parser.h"],
+    deps = [
+        ":bedgraph",
+        "//bio/common:line-parser-base",
+        "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abxl//abxl/file",
+        "@abxl//abxl/status:status_macros",
+    ],
+)
+
+cc_test(
+    name = "bedgraph-parser_test",
+    srcs = ["bedgraph-parser_test.cc"],
+    data = ["//bio/bed/testdata/bedgraph"],
+    deps = [
+        ":bedgraph",
+        ":bedgraph-parser",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abseil-cpp//absl/status:statusor",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
