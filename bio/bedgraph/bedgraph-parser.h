@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BIO_BED_BEDGRAPH_PARSER_H_
-#define BIO_BED_BEDGRAPH_PARSER_H_
+#ifndef BIO_BEDGRAPH_BEDGRAPH_PARSER_H_
+#define BIO_BEDGRAPH_BEDGRAPH_PARSER_H_
 
 #include <cstdlib>
 #include <memory>
@@ -23,7 +23,7 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
-#include "bio/bed/bedgraph.h"
+#include "bio/bedgraph/bedgraph.h"
 #include "bio/common/line-parser-base.h"
 
 namespace bio {
@@ -58,4 +58,4 @@ class BedGraphParser : public LineParserBase {
 
 }  // namespace bio
 
-#endif  // BIO_BED_BEDGRAPH_PARSER_H_
+#endif  // BIO_BEDGRAPH_BEDGRAPH_PARSER_H_

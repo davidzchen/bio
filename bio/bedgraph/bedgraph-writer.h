@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BIO_BED_BEDGRAPH_WriTER_H_
-#define BIO_BED_BEDGRAPH_WriTER_H_
+#ifndef BIO_BEDGRAPH_BEDGRAPH_WriTER_H_
+#define BIO_BEDGRAPH_BEDGRAPH_WriTER_H_
 
 #include "absl/base/nullability.h"
 #include "abxl/file/file.h"
-#include "bio/bed/bedgraph.h"
+#include "bio/bedgraph/bedgraph.h"
 #include "bio/common/entry-writer-base.h"
 
 namespace bio {
@@ -66,4 +66,4 @@ class BedGraphWriter : public EntryWriterBase<BedGraphWriter, BedGraphEntry> {
 
 }  // namespace bio
 
-#endif  // BIO_BED_BEDGRAPH_WriTER_H_
+#endif  // BIO_BEDGRAPH_BEDGRAPH_WriTER_H_

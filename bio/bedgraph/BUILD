@@ -1,31 +1,29 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "bed",
-    srcs = ["bed.cc"],
-    hdrs = ["bed.h"],
+    name = "bedgraph",
+    hdrs = ["bedgraph.h"],
     deps = [
-        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
     ],
 )
 
 cc_test(
-    name = "bed_test",
-    srcs = ["bed_test.cc"],
+    name = "bedgraph_test",
+    srcs = ["bedgraph_test.cc"],
     deps = [
-        ":bed",
-        "@abseil-cpp//absl/strings",
+        ":bedgraph",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
 )
 
 cc_library(
-    name = "bed-parser",
-    srcs = ["bed-parser.cc"],
-    hdrs = ["bed-parser.h"],
+    name = "bedgraph-parser",
+    srcs = ["bedgraph-parser.cc"],
+    hdrs = ["bedgraph-parser.h"],
     deps = [
-        ":bed",
+        ":bedgraph",
         "//bio/common:line-parser-base",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/log:check",
@@ -39,12 +37,12 @@ cc_library(
 )
 
 cc_test(
-    name = "bed-parser_test",
-    srcs = ["bed-parser_test.cc"],
-    data = ["//bio/bed/testdata"],
+    name = "bedgraph-parser_test",
+    srcs = ["bedgraph-parser_test.cc"],
+    data = ["//bio/bedgraph/testdata"],
     deps = [
-        ":bed",
-        ":bed-parser",
+        ":bedgraph",
+        ":bedgraph-parser",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:status_matchers",
         "@abseil-cpp//absl/status:statusor",
@@ -54,10 +52,10 @@ cc_test(
 )
 
 cc_library(
-    name = "bed-writer",
-    hdrs = ["bed-writer.h"],
+    name = "bedgraph-writer",
+    hdrs = ["bedgraph-writer.h"],
     deps = [
-        ":bed",
+        ":bedgraph",
         "//bio/common:entry-writer-base",
         "@abseil-cpp//absl/base:nullability",
         "@abxl//abxl/file",
@@ -65,11 +63,11 @@ cc_library(
 )
 
 cc_test(
-    name = "bed-writer_test",
-    srcs = ["bed-writer_test.cc"],
+    name = "bedgraph-writer_test",
+    srcs = ["bedgraph-writer_test.cc"],
     deps = [
-        ":bed",
-        ":bed-writer",
+        ":bedgraph",
+        ":bedgraph-writer",
         "@abseil-cpp//absl/status:status_matchers",
         "@abxl//abxl/file",
         "@abxl//abxl/file:path",

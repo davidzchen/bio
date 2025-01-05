@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "bio/bed/bedgraph-writer.h"
+#include "bio/bedgraph/bedgraph-writer.h"
 
 #include <memory>
 #include <string>
@@ -20,7 +20,7 @@
 #include "absl/status/status_matchers.h"
 #include "abxl/file/file.h"
 #include "abxl/file/path.h"
-#include "bio/bed/bedgraph.h"
+#include "bio/bedgraph/bedgraph.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

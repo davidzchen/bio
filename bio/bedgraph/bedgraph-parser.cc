@@ -1,4 +1,4 @@
-#include "bio/bed/bedgraph-parser.h"
+#include "bio/bedgraph/bedgraph-parser.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -18,7 +18,7 @@
 #include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
-#include "bio/bed/bedgraph.h"
+#include "bio/bedgraph/bedgraph.h"
 
 namespace bio {
 namespace {

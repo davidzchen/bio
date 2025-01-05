@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "bio/bed/bedgraph-parser.h"
+#include "bio/bedgraph/bedgraph-parser.h"
 
 #include <memory>
 #include <vector>
@@ -20,7 +20,7 @@
 #include "absl/status/status.h"
 #include "absl/status/status_matchers.h"
 #include "absl/status/statusor.h"
-#include "bio/bed/bedgraph.h"
+#include "bio/bedgraph/bedgraph.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -33,7 +33,7 @@ using ::testing::HasSubstr;
 
 TEST(BedGraphParser, NextEntryEmpty) {
   std::unique_ptr<BedGraphParser> parser =
-      BedGraphParser::NewOrDie("bio/bed/testdata/bedgraph/empty.bedgraph");
+      BedGraphParser::NewOrDie("bio/bedgraph/testdata/empty.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_EQ(*entry, nullptr);
@@ -42,7 +42,7 @@ TEST(BedGraphParser, NextEntryEmpty) {
 
 TEST(BedGraphParser, NextEntryMissingStart) {
   std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/invalid-num-fields-1.bedgraph");
+      "bio/bedgraph/testdata/invalid-num-fields-1.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_THAT(entry.status(),
@@ -52,7 +52,7 @@ TEST(BedGraphParser, NextEntryMissingStart) {
 
 TEST(BedGraphParser, NextEntryMissingEnd) {
   std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/invalid-num-fields-2.bedgraph");
+      "bio/bedgraph/testdata/invalid-num-fields-2.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_THAT(entry.status(),
@@ -62,7 +62,7 @@ TEST(BedGraphParser, NextEntryMissingEnd) {
 
 TEST(BedGraphParser, NextEntryMissingValue) {
   std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/invalid-num-fields-3.bedgraph");
+      "bio/bedgraph/testdata/invalid-num-fields-3.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_THAT(entry.status(),
@@ -71,8 +71,8 @@ TEST(BedGraphParser, NextEntryMissingValue) {
 }
 
 TEST(BedGraphParser, NextEntryInvalidStart) {
-  std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/invalid-start.bedgraph");
+  std::unique_ptr<BedGraphParser> parser =
+      BedGraphParser::NewOrDie("bio/bedgraph/testdata/invalid-start.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_THAT(entry.status(), StatusIs(absl::StatusCode::kInvalidArgument,
@@ -80,8 +80,8 @@ TEST(BedGraphParser, NextEntryInvalidStart) {
 }
 
 TEST(BedGraphParser, NextEntryInvalidEnd) {
-  std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/invalid-end.bedgraph");
+  std::unique_ptr<BedGraphParser> parser =
+      BedGraphParser::NewOrDie("bio/bedgraph/testdata/invalid-end.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_THAT(entry.status(), StatusIs(absl::StatusCode::kInvalidArgument,
@@ -89,8 +89,8 @@ TEST(BedGraphParser, NextEntryInvalidEnd) {
 }
 
 TEST(BedGraphParser, NextEntryInvalidValue) {
-  std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/invalid-value.bedgraph");
+  std::unique_ptr<BedGraphParser> parser =
+      BedGraphParser::NewOrDie("bio/bedgraph/testdata/invalid-value.bedgraph");
 
   absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
   EXPECT_THAT(entry.status(), StatusIs(absl::StatusCode::kInvalidArgument,
@@ -107,7 +107,7 @@ auto CheckEntryEquals(const BedGraphEntry* actual,
 
 TEST(BedGraphParser, NextEntryValid) {
   std::unique_ptr<BedGraphParser> parser =
-      BedGraphParser::NewOrDie("bio/bed/testdata/bedgraph/valid.bedgraph");
+      BedGraphParser::NewOrDie("bio/bedgraph/testdata/valid.bedgraph");
 
   {
     absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->NextEntry();
@@ -134,8 +134,8 @@ TEST(BedGraphParser, NextEntryValid) {
 }
 
 TEST(BedGraphParser, NextEntryValidGenomeBrowser) {
-  std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
-      "bio/bed/testdata/bedgraph/genome-browser.bedgraph");
+  std::unique_ptr<BedGraphParser> parser =
+      BedGraphParser::NewOrDie("bio/bedgraph/testdata/genome-browser.bedgraph");
 
   {
     absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->NextEntry();

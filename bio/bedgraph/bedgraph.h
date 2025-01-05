@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BIO_BED_BEDGRAPH_H_
-#define BIO_BED_BEDGRAPH_H_
+#ifndef BIO_BEDGRAPH_BEDGRAPH_H_
+#define BIO_BEDGRAPH_BEDGRAPH_H_
 
 #include <cstdint>
 #include <string>
@@ -44,4 +44,4 @@ struct BedGraphEntry {
 
 }  // namespace bio
 
-#endif  // BIO_BED_BEDGRAPH_H_
+#endif  // BIO_BEDGRAPH_BEDGRAPH_H_

@@ -1,4 +1,4 @@
-#include "bio/bed/bedgraph.h"
+#include "bio/bedgraph/bedgraph.h"
 
 #include "gtest/gtest.h"
 
