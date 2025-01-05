@@ -19,11 +19,9 @@
 #include <vector>
 
 #include "absl/base/nullability.h"
-#include "absl/status/status.h"
-#include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
 #include "bio/bed/bed.h"
+#include "bio/common/entry-writer-base.h"
 
 namespace bio {
 
@@ -63,31 +61,9 @@ namespace bio {
 // BedEntry entry = {/*BED entry*/};
 // RETURN_IF_ERROR(writer->Write(entry));
 // ```
-class BedWriter {
+class BedWriter : public EntryWriterBase<BedWriter, BedEntry> {
  public:
-  explicit BedWriter(absl::Nonnull<abxl::File*> file) : file_(file) {}
-
-  ~BedWriter() = default;
-
-  // Constructs a new FastaWriter from the specified path.
-  static auto New(absl::string_view path)
-      -> absl::StatusOr<std::unique_ptr<BedWriter>>;
-
-  // Constructs a new FastaWriter from the specified file path or terminates the
-  // program if constructing the writer fails.
-  static auto NewOrDie(absl::string_view path) -> std::unique_ptr<BedWriter>;
-
-  // Writes the provided BED entries to the file.
-  auto Write(const std::vector<BedEntry>& entries) -> absl::Status;
-
-  // Writes the provided BED entry to the file.
-  auto Write(const BedEntry& entry) -> absl::Status;
-
-  // Closes the file.
-  auto Close() -> absl::Status;
-
- private:
-  abxl::File* file_;
+  explicit BedWriter(absl::Nonnull<abxl::File*> file) : EntryWriterBase(file) {}
 };
 
 }  // namespace bio

@@ -55,10 +55,10 @@ cc_test(
 
 cc_library(
     name = "bed-writer",
-    srcs = ["bed-writer.cc"],
     hdrs = ["bed-writer.h"],
     deps = [
         ":bed",
+        "//bio/common:entry-writer-base",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/log:check",
         "@abseil-cpp//absl/status",

@@ -41,7 +41,7 @@ class EntryWriterBase {
 
   ~EntryWriterBase() = default;
 
-  // Constructs a new FastaWriter from the specified path.
+  // Constructs a new writer from the specified path.
   static auto New(absl::string_view path)
       -> absl::StatusOr<std::unique_ptr<Writer>> {
     abxl::File* file;
@@ -49,7 +49,7 @@ class EntryWriterBase {
     return std::make_unique<Writer>(file);
   }
 
-  // Constructs a new FastaWriter from the specified file path or terminates the
+  // Constructs a new writer from the specified file path or terminates the
   // program if constructing the writer fails.
   static auto NewOrDie(absl::string_view path) -> std::unique_ptr<Writer> {
     absl::StatusOr<std::unique_ptr<Writer>> writer = New(path);
@@ -57,7 +57,7 @@ class EntryWriterBase {
     return std::move(writer.value());
   }
 
-  // Writes the provided BED entries to the file.
+  // Writes the provided entries to the file.
   auto Write(const std::vector<Entry>& entries) -> absl::Status {
     for (const auto& entry : entries) {
       RETURN_IF_ERROR(Write(entry));
@@ -65,7 +65,7 @@ class EntryWriterBase {
     return absl::OkStatus();
   }
 
-  // Writes the provided BED entry to the file.
+  // Writes the provided entry to the file.
   auto Write(const Entry& entry) -> absl::Status {
     const std::string str = absl::StrCat(entry.string(), "\n");
     size_t size = file_->WriteString(str);
