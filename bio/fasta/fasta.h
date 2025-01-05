@@ -41,7 +41,7 @@ struct FastaSequence {
   // Serializes the sequence to its string format.
   auto string() const -> std::string {
     std::string seq = InsertWordEveryNthPosition(sequence, "\n", kCharsPerLine);
-    return absl::StrFormat(">%s\n%s\n", name, seq);
+    return absl::StrFormat(">%s\n%s", name, seq);
   }
 };
 

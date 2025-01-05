@@ -19,10 +19,8 @@
 #include <vector>
 
 #include "absl/base/nullability.h"
-#include "absl/status/status.h"
-#include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
+#include "bio/common/entry-writer-base.h"
 #include "bio/fasta/fasta.h"
 
 namespace bio {
@@ -64,31 +62,10 @@ namespace bio {
 // FastaSequence sequence = {/*FASTA sequence*/};
 // RETURN_IF_ERROR(writer->Write(sequence));
 // ```
-class FastaWriter {
+class FastaWriter : public EntryWriterBase<FastaWriter, FastaSequence> {
  public:
-  explicit FastaWriter(absl::Nonnull<abxl::File*> file) : file_(file) {}
-
-  ~FastaWriter() = default;
-
-  // Constructs a new FastaWriter from the specified path.
-  static auto New(absl::string_view path)
-      -> absl::StatusOr<std::unique_ptr<FastaWriter>>;
-
-  // Constructs a new FastaWriter from the specified file path or terminates the
-  // program if constructing the writer fails.
-  static auto NewOrDie(absl::string_view path) -> std::unique_ptr<FastaWriter>;
-
-  // Writes the provided sequences to the file.
-  auto Write(const std::vector<FastaSequence>& sequences) -> absl::Status;
-
-  // Writes the provided sequence to the file.
-  auto Write(const FastaSequence& sequence) -> absl::Status;
-
-  // Closes the file.
-  auto Close() -> absl::Status;
-
- private:
-  abxl::File* file_;
+  explicit FastaWriter(absl::Nonnull<abxl::File*> file)
+      : EntryWriterBase(file) {}
 };
 
 }  // namespace bio

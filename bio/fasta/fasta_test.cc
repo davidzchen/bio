@@ -26,7 +26,7 @@ TEST(FastaSequence, StringEmptySequence) {
       .name = "SEQUENCE",
       .sequence = "",
   };
-  EXPECT_EQ(sequence.string(), ">SEQUENCE\n\n");
+  EXPECT_EQ(sequence.string(), ">SEQUENCE\n");
 }
 
 TEST(FastaSequence, String) {
@@ -40,8 +40,7 @@ TEST(FastaSequence, String) {
   const std::string expected = R"(>MCHU
 MADQLTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADG
 NGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDE
-EVDEMIREADIDGDGQVNYEEFVQMMTAK*
-)";
+EVDEMIREADIDGDGQVNYEEFVQMMTAK*)";
   EXPECT_EQ(sequence.string(), expected);
 }
 

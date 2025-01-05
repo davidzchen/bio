@@ -51,18 +51,12 @@ cc_test(
 
 cc_library(
     name = "fasta-writer",
-    srcs = ["fasta-writer.cc"],
     hdrs = ["fasta-writer.h"],
     deps = [
         ":fasta",
+        "//bio/common:entry-writer-base",
         "@abseil-cpp//absl/base:nullability",
-        "@abseil-cpp//absl/log:check",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/status:statusor",
-        "@abseil-cpp//absl/strings",
-        "@abseil-cpp//absl/strings:str_format",
         "@abxl//abxl/file",
-        "@abxl//abxl/status:status_macros",
     ],
 )
 
