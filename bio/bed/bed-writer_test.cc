@@ -119,19 +119,17 @@ TEST(BedWriter, WriteVector) {
   std::unique_ptr<BedWriter> writer = BedWriter::NewOrDie(output_path);
 
   EXPECT_THAT(writer->Write({
-                  {
-                      .chromosome = "chr7",
-                      .start = 0,
-                      .end = 1000,
-                      .name = "Test",
-                      .score = 900,
-                      .strand = BedStrand::kSense,
-                      .thick_start = 50,
-                      .thick_end = 1000,
-                      .item_rgb = "255,0,0",
-                      .sub_blocks = {{.size = 567, .start = 0},
-                                     {.size = 488, .start = 588}},
-                  },
+                  {.chromosome = "chr7",
+                   .start = 0,
+                   .end = 1000,
+                   .name = "Test",
+                   .score = 900,
+                   .strand = BedStrand::kSense,
+                   .thick_start = 50,
+                   .thick_end = 1000,
+                   .item_rgb = "255,0,0",
+                   .sub_blocks = {{.size = 567, .start = 0},
+                                  {.size = 488, .start = 588}}},
                   {
                       .chromosome = "chr7",
                       .start = 200,

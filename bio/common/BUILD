@@ -43,3 +43,18 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "entry-writer-base",
+    hdrs = ["entry-writer-base.h"],
+    deps = [
+        "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@abxl//abxl/file",
+        "@abxl//abxl/status:status_macros",
+    ],
+)

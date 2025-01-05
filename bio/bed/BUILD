@@ -134,3 +134,28 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "bedgraph-writer",
+    hdrs = ["bedgraph-writer.h"],
+    deps = [
+        ":bedgraph",
+        "//bio/common:entry-writer-base",
+        "@abseil-cpp//absl/base:nullability",
+        "@abxl//abxl/file",
+    ],
+)
+
+cc_test(
+    name = "bedgraph-writer_test",
+    srcs = ["bedgraph-writer_test.cc"],
+    deps = [
+        ":bedgraph",
+        ":bedgraph-writer",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abxl//abxl/file",
+        "@abxl//abxl/file:path",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
