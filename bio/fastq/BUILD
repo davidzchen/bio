@@ -55,18 +55,12 @@ cc_test(
 
 cc_library(
     name = "fastq-writer",
-    srcs = ["fastq-writer.cc"],
     hdrs = ["fastq-writer.h"],
     deps = [
         ":fastq",
+        "//bio/common:entry-writer-base",
         "@abseil-cpp//absl/base:nullability",
-        "@abseil-cpp//absl/log:check",
-        "@abseil-cpp//absl/status",
-        "@abseil-cpp//absl/status:statusor",
-        "@abseil-cpp//absl/strings",
-        "@abseil-cpp//absl/strings:str_format",
         "@abxl//abxl/file",
-        "@abxl//abxl/status:status_macros",
     ],
 )
 

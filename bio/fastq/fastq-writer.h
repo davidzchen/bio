@@ -15,14 +15,9 @@
 #ifndef BIO_FASTQ_FASTQ_WRITER_H_
 #define BIO_FASTQ_FASTQ_WRITER_H_
 
-#include <memory>
-#include <vector>
-
 #include "absl/base/nullability.h"
-#include "absl/status/status.h"
-#include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
 #include "abxl/file/file.h"
+#include "bio/common/entry-writer-base.h"
 #include "bio/fastq/fastq.h"
 
 namespace bio {
@@ -63,31 +58,10 @@ namespace bio {
 // FastqSequence ssequence = {/*FASTQ sequence*/};
 // RETURN_IF_ERROR(writer->Write(sequence));
 // ```
-class FastqWriter {
+class FastqWriter : public EntryWriterBase<FastqWriter, FastqSequence> {
  public:
-  explicit FastqWriter(absl::Nonnull<abxl::File*> file) : file_(file) {}
-
-  ~FastqWriter() = default;
-
-  // Constructs a new FastaWriter from the specified path.
-  static auto New(absl::string_view path)
-      -> absl::StatusOr<std::unique_ptr<FastqWriter>>;
-
-  // Constructs a new FastaWriter from the specified file path or terminates the
-  // program if constructing the writer fails.
-  static auto NewOrDie(absl::string_view path) -> std::unique_ptr<FastqWriter>;
-
-  // Writes the provided sequences to the file.
-  auto Write(const std::vector<FastqSequence>& sequences) -> absl::Status;
-
-  // Writes the provided sequence to the file.
-  auto Write(const FastqSequence& sequence) -> absl::Status;
-
-  // Closes the file.
-  auto Close() -> absl::Status;
-
- private:
-  abxl::File* file_;
+  explicit FastqWriter(absl::Nonnull<abxl::File*> file)
+      : EntryWriterBase(file) {}
 };
 
 }  // namespace bio

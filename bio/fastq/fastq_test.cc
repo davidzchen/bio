@@ -27,7 +27,7 @@ TEST(FastqSequence, StringEmptySequence) {
       .sequence = "",
       .quality = "",
   };
-  EXPECT_EQ(sequence.string(), "@SEQUENCE\n\n+\n\n");
+  EXPECT_EQ(sequence.string(), "@SEQUENCE\n\n+\n");
 }
 
 TEST(FastqSequence, String) {
@@ -40,8 +40,7 @@ TEST(FastqSequence, String) {
             R"(@SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=36
 GGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACC
 +
-IIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9IC
-)");
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9IC)");
 }
 
 }  // namespace
