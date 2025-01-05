@@ -20,7 +20,7 @@
 #include "absl/status/status_matchers.h"
 #include "abxl/file/file.h"
 #include "abxl/file/path.h"
-#include "bio/bed/bed.h"
+#include "bio/common/sequence.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -53,7 +53,7 @@ TEST(BedWriter, WriteSingleEntry) {
                   .end = 1000,
                   .name = "Test",
                   .score = 900,
-                  .strand = BedStrand::kSense,
+                  .strand = Strand::kSense,
                   .thick_start = 50,
                   .thick_end = 1000,
                   .item_rgb = "255,0,0",
@@ -81,7 +81,7 @@ TEST(BedWriter, WriteMultipleEntries) {
                   .end = 1000,
                   .name = "Test",
                   .score = 900,
-                  .strand = BedStrand::kSense,
+                  .strand = Strand::kSense,
                   .thick_start = 50,
                   .thick_end = 1000,
                   .item_rgb = "255,0,0",
@@ -95,7 +95,7 @@ TEST(BedWriter, WriteMultipleEntries) {
                   .end = 1200,
                   .name = "Test",
                   .score = 800,
-                  .strand = BedStrand::kAntisense,
+                  .strand = Strand::kAntisense,
                   .thick_start = 50,
                   .thick_end = 1000,
                   .item_rgb = "0,0,255",
@@ -124,7 +124,7 @@ TEST(BedWriter, WriteVector) {
                    .end = 1000,
                    .name = "Test",
                    .score = 900,
-                   .strand = BedStrand::kSense,
+                   .strand = Strand::kSense,
                    .thick_start = 50,
                    .thick_end = 1000,
                    .item_rgb = "255,0,0",
@@ -136,7 +136,7 @@ TEST(BedWriter, WriteVector) {
                       .end = 1200,
                       .name = "Test",
                       .score = 800,
-                      .strand = BedStrand::kAntisense,
+                      .strand = Strand::kAntisense,
                       .thick_start = 50,
                       .thick_end = 1000,
                       .item_rgb = "0,0,255",

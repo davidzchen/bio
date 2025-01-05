@@ -5,6 +5,7 @@ cc_library(
     srcs = ["bed.cc"],
     hdrs = ["bed.h"],
     deps = [
+        "//bio/common:sequence",
         "@abseil-cpp//absl/strings",
     ],
 )
@@ -14,6 +15,7 @@ cc_test(
     srcs = ["bed_test.cc"],
     deps = [
         ":bed",
+        "//bio/common:sequence",
         "@abseil-cpp//absl/strings",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
@@ -27,6 +29,7 @@ cc_library(
     deps = [
         ":bed",
         "//bio/common:line-parser-base",
+        "//bio/common:sequence",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/log:check",
         "@abseil-cpp//absl/status",
@@ -45,6 +48,7 @@ cc_test(
     deps = [
         ":bed",
         ":bed-parser",
+        "//bio/common:sequence",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:status_matchers",
         "@abseil-cpp//absl/status:statusor",
@@ -70,6 +74,7 @@ cc_test(
     deps = [
         ":bed",
         ":bed-writer",
+        "//bio/common:sequence",
         "@abseil-cpp//absl/status:status_matchers",
         "@abxl//abxl/file",
         "@abxl//abxl/file:path",

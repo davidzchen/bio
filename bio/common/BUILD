@@ -58,3 +58,8 @@ cc_library(
         "@abxl//abxl/status:status_macros",
     ],
 )
+
+cc_library(
+    name = "sequence",
+    hdrs = ["sequence.h"],
+)

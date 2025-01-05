@@ -1,5 +1,6 @@
 #include "bio/bed/bed.h"
 
+#include "bio/common/sequence.h"
 #include "gtest/gtest.h"
 
 namespace bio {
@@ -42,7 +43,7 @@ TEST(BedEntry, StringBed6Sense) {
       .end = 1000,
       .name = "Test",
       .score = 900,
-      .strand = BedStrand::kSense,
+      .strand = Strand::kSense,
   };
   EXPECT_EQ(entry.string(), "chr7\t0\t1000\tTest\t900\t+");
 }
@@ -54,7 +55,7 @@ TEST(BedEntry, StringBed6Antisense) {
       .end = 1000,
       .name = "Test",
       .score = 900,
-      .strand = BedStrand::kAntisense,
+      .strand = Strand::kAntisense,
   };
   EXPECT_EQ(entry.string(), "chr7\t0\t1000\tTest\t900\t-");
 }
@@ -66,7 +67,7 @@ TEST(BedEntry, StringBed8) {
       .end = 1000,
       .name = "Test",
       .score = 900,
-      .strand = BedStrand::kSense,
+      .strand = Strand::kSense,
       .thick_start = 50,
       .thick_end = 1000,
   };
@@ -80,7 +81,7 @@ TEST(BedEntry, StringBed9) {
       .end = 1000,
       .name = "Test",
       .score = 900,
-      .strand = BedStrand::kSense,
+      .strand = Strand::kSense,
       .thick_start = 50,
       .thick_end = 1000,
       .item_rgb = "255,0,0",
@@ -95,7 +96,7 @@ TEST(BedEntry, StringBed12) {
       .end = 1000,
       .name = "Test",
       .score = 900,
-      .strand = BedStrand::kSense,
+      .strand = Strand::kSense,
       .thick_start = 50,
       .thick_end = 1000,
       .item_rgb = "255,0,0",

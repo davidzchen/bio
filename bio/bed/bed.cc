@@ -20,6 +20,7 @@
 
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
+#include "bio/common/sequence.h"
 
 namespace bio {
 namespace {
@@ -41,8 +42,8 @@ auto BedEntry::string() const -> std::string {
     parts.push_back(absl::StrCat(*score));
   }
   if (strand.has_value()) {
-    parts.push_back(*strand == BedStrand::kSense ? kStrandSense
-                                                 : kStrandAntisense);
+    parts.push_back(*strand == Strand::kSense ? kStrandSense
+                                              : kStrandAntisense);
   }
   if (thick_start.has_value()) {
     parts.push_back(absl::StrCat(*thick_start));

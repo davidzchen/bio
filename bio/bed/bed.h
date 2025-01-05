@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include "bio/common/sequence.h"
+
 namespace bio {
 
 // Represents a subfeature within a feature.
@@ -30,12 +32,6 @@ struct BedSubBlock {
 
   // Block start position, relative to Bed::start.
   uint64_t start;
-};
-
-// Represents the strand that the feature appears on.
-enum class BedStrand {
-  kSense,
-  kAntisense,
 };
 
 // Represents a BED entry.
@@ -59,7 +55,7 @@ struct BedEntry {
 
   // Feature strand. This is parsed from '+' (sense or coding ) or '-'
   // (antisense or complement) from the file.
-  std::optional<BedStrand> strand;
+  std::optional<Strand> strand;
 
   // Thick start position.
   std::optional<uint64_t> thick_start;

@@ -21,6 +21,7 @@
 #include "absl/status/status_matchers.h"
 #include "absl/status/statusor.h"
 #include "bio/bed/bed.h"
+#include "bio/common/sequence.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -295,7 +296,7 @@ TEST(BedParser, NextEntryBed6GenomeBrowser) {
         .end = 127472363,
         .name = "Pos1",
         .score = 0,
-        .strand = BedStrand::kSense,
+        .strand = Strand::kSense,
         .thick_start = 127471196,
         .thick_end = 127472363,
         .item_rgb = "255,0,0",
@@ -311,7 +312,7 @@ TEST(BedParser, NextEntryBed6GenomeBrowser) {
         .end = 127477031,
         .name = "Neg1",
         .score = 0,
-        .strand = BedStrand::kAntisense,
+        .strand = Strand::kAntisense,
         .thick_start = 127475864,
         .thick_end = 127477031,
         .item_rgb = "0,0,255",
@@ -332,7 +333,7 @@ TEST(BedParser, NextEntryBed12) {
         .end = 5000,
         .name = "cloneA",
         .score = 960,
-        .strand = BedStrand::kSense,
+        .strand = Strand::kSense,
         .thick_start = 1000,
         .thick_end = 5000,
         .item_rgb = "0",
@@ -349,7 +350,7 @@ TEST(BedParser, NextEntryBed12) {
         .end = 6000,
         .name = "cloneB",
         .score = 900,
-        .strand = BedStrand::kAntisense,
+        .strand = Strand::kAntisense,
         .thick_start = 2000,
         .thick_end = 6000,
         .item_rgb = "0",
@@ -380,7 +381,7 @@ TEST(BedParser, AllENtries) {
           .end = 5000,
           .name = "cloneA",
           .score = 960,
-          .strand = BedStrand::kSense,
+          .strand = Strand::kSense,
           .thick_start = 1000,
           .thick_end = 5000,
           .item_rgb = "0",
@@ -393,7 +394,7 @@ TEST(BedParser, AllENtries) {
           .end = 6000,
           .name = "cloneB",
           .score = 900,
-          .strand = BedStrand::kAntisense,
+          .strand = Strand::kAntisense,
           .thick_start = 2000,
           .thick_end = 6000,
           .item_rgb = "0",

@@ -33,6 +33,7 @@
 #include "abxl/file/file.h"
 #include "abxl/status/status_macros.h"
 #include "bio/bed/bed.h"
+#include "bio/common/sequence.h"
 
 namespace bio {
 namespace {
@@ -88,11 +89,11 @@ auto ParseScore(size_t line_number, absl::string_view str)
 }
 
 auto ParseStrand(size_t line_number, absl::string_view str)
-    -> absl::StatusOr<BedStrand> {
+    -> absl::StatusOr<Strand> {
   if (str == kStrandSense) {
-    return BedStrand::kSense;
+    return Strand::kSense;
   } else if (str == kStrandAntisense) {
-    return BedStrand::kAntisense;
+    return Strand::kAntisense;
   } else {
     return absl::InvalidArgumentError(absl::StrFormat(
         "Line %d: Invalid strand format: '%s'", line_number, str));
