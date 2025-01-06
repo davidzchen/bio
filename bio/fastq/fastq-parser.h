@@ -15,9 +15,7 @@
 #ifndef BIO_FASTQ_FASTQ_PARSER_H_
 #define BIO_FASTQ_FASTQ_PARSER_H_
 
-#include <cstdlib>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include "absl/base/nullability.h"
