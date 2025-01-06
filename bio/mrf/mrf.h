@@ -33,7 +33,7 @@ enum class MrfColumn {
   // Required.
   kAlignmentBlocks,
 
-  // Optional.
+  // Optional columns.
   kSequence,
   kQualityScores,
   kQueryId,
@@ -83,9 +83,16 @@ struct MrfBlock {
 
 // Represents an MRF read.
 struct MrfRead {
+  // One or more blocks comprising the read.
   std::vector<MrfBlock> blocks;
+
+  // The read's sequence.
   std::string sequence;
+
+  // The read's quality scores.
   std::string quality_scores;
+
+  // The read's query ID.
   std::string query_id;
 
   // Computes the read length of this read.
@@ -94,8 +101,14 @@ struct MrfRead {
 
 // Represents an entry in an MRF file.
 struct MrfEntry {
+  // Whether the entry contains a paired end read.
   bool is_paired_end;
+
+  // The first read. If this entry is not a paied -end read, then only this
+  // field will be populated.
   MrfRead read1;
+
+  // The second read. This is populated only if this entry is a paired end read.
   MrfRead read2;
 };
 

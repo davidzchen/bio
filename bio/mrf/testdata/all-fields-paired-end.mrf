@@ -1,0 +1,3 @@
+# Paired ends with all fields
+AlignmentBlocks	Sequence	QualityScores	QueryId
+chr2:+:601:630:1:30|chr2:+:1401:1450:1:50	ACTG|GCTA	IIII|JJJJ	1|2
