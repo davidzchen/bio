@@ -1,6 +1,7 @@
 #include "bio/mrf/mrf.h"
 
 #include <cstdlib>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -20,7 +21,8 @@ static constexpr char kColumnNameQueryId[] = "QueryId";
 
 }  // namespace
 
-auto MrfHeader::Parse(absl::string_view line) -> absl::StatusOr<MrfHeader> {
+auto MrfHeader::Parse(absl::string_view line)
+    -> absl::StatusOr<std::unique_ptr<MrfHeader>> {
   std::vector<std::string> parts = absl::StrSplit(line, "\t");
   std::vector<MrfColumn> columns;
   absl::flat_hash_set<MrfColumn> present_columns;
@@ -51,7 +53,7 @@ auto MrfHeader::Parse(absl::string_view line) -> absl::StatusOr<MrfHeader> {
         "Required AlignmentBlocks column not present");
   }
 
-  return MrfHeader(columns);
+  return std::make_unique<MrfHeader>(columns);
 }
 
 auto MrfHeader::AddComments(const std::vector<std::string>& comments) -> void {

@@ -14,6 +14,7 @@
 
 #include "bio/mrf/mrf.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -34,27 +35,27 @@ using ::testing::HasSubstr;
 
 TEST(MrfHeader, ParseSingleColumn) {
   const std::string line = "AlignmentBlocks";
-  absl::StatusOr<MrfHeader> header = MrfHeader::Parse(line);
+  absl::StatusOr<std::unique_ptr<MrfHeader>> header = MrfHeader::Parse(line);
   EXPECT_THAT(header.status(), IsOk());
-  EXPECT_TRUE(header->HasColumn(MrfColumn::kAlignmentBlocks));
+  EXPECT_TRUE((*header)->HasColumn(MrfColumn::kAlignmentBlocks));
 }
 
 TEST(MrfHeader, ParseAllColumns) {
   const std::string line = "AlignmentBlocks\tSequence\tQualityScores\tQueryId";
-  absl::StatusOr<MrfHeader> header = MrfHeader::Parse(line);
+  absl::StatusOr<std::unique_ptr<MrfHeader>> header = MrfHeader::Parse(line);
   EXPECT_THAT(header.status(), IsOk());
-  EXPECT_TRUE(header->HasColumn(MrfColumn::kAlignmentBlocks));
-  EXPECT_TRUE(header->HasColumn(MrfColumn::kSequence));
-  EXPECT_TRUE(header->HasColumn(MrfColumn::kQualityScores));
-  EXPECT_TRUE(header->HasColumn(MrfColumn::kQueryId));
-  EXPECT_THAT(header->columns(),
+  EXPECT_TRUE((*header)->HasColumn(MrfColumn::kAlignmentBlocks));
+  EXPECT_TRUE((*header)->HasColumn(MrfColumn::kSequence));
+  EXPECT_TRUE((*header)->HasColumn(MrfColumn::kQualityScores));
+  EXPECT_TRUE((*header)->HasColumn(MrfColumn::kQueryId));
+  EXPECT_THAT((*header)->columns(),
               ElementsAre(MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
                           MrfColumn::kQualityScores, MrfColumn::kQueryId));
 }
 
 TEST(MrfHeader, ParseMissingRequiredColumn) {
   const std::string line = "Sequence\tQualityScores\tQueryId";
-  absl::StatusOr<MrfHeader> header = MrfHeader::Parse(line);
+  absl::StatusOr<std::unique_ptr<MrfHeader>> header = MrfHeader::Parse(line);
   EXPECT_THAT(
       header.status(),
       StatusIs(absl::StatusCode::kInvalidArgument,
@@ -63,7 +64,7 @@ TEST(MrfHeader, ParseMissingRequiredColumn) {
 
 TEST(MrfHeader, ParseInvalidColumn) {
   const std::string line = "AlignmentBlocks\tSequence\tQualityScores\tInvalid";
-  absl::StatusOr<MrfHeader> header = MrfHeader::Parse(line);
+  absl::StatusOr<std::unique_ptr<MrfHeader>> header = MrfHeader::Parse(line);
   EXPECT_THAT(header.status(), StatusIs(absl::StatusCode::kInvalidArgument,
                                         HasSubstr("Invalid column name")));
 }
@@ -71,7 +72,7 @@ TEST(MrfHeader, ParseInvalidColumn) {
 TEST(MrfHeader, ParseDuplicateColumn) {
   const std::string line =
       "AlignmentBlocks\tSequence\tQualityScores\tQualityScores";
-  absl::StatusOr<MrfHeader> header = MrfHeader::Parse(line);
+  absl::StatusOr<std::unique_ptr<MrfHeader>> header = MrfHeader::Parse(line);
   EXPECT_THAT(header.status(), StatusIs(absl::StatusCode::kInvalidArgument,
                                         HasSubstr("Duplicate column")));
 }

@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -45,7 +46,8 @@ class MrfHeader {
       : columns_(columns), present_columns_(columns.begin(), columns.end()) {}
 
   // Parses the provided line and returns an MrfHeader.
-  static auto Parse(absl::string_view line) -> absl::StatusOr<MrfHeader>;
+  static auto Parse(absl::string_view line)
+      -> absl::StatusOr<std::unique_ptr<MrfHeader>>;
 
   // Adds comments that precedes the columns line.
   auto AddComments(const std::vector<std::string>& comments) -> void;
