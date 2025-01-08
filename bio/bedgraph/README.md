@@ -1,4 +1,4 @@
-# BedGraph library
+# BedGraph Library
 
 This directory contains utilities for working with BedGraph files.
 
