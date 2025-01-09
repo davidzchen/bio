@@ -101,6 +101,27 @@ TEST(MrfHeader, AddColumn) {
               ElementsAre(MrfColumn::kAlignmentBlocks, MrfColumn::kSequence));
 }
 
+TEST(MrfHeader, String) {
+  {
+    MrfHeader header({});
+    EXPECT_EQ(header.string(), "");
+  }
+  {
+    MrfHeader header({MrfColumn::kAlignmentBlocks});
+    EXPECT_EQ(header.string(), "AlignmentBlocks");
+  }
+  {
+    MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence});
+    EXPECT_EQ(header.string(), "AlignmentBlocks\tSequence");
+  }
+  {
+    MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                      MrfColumn::kQualityScores, MrfColumn::kQueryId});
+    EXPECT_EQ(header.string(),
+              "AlignmentBlocks\tSequence\tQualityScores\tQueryId");
+  }
+}
+
 TEST(MrfRead, LengthNoBlocks) {
   MrfRead read;
   EXPECT_EQ(read.Length(), 0);

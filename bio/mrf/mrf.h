@@ -65,6 +65,9 @@ class MrfHeader {
   // Returns a reference to the columns in the header.
   auto columns() const -> const std::vector<MrfColumn>&;
 
+  // Returns the string (on-file) representation of the MRF header.
+  auto string() const -> std::string;
+
  private:
   std::vector<MrfColumn> columns_;
   absl::flat_hash_set<MrfColumn> present_columns_;

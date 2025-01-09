@@ -8,6 +8,7 @@
 #include "absl/container/flat_hash_set.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
+#include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 
@@ -80,6 +81,27 @@ auto MrfHeader::AddColumn(MrfColumn column) -> void {
 
 auto MrfHeader::columns() const -> const std::vector<MrfColumn>& {
   return columns_;
+}
+
+auto MrfHeader::string() const -> std::string {
+  std::vector<std::string> column_names;
+  for (const auto& column : columns_) {
+    switch (column) {
+      case MrfColumn::kAlignmentBlocks:
+        column_names.push_back(kColumnNameAlignmentBlocks);
+        break;
+      case MrfColumn::kSequence:
+        column_names.push_back(kColumnNameSequence);
+        break;
+      case MrfColumn::kQualityScores:
+        column_names.push_back(kColumnNameQualityScores);
+        break;
+      default:  // MrfColumn::kQueryId:
+        column_names.push_back(kColumnNameQueryId);
+        break;
+    }
+  }
+  return absl::StrJoin(column_names, "\t");
 }
 
 auto MrfRead::Length() -> size_t {
