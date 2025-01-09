@@ -113,6 +113,9 @@ struct MrfEntry {
 
   // The second read. This is populated only if this entry is a paired end read.
   MrfRead read2;
+
+  // Validates the entry against the header.
+  auto Validate(const MrfHeader& header) -> absl::Status;
 };
 
 }  // namespace bio

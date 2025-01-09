@@ -23,6 +23,7 @@
 #include "absl/status/statusor.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "mrf.h"
 
 namespace bio {
 namespace {
@@ -133,6 +134,377 @@ TEST(MrfRead, Length) {
                       {.target_start = 2000, .target_end = 3000},
                   }};
   EXPECT_EQ(read.Length(), 2002);
+}
+
+TEST(MrfEntry, ValidateSingleEndRequriedField) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kAntisense,
+                          .target_start = 1221,
+                          .target_end = 1270,
+                          .query_start = 1,
+                          .query_end = 50}},
+          },
+  };
+  EXPECT_THAT(entry.Validate(header), IsOk());
+}
+
+TEST(MrfEntry, ValidateSingleEndAllFields) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kAntisense,
+                          .target_start = 1221,
+                          .target_end = 1270,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "ACTCGAA",
+              .quality_scores = "IIIIIII",
+              .query_id = "1",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header), IsOk());
+}
+
+TEST(MrfEntry, ValidatePairedEndRequiredField) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 = {.blocks = {{.target_name = "chr2",
+                            .strand = Strand::kSense,
+                            .target_start = 601,
+                            .target_end = 630,
+                            .query_start = 1,
+                            .query_end = 30},
+                           {.target_name = "chr2",
+                            .strand = Strand::kSense,
+                            .target_start = 921,
+                            .target_end = 940,
+                            .query_start = 31,
+                            .query_end = 50}}},
+      .read2 = {.blocks = {{
+                    .target_name = "chr2",
+                    .strand = Strand::kSense,
+                    .target_start = 1401,
+                    .target_end = 1450,
+                    .query_start = 1,
+                    .query_end = 50,
+                }}},
+  };
+  EXPECT_THAT(entry.Validate(header), IsOk());
+}
+
+TEST(MrfEntry, ValidatePairedEndAllFields) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 601,
+                          .target_end = 630,
+                          .query_start = 1,
+                          .query_end = 30}},
+              .sequence = "ACTG",
+              .quality_scores = "IIII",
+              .query_id = "1",
+          },
+      .read2 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 1401,
+                          .target_end = 1450,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "GCTA",
+              .quality_scores = "JJJJ",
+              .query_id = "2",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header), IsOk());
+}
+
+TEST(MrfEntry, ValidateSingleEndNoBlocks) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 = {.blocks = {}},
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Read must have one or more blocks")));
+}
+
+TEST(MrfEntry, ValidateSingleEndBlockMissingTargetName) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 =
+          {
+              .blocks = {{.target_name = "",
+                          .strand = Strand::kAntisense,
+                          .target_start = 1221,
+                          .target_end = 1270,
+                          .query_start = 1,
+                          .query_end = 50}},
+          },
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("missing target name")));
+}
+
+TEST(MrfEntry, ValidateSingleEndMissingSequence) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kAntisense,
+                          .target_start = 1221,
+                          .target_end = 1270,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .quality_scores = "IIIIIII",
+              .query_id = "1",
+          },
+  };
+  EXPECT_THAT(
+      entry.Validate(header),
+      StatusIs(
+          absl::StatusCode::kInvalidArgument,
+          HasSubstr("Header contains Sequence column but sequence is empty")));
+}
+
+TEST(MrfEntry, ValidateSingleEndMissingQualityScores) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kAntisense,
+                          .target_start = 1221,
+                          .target_end = 1270,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "ACTCGAA",
+              .query_id = "1",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Header contains QualityScores column but "
+                                 "quality_scores is empty")));
+}
+
+TEST(MrfEntry, ValidateSingleEndMissingQueryId) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = false,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kAntisense,
+                          .target_start = 1221,
+                          .target_end = 1270,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "ACTCGAA",
+              .quality_scores = "IIIIIII",
+          },
+  };
+  EXPECT_THAT(
+      entry.Validate(header),
+      StatusIs(
+          absl::StatusCode::kInvalidArgument,
+          HasSubstr("Header contains QueryId column but query_id is empty")));
+}
+
+TEST(MrfEntry, ValidatePairedEndNoBlocks) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 601,
+                          .target_end = 630,
+                          .query_start = 1,
+                          .query_end = 30}},
+              .sequence = "ACTG",
+              .quality_scores = "IIII",
+              .query_id = "1",
+          },
+      .read2 =
+          {
+              .blocks = {},
+              .sequence = "GCTA",
+              .quality_scores = "JJJJ",
+              .query_id = "2",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Read must have one or more blocks")));
+}
+
+TEST(MrfEntry, ValidatePairedEndMissingTargetName) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 601,
+                          .target_end = 630,
+                          .query_start = 1,
+                          .query_end = 30}},
+              .sequence = "ACTG",
+              .quality_scores = "IIII",
+              .query_id = "1",
+          },
+      .read2 =
+          {
+              .blocks = {{.target_name = "",
+                          .strand = Strand::kSense,
+                          .target_start = 1401,
+                          .target_end = 1450,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "GCTA",
+              .quality_scores = "JJJJ",
+              .query_id = "2",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("missing target name")));
+}
+
+TEST(MrfEntry, ValidatePairedEndMissingSequence) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 601,
+                          .target_end = 630,
+                          .query_start = 1,
+                          .query_end = 30}},
+              .sequence = "ACTG",
+              .quality_scores = "IIII",
+              .query_id = "1",
+          },
+      .read2 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kSense,
+                          .target_start = 1401,
+                          .target_end = 1450,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .quality_scores = "JJJJ",
+              .query_id = "2",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Header contains Sequence column but "
+                                 "sequence is empty")));
+}
+
+TEST(MrfEntry, ValidatePairedEndMissingQualityScores) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 601,
+                          .target_end = 630,
+                          .query_start = 1,
+                          .query_end = 30}},
+              .sequence = "ACTG",
+              .quality_scores = "IIII",
+              .query_id = "1",
+          },
+      .read2 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kSense,
+                          .target_start = 1401,
+                          .target_end = 1450,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "GCTA",
+              .query_id = "2",
+          },
+  };
+  EXPECT_THAT(entry.Validate(header),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Header contains QualityScores column but "
+                                 "quality_scores is empty")));
+}
+
+TEST(MrfEntry, ValidatePairedEndMissingQueryId) {
+  MrfHeader header({MrfColumn::kAlignmentBlocks, MrfColumn::kSequence,
+                    MrfColumn::kQualityScores, MrfColumn::kQueryId});
+  MrfEntry entry = {
+      .is_paired_end = true,
+      .read1 =
+          {
+              .blocks = {{.target_name = "chr2",
+                          .strand = Strand::kSense,
+                          .target_start = 601,
+                          .target_end = 630,
+                          .query_start = 1,
+                          .query_end = 30}},
+              .sequence = "ACTG",
+              .quality_scores = "IIII",
+              .query_id = "1",
+          },
+      .read2 =
+          {
+              .blocks = {{.target_name = "chr4",
+                          .strand = Strand::kSense,
+                          .target_start = 1401,
+                          .target_end = 1450,
+                          .query_start = 1,
+                          .query_end = 50}},
+              .sequence = "GCTA",
+              .quality_scores = "JJJJ",
+          },
+  };
+  EXPECT_THAT(
+      entry.Validate(header),
+      StatusIs(
+          absl::StatusCode::kInvalidArgument,
+          HasSubstr("Header contains QueryId column but query_id is empty")));
 }
 
 }  // namespace
