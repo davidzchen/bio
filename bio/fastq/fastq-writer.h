@@ -16,9 +16,9 @@
 #define BIO_FASTQ_FASTQ_WRITER_H_
 
 #include "absl/base/nullability.h"
-#include "abxl/file/file.h"
 #include "bio/common/entry-writer-base.h"
 #include "bio/fastq/fastq.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
@@ -60,7 +60,7 @@ namespace bio {
 // ```
 class FastqWriter : public EntryWriterBase<FastqWriter, FastqSequence> {
  public:
-  explicit FastqWriter(absl::Nonnull<abxl::File*> file)
+  explicit FastqWriter(absl::Nonnull<gxl::File*> file)
       : EntryWriterBase(file) {}
 };
 

@@ -18,11 +18,11 @@
 #include <string>
 
 #include "absl/status/status_matchers.h"
-#include "abxl/file/file.h"
-#include "abxl/file/path.h"
 #include "bio/bedgraph/bedgraph.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "gxl/file/file.h"
+#include "gxl/file/path.h"
 
 namespace bio {
 namespace {
@@ -30,10 +30,10 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::abxl::file;
+namespace file = ::gxl::file;
 
 TEST(BedGraphWriter, Empty) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bedgraph");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bedgraph");
   std::unique_ptr<BedGraphWriter> writer =
       BedGraphWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
@@ -45,7 +45,7 @@ TEST(BedGraphWriter, Empty) {
 }
 
 TEST(BedGraphWriter, WriteSingleEntry) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bedgraph");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bedgraph");
   std::unique_ptr<BedGraphWriter> writer =
       BedGraphWriter::NewOrDie(output_path);
 
@@ -65,7 +65,7 @@ TEST(BedGraphWriter, WriteSingleEntry) {
 }
 
 TEST(BedGraphWriter, WriteMultipleEntries) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bed");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedGraphWriter> writer =
       BedGraphWriter::NewOrDie(output_path);
 
@@ -94,7 +94,7 @@ TEST(BedGraphWriter, WriteMultipleEntries) {
 }
 
 TEST(BedGraphWriter, WriteVector) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bed");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedGraphWriter> writer =
       BedGraphWriter::NewOrDie(output_path);
 

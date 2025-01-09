@@ -20,18 +20,18 @@
 #include "absl/base/nullability.h"
 #include "absl/status/status.h"
 #include "absl/status/status_matchers.h"
-#include "abxl/file/file.h"
 #include "gtest/gtest.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 namespace {
 
-namespace file = abxl::file;
+namespace file = gxl::file;
 using ::absl_testing::IsOk;
 
 class LineParserPeer : public LineParserBase {
  public:
-  explicit LineParserPeer(absl::Nonnull<abxl::File*> file)
+  explicit LineParserPeer(absl::Nonnull<gxl::File*> file)
       : LineParserBase(file) {}
 
   using LineParserBase::NextLine;
@@ -39,7 +39,7 @@ class LineParserPeer : public LineParserBase {
 };
 
 TEST(LineParserBase, NextLineEmptyFile) {
-  abxl::File* file;
+  gxl::File* file;
   absl::Status status =
       file::Open("bio/common/testdata/empty", "r", &file, file::Defaults());
   EXPECT_THAT(status, IsOk());
@@ -50,7 +50,7 @@ TEST(LineParserBase, NextLineEmptyFile) {
 }
 
 TEST(LineParserBase, NextLine) {
-  abxl::File* file;
+  gxl::File* file;
   absl::Status status =
       file::Open("bio/common/testdata/lines", "r", &file, file::Defaults());
   EXPECT_THAT(status, IsOk());
@@ -73,7 +73,7 @@ TEST(LineParserBase, NextLine) {
 }
 
 TEST(LineParserBase, PutBack) {
-  abxl::File* file;
+  gxl::File* file;
   absl::Status status =
       file::Open("bio/common/testdata/lines", "r", &file, file::Defaults());
   EXPECT_THAT(status, IsOk());

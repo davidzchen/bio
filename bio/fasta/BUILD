@@ -32,8 +32,8 @@ cc_library(
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:statusor",
         "@abseil-cpp//absl/strings",
-        "@abxl//abxl/file",
-        "@abxl//abxl/status:status_macros",
+        "@gxl//gxl/file",
+        "@gxl//gxl/status:status_macros",
     ],
 )
 
@@ -56,7 +56,7 @@ cc_library(
         ":fasta",
         "//bio/common:entry-writer-base",
         "@abseil-cpp//absl/base:nullability",
-        "@abxl//abxl/file",
+        "@gxl//gxl/file",
     ],
 )
 
@@ -67,9 +67,9 @@ cc_test(
         ":fasta",
         ":fasta-writer",
         "@abseil-cpp//absl/status:status_matchers",
-        "@abxl//abxl/file",
-        "@abxl//abxl/file:path",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@gxl//gxl/file",
+        "@gxl//gxl/file:path",
     ],
 )

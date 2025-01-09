@@ -16,9 +16,9 @@
 #define BIO_BEDGRAPH_BEDGRAPH_WriTER_H_
 
 #include "absl/base/nullability.h"
-#include "abxl/file/file.h"
 #include "bio/bedgraph/bedgraph.h"
 #include "bio/common/entry-writer-base.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
@@ -60,7 +60,7 @@ namespace bio {
 // ```
 class BedGraphWriter : public EntryWriterBase<BedGraphWriter, BedGraphEntry> {
  public:
-  explicit BedGraphWriter(absl::Nonnull<abxl::File*> file)
+  explicit BedGraphWriter(absl::Nonnull<gxl::File*> file)
       : EntryWriterBase(file) {}
 };
 

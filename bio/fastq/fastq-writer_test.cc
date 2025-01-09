@@ -18,10 +18,10 @@
 #include <string>
 
 #include "absl/status/status_matchers.h"
-#include "abxl/file/file.h"
-#include "abxl/file/path.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "gxl/file/file.h"
+#include "gxl/file/path.h"
 
 namespace bio {
 namespace {
@@ -29,10 +29,10 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::abxl::file;
+namespace file = ::gxl::file;
 
 TEST(FastqWriter, Empty) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fasta");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastqWriter> writer = FastqWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
 
@@ -43,7 +43,7 @@ TEST(FastqWriter, Empty) {
 }
 
 TEST(FastqWriter, WriteSingleSequence) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fastq");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fastq");
   std::unique_ptr<FastqWriter> writer = FastqWriter::NewOrDie(output_path);
 
   EXPECT_THAT(
@@ -69,7 +69,7 @@ GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
 }
 
 TEST(FastqWriter, WriteMultipleSequences) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fastq");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fastq");
   std::unique_ptr<FastqWriter> writer = FastqWriter::NewOrDie(output_path);
 
   EXPECT_THAT(
@@ -107,7 +107,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII6IBIIIIIIIIIIIIIIIIIIIIIIIGII>IIIII-I)8I
 }
 
 TEST(FastqWriter, WriteVector) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fastq");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fastq");
   std::unique_ptr<FastqWriter> writer = FastqWriter::NewOrDie(output_path);
 
   EXPECT_THAT(

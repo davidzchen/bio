@@ -19,9 +19,9 @@
 #include <vector>
 
 #include "absl/base/nullability.h"
-#include "abxl/file/file.h"
 #include "bio/common/entry-writer-base.h"
 #include "bio/fasta/fasta.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
@@ -64,7 +64,7 @@ namespace bio {
 // ```
 class FastaWriter : public EntryWriterBase<FastaWriter, FastaSequence> {
  public:
-  explicit FastaWriter(absl::Nonnull<abxl::File*> file)
+  explicit FastaWriter(absl::Nonnull<gxl::File*> file)
       : EntryWriterBase(file) {}
 };
 

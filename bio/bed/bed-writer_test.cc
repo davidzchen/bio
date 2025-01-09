@@ -18,11 +18,11 @@
 #include <string>
 
 #include "absl/status/status_matchers.h"
-#include "abxl/file/file.h"
-#include "abxl/file/path.h"
 #include "bio/common/sequence.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "gxl/file/file.h"
+#include "gxl/file/path.h"
 
 namespace bio {
 namespace {
@@ -30,10 +30,10 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::abxl::file;
+namespace file = ::gxl::file;
 
 TEST(BedWriter, Empty) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bed");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedWriter> writer = BedWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
 
@@ -44,7 +44,7 @@ TEST(BedWriter, Empty) {
 }
 
 TEST(BedWriter, WriteSingleEntry) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bed");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedWriter> writer = BedWriter::NewOrDie(output_path);
 
   EXPECT_THAT(writer->Write({
@@ -72,7 +72,7 @@ TEST(BedWriter, WriteSingleEntry) {
 }
 
 TEST(BedWriter, WriteMultipleEntries) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bed");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedWriter> writer = BedWriter::NewOrDie(output_path);
 
   EXPECT_THAT(writer->Write({
@@ -115,7 +115,7 @@ TEST(BedWriter, WriteMultipleEntries) {
 }
 
 TEST(BedWriter, WriteVector) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.bed");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedWriter> writer = BedWriter::NewOrDie(output_path);
 
   EXPECT_THAT(writer->Write({

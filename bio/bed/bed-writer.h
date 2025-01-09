@@ -19,9 +19,9 @@
 #include <vector>
 
 #include "absl/base/nullability.h"
-#include "abxl/file/file.h"
 #include "bio/bed/bed.h"
 #include "bio/common/entry-writer-base.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
@@ -63,7 +63,7 @@ namespace bio {
 // ```
 class BedWriter : public EntryWriterBase<BedWriter, BedEntry> {
  public:
-  explicit BedWriter(absl::Nonnull<abxl::File*> file) : EntryWriterBase(file) {}
+  explicit BedWriter(absl::Nonnull<gxl::File*> file) : EntryWriterBase(file) {}
 };
 
 }  // namespace bio

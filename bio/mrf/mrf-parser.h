@@ -23,9 +23,9 @@
 #include "absl/base/nullability.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
-#include "abxl/file/file.h"
 #include "bio/common/line-parser-base.h"
 #include "bio/mrf/mrf.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
@@ -68,7 +68,7 @@ namespace bio {
 // ```
 class MrfParser : public LineParserBase {
  public:
-  explicit MrfParser(absl::Nonnull<abxl::File*> file)
+  explicit MrfParser(absl::Nonnull<gxl::File*> file)
       : LineParserBase(file), started_(false), line_number_(0) {}
 
   ~MrfParser() = default;

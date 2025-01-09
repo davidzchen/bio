@@ -30,15 +30,15 @@
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
-#include "abxl/file/file.h"
-#include "abxl/status/status_macros.h"
 #include "bio/bed/bed.h"
 #include "bio/common/sequence.h"
+#include "gxl/file/file.h"
+#include "gxl/status/status_macros.h"
 
 namespace bio {
 namespace {
 
-namespace file = abxl::file;
+namespace file = gxl::file;
 
 // The minimum number of BED fields.
 static constexpr int kMinBedFields = 3;
@@ -55,7 +55,7 @@ static constexpr char kStrandAntisense[] = "-";
 
 auto BedParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<BedParser>> {
-  abxl::File* file;
+  gxl::File* file;
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<BedParser>(file);
 }

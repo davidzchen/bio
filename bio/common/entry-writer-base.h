@@ -28,8 +28,8 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/string_view.h"
-#include "abxl/file/file.h"
-#include "abxl/status/status_macros.h"
+#include "gxl/file/file.h"
+#include "gxl/status/status_macros.h"
 
 namespace bio {
 
@@ -37,15 +37,15 @@ namespace bio {
 template <typename Writer, typename Entry>
 class EntryWriterBase {
  public:
-  explicit EntryWriterBase(absl::Nonnull<abxl::File*> file) : file_(file) {}
+  explicit EntryWriterBase(absl::Nonnull<gxl::File*> file) : file_(file) {}
 
   ~EntryWriterBase() = default;
 
   // Constructs a new writer from the specified path.
   static auto New(absl::string_view path)
       -> absl::StatusOr<std::unique_ptr<Writer>> {
-    abxl::File* file;
-    RETURN_IF_ERROR(abxl::file::Open(path, "w", &file, abxl::file::Defaults()));
+    gxl::File* file;
+    RETURN_IF_ERROR(gxl::file::Open(path, "w", &file, gxl::file::Defaults()));
     return std::make_unique<Writer>(file);
   }
 
@@ -77,10 +77,10 @@ class EntryWriterBase {
   }
 
   // Closes the file.
-  auto Close() -> absl::Status { return file_->Close(abxl::file::Defaults()); }
+  auto Close() -> absl::Status { return file_->Close(gxl::file::Defaults()); }
 
  private:
-  abxl::File* file_;
+  gxl::File* file_;
 };
 
 }  // namespace bio

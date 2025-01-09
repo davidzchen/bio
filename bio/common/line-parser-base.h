@@ -20,8 +20,8 @@
 #include <string>
 
 #include "absl/base/nullability.h"
-#include "abxl/file/file.h"
-#include "abxl/file/filelineiter.h"
+#include "gxl/file/file.h"
+#include "gxl/file/filelineiter.h"
 
 namespace bio {
 
@@ -30,9 +30,9 @@ namespace bio {
 // point.
 class LineParserBase {
  public:
-  explicit LineParserBase(absl::Nonnull<abxl::File*> file)
+  explicit LineParserBase(absl::Nonnull<gxl::File*> file)
       : file_(file),
-        file_lines_(abxl::FileLines(file_->filename(), file_)),
+        file_lines_(gxl::FileLines(file_->filename(), file_)),
         it_(file_lines_.begin()) {}
 
   // Returns whether the end of file has been reached.
@@ -58,9 +58,9 @@ class LineParserBase {
   // Saves the line in the saved_lines_ queue.
   auto PutBack(std::string line) -> void { saved_lines_.push(line); }
 
-  abxl::File* file_;
-  abxl::FileLines file_lines_;
-  abxl::FileLineIterator it_;
+  gxl::File* file_;
+  gxl::FileLines file_lines_;
+  gxl::FileLineIterator it_;
   std::queue<std::string> saved_lines_;
 };
 

@@ -9,11 +9,11 @@ bazel_dep(name = "google_benchmark", version = "1.8.5")
 bazel_dep(name = "protobuf", version = "29.2")
 bazel_dep(name = "re2", version = "2024-07-02.bcr.1")
 
-abxl_repository = use_extension(
-    "//third_party/abxl:abxl.bzl",
-    "abxl_repository",
+gxl_repository = use_extension(
+    "//third_party/gxl:gxl.bzl",
+    "gxl_repository",
 )
-use_repo(abxl_repository, "abxl")
+use_repo(gxl_repository, "gxl")
 
 primrose_repository = use_extension(
     "//third_party/primrose:primrose.bzl",

@@ -22,15 +22,15 @@
 #include "absl/base/nullability.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
-#include "abxl/file/file.h"
 #include "bio/bedgraph/bedgraph.h"
 #include "bio/common/line-parser-base.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
 class BedGraphParser : public LineParserBase {
  public:
-  explicit BedGraphParser(absl::Nonnull<abxl::File*> file)
+  explicit BedGraphParser(absl::Nonnull<gxl::File*> file)
       : LineParserBase(file), line_number_(0) {}
 
   ~BedGraphParser() = default;

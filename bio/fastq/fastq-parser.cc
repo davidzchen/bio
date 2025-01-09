@@ -27,15 +27,15 @@
 #include "absl/strings/str_format.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/strip.h"
-#include "abxl/file/file.h"
-#include "abxl/status/status_macros.h"
 #include "bio/common/strings.h"
 #include "bio/fastq/fastq.h"
+#include "gxl/file/file.h"
+#include "gxl/status/status_macros.h"
 
 namespace bio {
 namespace {
 
-namespace file = abxl::file;
+namespace file = gxl::file;
 
 static constexpr char kIdentifierPrefix[] = "@";
 static constexpr char kQualityIdPrefix[] = "+";
@@ -44,7 +44,7 @@ static constexpr char kQualityIdPrefix[] = "+";
 
 auto FastqParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<FastqParser>> {
-  abxl::File* file;
+  gxl::File* file;
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<FastqParser>(file);
 }

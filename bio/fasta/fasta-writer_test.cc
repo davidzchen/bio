@@ -18,9 +18,9 @@
 #include <string>
 
 #include "absl/status/status_matchers.h"
-#include "abxl/file/file.h"
-#include "abxl/file/path.h"
 #include "gtest/gtest.h"
+#include "gxl/file/file.h"
+#include "gxl/file/path.h"
 
 namespace bio {
 namespace {
@@ -28,10 +28,10 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::abxl::file;
+namespace file = ::gxl::file;
 
 TEST(FastaWriter, Empty) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fasta");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastaWriter> writer = FastaWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
 
@@ -42,7 +42,7 @@ TEST(FastaWriter, Empty) {
 }
 
 TEST(FastaWriter, WriteSingleSequence) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fasta");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastaWriter> writer = FastaWriter::NewOrDie(output_path);
   EXPECT_THAT(
       writer->Write({
@@ -68,7 +68,7 @@ EVDEMIREADIDGDGQVNYEEFVQMMTAK*
 }
 
 TEST(FastaWriter, WriteMultipleSequences) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fasta");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastaWriter> writer = FastaWriter::NewOrDie(output_path);
   EXPECT_THAT(
       writer->Write(
@@ -105,7 +105,7 @@ ATIGENLVVRRFATLKAGANGVVNGYIHTNGRVGVVIAAACDSAEVASKSRDLLRQICMH
 }
 
 TEST(FastaWriter, WriteMultipleSequencesArray) {
-  const std::string output_path = abxl::JoinPath(TempDir(), "out.fasta");
+  const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastaWriter> writer = FastaWriter::NewOrDie(output_path);
   EXPECT_THAT(
       writer->Write({

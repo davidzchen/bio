@@ -30,15 +30,15 @@
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/strip.h"
-#include "abxl/file/file.h"
-#include "abxl/status/status_macros.h"
 #include "bio/common/sequence.h"
 #include "bio/mrf/mrf.h"
+#include "gxl/file/file.h"
+#include "gxl/status/status_macros.h"
 
 namespace bio {
 namespace {
 
-namespace file = abxl::file;
+namespace file = gxl::file;
 
 static constexpr char kCommentMarker[] = "#";
 
@@ -52,7 +52,7 @@ static constexpr char kStrandAntisense[] = "-";
 
 auto MrfParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<MrfParser>> {
-  abxl::File* file;
+  gxl::File* file;
   RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
   return std::make_unique<MrfParser>(file);
 }

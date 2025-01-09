@@ -23,9 +23,9 @@
 #include "absl/base/nullability.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
-#include "abxl/file/file.h"
 #include "bio/common/line-parser-base.h"
 #include "bio/fasta/fasta.h"
+#include "gxl/file/file.h"
 
 namespace bio {
 
@@ -69,8 +69,7 @@ namespace bio {
 class FastaParser : public LineParserBase {
  public:
   // N.B. `file` is automatically closed by FileLines.
-  explicit FastaParser(absl::Nonnull<abxl::File*> file)
-      : LineParserBase(file) {}
+  explicit FastaParser(absl::Nonnull<gxl::File*> file) : LineParserBase(file) {}
 
   ~FastaParser() = default;
 
