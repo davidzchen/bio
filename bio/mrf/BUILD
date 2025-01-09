@@ -62,3 +62,35 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "mrf-writer",
+    srcs = ["mrf-writer.cc"],
+    hdrs = ["mrf-writer.h"],
+    deps = [
+        ":mrf",
+        "//bio/common:sequence",
+        "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@gxl//gxl/file",
+        "@gxl//gxl/status:status_macros",
+    ],
+)
+
+cc_test(
+    name = "mrf-writer_test",
+    srcs = ["mrf-writer_test.cc"],
+    deps = [
+        ":mrf",
+        ":mrf-writer",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "@gxl//gxl/file",
+        "@gxl//gxl/file:path",
+    ],
+)
