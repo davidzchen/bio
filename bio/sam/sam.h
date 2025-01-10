@@ -1,0 +1,66 @@
+#ifndef BIO_SAM_SAM_H_
+#define BIO_SAM_SAM_H_
+
+#include <cstdint>
+#include <cstdlib>
+#include <string>
+
+namespace bio {
+
+// Bitwise flags for FLAGS field in SAM entry
+// N.B.:
+//  1) Flag 0x02, 0x08, 0x20, 0x40, 0x80 are only meaningful when 0x01 is set
+//  2) If in a read pair the information on which read is the first in the pair
+//     is lost in upstream analysis, flag 0x01 should be present and 0x40 and
+//     0x80 are both zero
+#define SAM_READ_PAIRED 0x0001     // Read is paired in sequencing
+#define SAM_PAIR_MAPPED 0x0002     // Read is mapped in proper pair
+#define SAM_QUERY_UNMAPPED 0x0004  // Query sequence is unmapped
+#define SAM_MATE_UNMAPPED 0x0008   // Mate is unmapped
+#define SAM_QUERY_STRAND 0x0010    // Strand of query (0 forward; 1 reverse)
+#define SAM_MATE_STRAND 0x0020     // Strand of mate (0 forward; 1 reverse)
+#define SAM_FIRST 0x0040           // Read is first read in a pair
+#define SAM_SECOND 0x0080          // Read is second read in a pair
+#define SAM_NOT_PRIMARY 0x0100     // Alignment is not primary
+#define SAM_FAILS_CHECKS 0x0200    // Read fails platform/vendor checks
+#define SAM_DUPLICATE 0x0400       // Read is PCR or optical duplicate
+
+enum class CigarType {
+  kAlignmentMatch,    // M: Alignment match
+  kInsertion,         // I: Insertion into the reference
+  kDeletion,          // D: Deletion from the reference
+  kSkippedRegion,     // N: Skipped region from the reference
+  kSoftClipping,      // S: Soft clipping
+  kHardClipping,      // H: Hard clipping
+  kPadding,           // P: Padding
+  kSequenceMatch,     // =: Sequence match
+  kSequenceMismatch,  // X: Sequence mismatch
+  kInvalid
+};
+
+/// @struct CigarOperation
+/// @brief Structure representing a single CIGAR operation
+struct CigarOperation {
+  CigarType type;
+  size_t length;
+};
+
+// Represents a SAM entry.
+struct SamEntry {
+  std::string qname;  // Query name
+  uint16_t flags;     // Bitwise FLAGS field
+  std::string rname;  // Reference sequence name
+  uint32_t pos;       // 1-based leftmost position/coordinate of clipped seq.
+  uint8_t mapq;       // Mapping quality
+  std::string cigar;  // Extended CIGAR string
+  std::string mrnm;   // Mate reference sequence name ("=" if same as rname)
+  uint32_t mpos;      // 1-based leftmost mate position of clipped sequence
+  int32_t isize;      // Inferred insert size
+  std::string seq;    // Query sequence
+  std::string qual;   // Query quality string
+  std::string tags;   // Optional tags (actually list, but as string for now)
+};
+
+}  // namespace bio
+
+#endif  // BIO_SAM_SAM_H_
