@@ -123,17 +123,80 @@ TEST(MrfHeader, String) {
   }
 }
 
-TEST(MrfRead, LengthNoBlocks) {
-  MrfRead read;
-  EXPECT_EQ(read.Length(), 0);
+TEST(MrfBlock, String) {
+  MrfBlock empty = {};
+  EXPECT_EQ(empty.string(), ":+:0:0:0:0");
+
+  MrfBlock valid_sense = {
+      .target_name = "chr4",
+      .strand = Strand::kSense,
+      .target_start = 1000,
+      .target_end = 2000,
+      .query_start = 10,
+      .query_end = 20,
+  };
+  EXPECT_EQ(valid_sense.string(), "chr4:+:1000:2000:10:20");
+
+  MrfBlock valid_antisense = {
+      .target_name = "chr4",
+      .strand = Strand::kAntisense,
+      .target_start = 1000,
+      .target_end = 2000,
+      .query_start = 10,
+      .query_end = 20,
+  };
+  EXPECT_EQ(valid_antisense.string(), "chr4:-:1000:2000:10:20");
 }
 
 TEST(MrfRead, Length) {
-  MrfRead read = {.blocks = {
-                      {.target_start = 0, .target_end = 1000},
-                      {.target_start = 2000, .target_end = 3000},
-                  }};
-  EXPECT_EQ(read.Length(), 2002);
+  MrfRead empty;
+  EXPECT_EQ(empty.Length(), 0);
+
+  MrfRead valid = {.blocks = {
+                       {.target_start = 0, .target_end = 1000},
+                       {.target_start = 2000, .target_end = 3000},
+                   }};
+  EXPECT_EQ(valid.Length(), 2002);
+}
+
+TEST(MrfRead, AlignmentBlocksStrSingleBlock) {
+  MrfRead read = {
+      .blocks = {{.target_name = "chr4",
+                  .strand = Strand::kAntisense,
+                  .target_start = 1221,
+                  .target_end = 1270,
+                  .query_start = 1,
+                  .query_end = 50}},
+
+  };
+  EXPECT_EQ(read.AlignmentBlocksStr(), "chr4:-:1221:1270:1:50");
+}
+
+TEST(MrfRead, AlignmentBlocksStrMultipleBlocks) {
+  MrfRead read = {
+      .blocks = {{.target_name = "chr4",
+                  .strand = Strand::kAntisense,
+                  .target_start = 1221,
+                  .target_end = 1270,
+                  .query_start = 1,
+                  .query_end = 50},
+                 {.target_name = "chr4",
+                  .strand = Strand::kSense,
+                  .target_start = 2221,
+                  .target_end = 2270,
+                  .query_start = 1,
+                  .query_end = 50},
+                 {.target_name = "chr4",
+                  .strand = Strand::kAntisense,
+                  .target_start = 3221,
+                  .target_end = 3270,
+                  .query_start = 1,
+                  .query_end = 50}},
+
+  };
+  EXPECT_EQ(
+      read.AlignmentBlocksStr(),
+      "chr4:-:1221:1270:1:50,chr4:+:2221:2270:1:50,chr4:-:3221:3270:1:50");
 }
 
 TEST(MrfEntry, ValidateSingleEndRequriedField) {

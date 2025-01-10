@@ -119,12 +119,31 @@ auto MrfHeader::string() const -> std::string {
   return absl::StrJoin(column_names, "\t");
 }
 
-auto MrfRead::Length() -> size_t {
+auto MrfBlock::string() const -> std::string {
+  std::vector<std::string> parts;
+  parts.push_back(target_name);
+  parts.push_back(strand == Strand::kSense ? "+" : "-");
+  parts.push_back(absl::StrCat(target_start));
+  parts.push_back(absl::StrCat(target_end));
+  parts.push_back(absl::StrCat(query_start));
+  parts.push_back(absl::StrCat(query_end));
+  return absl::StrJoin(parts, ":");
+}
+
+auto MrfRead::Length() const -> size_t {
   int length = 0;
   for (const auto& block : blocks) {
     length += (block.target_end - block.target_start + 1);
   }
   return length;
+}
+
+auto MrfRead::AlignmentBlocksStr() const -> std::string {
+  std::vector<std::string> block_strs;
+  for (const auto& block : blocks) {
+    block_strs.push_back(block.string());
+  }
+  return absl::StrJoin(block_strs, ",");
 }
 
 namespace {
@@ -160,7 +179,7 @@ auto ValidateRead(const MrfRead& read, const MrfHeader& header)
 
 }  // namespace
 
-auto MrfEntry::Validate(const MrfHeader& header) -> absl::Status {
+auto MrfEntry::Validate(const MrfHeader& header) const -> absl::Status {
   RETURN_IF_ERROR(ValidateRead(read1, header));
   if (is_paired_end) {
     RETURN_IF_ERROR(ValidateRead(read2, header));

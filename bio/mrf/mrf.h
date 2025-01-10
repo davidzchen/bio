@@ -82,6 +82,9 @@ struct MrfBlock {
   uint64_t target_end;
   uint64_t query_start;
   uint64_t query_end;
+
+  // Serializes this block into the MRF string representation.
+  auto string() const -> std::string;
 };
 
 // Represents an MRF read.
@@ -99,7 +102,10 @@ struct MrfRead {
   std::string query_id;
 
   // Computes the read length of this read.
-  auto Length() -> size_t;
+  auto Length() const -> size_t;
+
+  // Marshals the blocks into the MRF string representation.
+  auto AlignmentBlocksStr() const -> std::string;
 };
 
 // Represents an entry in an MRF file.
@@ -115,7 +121,7 @@ struct MrfEntry {
   MrfRead read2;
 
   // Validates the entry against the header.
-  auto Validate(const MrfHeader& header) -> absl::Status;
+  auto Validate(const MrfHeader& header) const -> absl::Status;
 };
 
 }  // namespace bio
