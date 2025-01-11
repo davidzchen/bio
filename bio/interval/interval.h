@@ -20,9 +20,6 @@ struct SubInterval {
 
 // Represents an Interval entry.
 struct Interval {
-  // TODO: Figure out what this is.
-  int source;
-
   // The name of the interval.
   std::string name;
 
@@ -40,6 +37,12 @@ struct Interval {
 
   // Vector of sub-intervals.
   std::vector<SubInterval> sub_intervals;
+
+  // An integer value to distinguish the source of the interval. This is useful
+  // for when there are intervals from multiple files. Intervals added to the
+  // IntervalFinder using AddIntervals should not set this field as it will be
+  // overwritten by IntervalFinder.
+  uint64_t source;
 };
 
 }  // namespace bio
