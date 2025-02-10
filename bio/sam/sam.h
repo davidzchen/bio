@@ -1,9 +1,25 @@
+// Copyright 2017 The Bio Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef BIO_SAM_SAM_H_
 #define BIO_SAM_SAM_H_
 
 #include <cstdint>
 #include <cstdlib>
+#include <optional>
 #include <string>
+#include <vector>
 
 namespace bio {
 
@@ -24,7 +40,25 @@ namespace bio {
 #define SAM_NOT_PRIMARY 0x0100     // Alignment is not primary
 #define SAM_FAILS_CHECKS 0x0200    // Read fails platform/vendor checks
 #define SAM_DUPLICATE 0x0400       // Read is PCR or optical duplicate
+#define SAM_SUPPLEMENTARY 0x800    // Supplementary alignment
 
+// Represents a SAM entry.
+struct SamEntry {
+  std::string qname;  // Query name
+  uint16_t flags;     // Bitwise FLAGS field
+  std::string rname;  // Reference sequence name
+  uint32_t pos;       // 1-based leftmost position/coordinate of clipped seq.
+  uint8_t mapq;       // Mapping quality
+  std::string cigar;  // Extended CIGAR string
+  std::string rnext;  // Mate reference sequence name ("=" if same as rname)
+  uint32_t pnext;     // 1-based leftmost mate position of clipped sequence
+  int32_t tlen;       // Observed Template Length
+  std::optional<std::string> seq;   // Query sequence
+  std::optional<std::string> qual;  // Query quality string
+  std::vector<std::string> tags;    // Optional tags
+};
+
+// Represents a CIGAR operation type.
 enum class CigarType {
   kAlignmentMatch,    // M: Alignment match
   kInsertion,         // I: Insertion into the reference
@@ -38,27 +72,10 @@ enum class CigarType {
   kInvalid
 };
 
-/// @struct CigarOperation
-/// @brief Structure representing a single CIGAR operation
+// Represents a single CIGAR operation.
 struct CigarOperation {
   CigarType type;
   size_t length;
-};
-
-// Represents a SAM entry.
-struct SamEntry {
-  std::string qname;  // Query name
-  uint16_t flags;     // Bitwise FLAGS field
-  std::string rname;  // Reference sequence name
-  uint32_t pos;       // 1-based leftmost position/coordinate of clipped seq.
-  uint8_t mapq;       // Mapping quality
-  std::string cigar;  // Extended CIGAR string
-  std::string mrnm;   // Mate reference sequence name ("=" if same as rname)
-  uint32_t mpos;      // 1-based leftmost mate position of clipped sequence
-  int32_t isize;      // Inferred insert size
-  std::string seq;    // Query sequence
-  std::string qual;   // Query quality string
-  std::string tags;   // Optional tags (actually list, but as string for now)
 };
 
 }  // namespace bio

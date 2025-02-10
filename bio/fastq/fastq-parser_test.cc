@@ -38,6 +38,7 @@ TEST(FastqParser, NextSequenceEmpty) {
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
       parser->NextSequence(/*truncate_name=*/false);
+  EXPECT_THAT(sequence.status(), IsOk());
   EXPECT_EQ(*sequence, nullptr);
   EXPECT_TRUE(parser->eof());
 }

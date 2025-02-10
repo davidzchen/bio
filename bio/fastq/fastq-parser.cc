@@ -58,7 +58,7 @@ auto FastqParser::NewOrDie(absl::string_view path)
 
 auto FastqParser::NextSequence(bool truncate_name)
     -> absl::StatusOr<std::unique_ptr<FastqSequence>> {
-  if (it_ == file_lines_.end()) {
+  if (eof()) {
     return nullptr;
   }
 
