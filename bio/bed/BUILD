@@ -29,7 +29,6 @@ cc_library(
     deps = [
         ":bed",
         "//bio/common:line-parser-base",
-        "//bio/common:sequence",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/log:check",
         "@abseil-cpp//absl/status",

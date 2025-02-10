@@ -31,7 +31,6 @@
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "bio/bed/bed.h"
-#include "bio/common/sequence.h"
 #include "gxl/file/file.h"
 #include "gxl/status/status_macros.h"
 
@@ -47,9 +46,6 @@ static constexpr int kMinBedFields = 3;
 static constexpr char kCommentPrefix[] = "#";
 static constexpr char kTrackPrefix[] = "track";
 static constexpr char kBrowserPrefix[] = "browser";
-
-static constexpr char kStrandSense[] = "+";
-static constexpr char kStrandAntisense[] = "-";
 
 }  // namespace
 
@@ -67,38 +63,6 @@ auto BedParser::NewOrDie(absl::string_view path) -> std::unique_ptr<BedParser> {
 }
 
 namespace {
-
-auto ParseUInt64(size_t line_number, absl::string_view str,
-                 absl::string_view field) -> absl::StatusOr<uint64_t> {
-  uint64_t value = 0;
-  if (!absl::SimpleAtoi(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-auto ParseScore(size_t line_number, absl::string_view str)
-    -> absl::StatusOr<uint32_t> {
-  uint32_t score = 0;
-  if (!absl::SimpleAtoi(str, &score)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid score format: '%s'", line_number, str));
-  }
-  return score;
-}
-
-auto ParseStrand(size_t line_number, absl::string_view str)
-    -> absl::StatusOr<Strand> {
-  if (str == kStrandSense) {
-    return Strand::kSense;
-  } else if (str == kStrandAntisense) {
-    return Strand::kAntisense;
-  } else {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid strand format: '%s'", line_number, str));
-  }
-}
 
 auto ParseSubBlocks(size_t line_number, uint64_t block_count,
                     absl::string_view block_sizes,
@@ -177,10 +141,10 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
 
     // Parse required fields.
     entry->chromosome = parts[0];
-    ASSIGN_OR_RETURN(entry->start,
-                     ParseUInt64(line_number_, parts[1], "feature start"));
+    ASSIGN_OR_RETURN(entry->start, ParseInt<uint64_t>(line_number_, parts[1],
+                                                      "feature start"));
     ASSIGN_OR_RETURN(entry->end,
-                     ParseUInt64(line_number_, parts[2], "feature end"));
+                     ParseInt<uint64_t>(line_number_, parts[2], "feature end"));
 
     // Parse optional fields.
     if (parts.size() < 4) {
@@ -191,7 +155,8 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
     if (parts.size() < 5) {
       break;
     }
-    ASSIGN_OR_RETURN(entry->score, ParseScore(line_number_, parts[4]));
+    ASSIGN_OR_RETURN(entry->score,
+                     ParseInt<uint32_t>(line_number_, parts[4], "score"));
 
     if (parts.size() < 6) {
       break;
@@ -202,13 +167,13 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
       break;
     }
     ASSIGN_OR_RETURN(entry->thick_start,
-                     ParseUInt64(line_number_, parts[6], "thick start"));
+                     ParseInt<uint64_t>(line_number_, parts[6], "thick start"));
 
     if (parts.size() < 8) {
       break;
     }
     ASSIGN_OR_RETURN(entry->thick_end,
-                     ParseUInt64(line_number_, parts[7], "thick end"));
+                     ParseInt<uint64_t>(line_number_, parts[7], "thick end"));
 
     if (parts.size() < 9) {
       break;
@@ -228,7 +193,7 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
           line_number_, parts.size()));
     }
     ASSIGN_OR_RETURN(const uint64_t block_count,
-                     ParseUInt64(line_number_, parts[9], "block size"));
+                     ParseInt<uint64_t>(line_number_, parts[9], "block size"));
     const std::string block_sizes = parts[10];
     const std::string block_starts = parts[11];
     ASSIGN_OR_RETURN(

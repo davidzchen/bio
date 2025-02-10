@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "absl/base/nullability.h"
+#include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "bio/common/line-parser-base.h"
@@ -89,6 +90,12 @@ class MrfParser : public LineParserBase {
   auto Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>>;
 
  private:
+  auto ParseAlignmentBlocks(size_t line_number, MrfEntry* entry,
+                            absl::string_view column) -> absl::Status;
+
+  auto ProcessBlocks(size_t line_number, MrfRead* read, absl::string_view token)
+      -> absl::Status;
+
   std::vector<std::string> comments_;
   std::vector<MrfColumn> columns_;
   bool started_;

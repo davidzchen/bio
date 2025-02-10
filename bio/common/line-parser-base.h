@@ -15,11 +15,21 @@
 #ifndef BIO_COMMON_LINE_PARSER_BASE_H_
 #define BIO_COMMON_LINE_PARSER_BASE_H_
 
+#include <cstdint>
+#include <cstdlib>
+#include <exception>
+#include <limits>
 #include <optional>
 #include <queue>
 #include <string>
 
 #include "absl/base/nullability.h"
+#include "absl/status/status.h"
+#include "absl/status/statusor.h"
+#include "absl/strings/numbers.h"
+#include "absl/strings/str_format.h"
+#include "absl/strings/string_view.h"
+#include "bio/common/sequence.h"
 #include "gxl/file/file.h"
 #include "gxl/file/filelineiter.h"
 
@@ -57,6 +67,69 @@ class LineParserBase {
 
   // Saves the line in the saved_lines_ queue.
   auto PutBack(std::string line) -> void { saved_lines_.push(line); }
+
+  // Parses an integer value from the provided str for the specified field.
+  template <typename IntType>
+  auto ParseInt(size_t line_number, absl::string_view str,
+                absl::string_view field) -> absl::StatusOr<IntType> {
+    IntType value = 0;
+    if (!absl::SimpleAtoi(str, &value)) {
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Invalid %s format: '%s'", line_number, field, str));
+    }
+    return value;
+  }
+
+  // Parses a uint8_t value from the provided str for the specified field.
+  auto ParseUInt8(size_t line_number, absl::string_view str,
+                  absl::string_view field) -> absl::StatusOr<uint8_t> {
+    try {
+      size_t index = 0;
+      int value = std::stoi(std::string(str), &index, 10);
+      if (index != str.size()) {
+        return absl::OutOfRangeError(
+            absl::StrFormat("Line %d: value is out of range for a uint8_t: %s",
+                            line_number, field));
+      }
+
+      if (value < 0 || value > std::numeric_limits<uint8_t>::max()) {
+        return absl::OutOfRangeError(absl::StrFormat(
+            "Line %d: value is out of range for a uint8_t", line_number));
+      }
+
+      return static_cast<uint8_t>(value);
+    } catch (const std::exception& e) {
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Failed to parse '%s': %s", line_number, field, e.what()));
+    }
+    return absl::InternalError("Should not be reached");
+  }
+
+  // Parses a double value from the provided str for the specified field.
+  auto ParseDouble(size_t line_number, absl::string_view str,
+                   absl::string_view field) -> absl::StatusOr<double> {
+    double value = 0;
+    if (!absl::SimpleAtod(str, &value)) {
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Invalid %s format: '%s'", line_number, field, str));
+    }
+    return value;
+  }
+
+  // Parses the strand from the provided str.
+  auto ParseStrand(size_t line_number, absl::string_view str)
+      -> absl::StatusOr<Strand> {
+    static constexpr char kStrandSense[] = "+";
+    static constexpr char kStrandAntisense[] = "-";
+    if (str == kStrandSense) {
+      return Strand::kSense;
+    } else if (str == kStrandAntisense) {
+      return Strand::kAntisense;
+    } else {
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Invalid strand format: '%s'", line_number, str));
+    }
+  }
 
   gxl::File* file_;
   gxl::FileLines file_lines_;

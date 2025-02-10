@@ -30,7 +30,6 @@
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/strip.h"
-#include "bio/common/sequence.h"
 #include "bio/mrf/mrf.h"
 #include "gxl/file/file.h"
 #include "gxl/status/status_macros.h"
@@ -44,9 +43,6 @@ static constexpr char kCommentMarker[] = "#";
 
 // Number of fields in an alignment block.
 static constexpr int kNumBlockFields = 6;
-
-static constexpr char kStrandSense[] = "+";
-static constexpr char kStrandAntisense[] = "-";
 
 }  // namespace
 
@@ -103,75 +99,6 @@ auto IsPairedEnd(absl::string_view line) -> bool {
   return absl::StrContainsIgnoreCase(line, "|");
 }
 
-// TODO(dzc): Factor this and the same function from bed-parser out into a
-// common library.
-auto ParseUInt64(size_t line_number, absl::string_view str,
-                 absl::string_view field) -> absl::StatusOr<uint64_t> {
-  uint64_t value = 0;
-  if (!absl::SimpleAtoi(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-// TODO(dzc): Factor this and the same function from bed-parser out into a
-// common library.
-auto ParseStrand(size_t line_number, absl::string_view str)
-    -> absl::StatusOr<Strand> {
-  if (str == kStrandSense) {
-    return Strand::kSense;
-  } else if (str == kStrandAntisense) {
-    return Strand::kAntisense;
-  } else {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid strand format: '%s'", line_number, str));
-  }
-}
-
-auto ProcessBlocks(size_t line_number, MrfRead* read, absl::string_view token)
-    -> absl::Status {
-  std::vector<std::string> blocks = absl::StrSplit(token, ",");
-  for (const auto& block : blocks) {
-    std::vector<std::string> fields = absl::StrSplit(block, ":");
-    if (fields.size() != kNumBlockFields) {
-      return absl::InvalidArgumentError(
-          absl::StrFormat("Line %d: Invalid number of fields for block: '%s'",
-                          line_number, block));
-    }
-    MrfBlock mrf_block;
-    mrf_block.target_name = fields[0];
-    ASSIGN_OR_RETURN(mrf_block.strand, ParseStrand(line_number, fields[1]));
-    ASSIGN_OR_RETURN(mrf_block.target_start,
-                     ParseUInt64(line_number, fields[2], "target start"));
-    ASSIGN_OR_RETURN(mrf_block.target_end,
-                     ParseUInt64(line_number, fields[3], "target end"));
-    ASSIGN_OR_RETURN(mrf_block.query_start,
-                     ParseUInt64(line_number, fields[4], "query start"));
-    ASSIGN_OR_RETURN(mrf_block.query_end,
-                     ParseUInt64(line_number, fields[5], "query end"));
-    read->blocks.push_back(mrf_block);
-  }
-  return absl::OkStatus();
-}
-
-auto ParseAlignmentBlocks(size_t line_number, MrfEntry* entry,
-                          absl::string_view column) -> absl::Status {
-  if (entry->is_paired_end) {
-    std::vector<std::string> tokens = absl::StrSplit(column, "|");
-    if (tokens.size() != 2) {
-      return absl::InvalidArgumentError(absl::StrFormat(
-          "Line %d: invalid number of AlignmentBlock tokens: %s", line_number,
-          column));
-    }
-    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read1, tokens[0]));
-    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read2, tokens[1]));
-  } else {
-    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read1, column));
-  }
-  return absl::OkStatus();
-}
-
 auto ParseSequence(size_t line_number, MrfEntry* entry,
                    absl::string_view column) -> absl::Status {
   if (entry->is_paired_end) {
@@ -224,6 +151,50 @@ auto ParseQueryId(size_t line_number, MrfEntry* entry, absl::string_view column)
 }
 
 }  // namespace
+
+auto MrfParser::ParseAlignmentBlocks(size_t line_number, MrfEntry* entry,
+                                     absl::string_view column) -> absl::Status {
+  if (entry->is_paired_end) {
+    std::vector<std::string> tokens = absl::StrSplit(column, "|");
+    if (tokens.size() != 2) {
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: invalid number of AlignmentBlock tokens: %s", line_number,
+          column));
+    }
+    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read1, tokens[0]));
+    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read2, tokens[1]));
+  } else {
+    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read1, column));
+  }
+  return absl::OkStatus();
+}
+
+auto MrfParser::ProcessBlocks(size_t line_number, MrfRead* read,
+                              absl::string_view token) -> absl::Status {
+  std::vector<std::string> blocks = absl::StrSplit(token, ",");
+  for (const auto& block : blocks) {
+    std::vector<std::string> fields = absl::StrSplit(block, ":");
+    if (fields.size() != kNumBlockFields) {
+      return absl::InvalidArgumentError(
+          absl::StrFormat("Line %d: Invalid number of fields for block: '%s'",
+                          line_number, block));
+    }
+    MrfBlock mrf_block;
+    mrf_block.target_name = fields[0];
+    ASSIGN_OR_RETURN(mrf_block.strand, ParseStrand(line_number, fields[1]));
+    ASSIGN_OR_RETURN(
+        mrf_block.target_start,
+        ParseInt<uint64_t>(line_number, fields[2], "target start"));
+    ASSIGN_OR_RETURN(mrf_block.target_end,
+                     ParseInt<uint64_t>(line_number, fields[3], "target end"));
+    ASSIGN_OR_RETURN(mrf_block.query_start,
+                     ParseInt<uint64_t>(line_number, fields[4], "query start"));
+    ASSIGN_OR_RETURN(mrf_block.query_end,
+                     ParseInt<uint64_t>(line_number, fields[5], "query end"));
+    read->blocks.push_back(mrf_block);
+  }
+  return absl::OkStatus();
+}
 
 auto MrfParser::Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>> {
   if (!started_) {

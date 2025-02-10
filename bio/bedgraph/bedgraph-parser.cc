@@ -15,7 +15,6 @@
 #include "bio/bedgraph/bedgraph-parser.h"
 
 #include <cstdint>
-#include <cstdlib>
 #include <memory>
 #include <optional>
 #include <string>
@@ -26,7 +25,6 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/match.h"
-#include "absl/strings/numbers.h"
 #include "absl/strings/str_format.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
@@ -63,30 +61,6 @@ auto BedGraphParser::NewOrDie(absl::string_view path)
   return std::move(parser.value());
 }
 
-namespace {
-
-auto ParseUInt64(size_t line_number, absl::string_view str,
-                 absl::string_view field) -> absl::StatusOr<uint64_t> {
-  uint64_t value = 0;
-  if (!absl::SimpleAtoi(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-auto ParseDouble(size_t line_number, absl::string_view str,
-                 absl::string_view field) -> absl::StatusOr<double> {
-  double value = 0;
-  if (!absl::SimpleAtod(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-}  // namespace
-
 auto BedGraphParser::NextEntry()
     -> absl::StatusOr<std::unique_ptr<BedGraphEntry>> {
   if (eof()) {
@@ -110,8 +84,9 @@ auto BedGraphParser::NextEntry()
 
     entry->chromosome = parts[0];
     ASSIGN_OR_RETURN(entry->start,
-                     ParseUInt64(line_number_, parts[1], "start"));
-    ASSIGN_OR_RETURN(entry->end, ParseUInt64(line_number_, parts[2], "end"));
+                     ParseInt<uint64_t>(line_number_, parts[1], "start"));
+    ASSIGN_OR_RETURN(entry->end,
+                     ParseInt<uint64_t>(line_number_, parts[2], "end"));
     ASSIGN_OR_RETURN(entry->value,
                      ParseDouble(line_number_, parts[3], "value"));
     break;

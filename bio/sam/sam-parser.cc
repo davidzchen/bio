@@ -14,13 +14,9 @@
 
 #include "bio/sam/sam-parser.h"
 
-#include <cstdint>
 #include <cstdlib>
-#include <exception>
-#include <limits>
 #include <memory>
 #include <optional>
-#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -41,7 +37,6 @@ namespace {
 namespace file = gxl::file;
 
 static constexpr char kHeaderLinePrefix[] = "@";
-
 static constexpr size_t kMinSamFields = 11;
 
 }  // namespace
@@ -58,72 +53,6 @@ auto SamParser::NewOrDie(absl::string_view path) -> std::unique_ptr<SamParser> {
   CHECK_OK(parser.status());
   return std::move(parser.value());
 }
-
-namespace {
-
-// TODO(dzc): Factor this and the same function from bed-parser out into a
-// common library.
-auto ParseUInt64(size_t line_number, absl::string_view str,
-                 absl::string_view field) -> absl::StatusOr<uint64_t> {
-  uint64_t value = 0;
-  if (!absl::SimpleAtoi(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-// TODO(dzc): Factor this and the same function from bed-parser out into a
-// common library.
-auto ParseUInt32(size_t line_number, absl::string_view str,
-                 absl::string_view field) -> absl::StatusOr<uint32_t> {
-  uint32_t value = 0;
-  if (!absl::SimpleAtoi(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-// TODO(dzc): Factor this and the same function from bed-parser out into a
-// common library.
-auto ParseUInt8(size_t line_number, absl::string_view str,
-                absl::string_view field) -> absl::StatusOr<uint8_t> {
-  try {
-    size_t index = 0;
-    int value = std::stoi(std::string(str), &index, 10);
-    if (index != str.size()) {
-      return absl::OutOfRangeError(
-          absl::StrFormat("Line %d: value is out of range for a uint8_t: %s",
-                          line_number, field));
-    }
-
-    if (value < 0 || value > std::numeric_limits<uint8_t>::max()) {
-      return absl::OutOfRangeError(absl::StrFormat(
-          "Line %d: value is out of range for a uint8_t", line_number));
-    }
-
-    return static_cast<uint8_t>(value);
-  } catch (const std::exception& e) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Failed to parse '%s': %s", line_number, field, e.what()));
-  }
-  return absl::InternalError("Should not be reached");
-}
-
-// TODO(dzc): Factor this and the same function from bed-parser out into a
-// common library.
-auto ParseInt32(size_t line_number, absl::string_view str,
-                absl::string_view field) -> absl::StatusOr<int32_t> {
-  int32_t value = 0;
-  if (!absl::SimpleAtoi(str, &value)) {
-    return absl::InvalidArgumentError(absl::StrFormat(
-        "Line %d: Invalid %s format: '%s'", line_number, field, str));
-  }
-  return value;
-}
-
-}  // namespace
 
 auto SamParser::Next() -> absl::StatusOr<std::unique_ptr<SamEntry>> {
   if (eof()) {
@@ -148,15 +77,17 @@ auto SamParser::Next() -> absl::StatusOr<std::unique_ptr<SamEntry>> {
     }
     entry->qname = fields[0];
     ASSIGN_OR_RETURN(entry->flags,
-                     ParseUInt64(line_number_, fields[1], "flags"));
+                     ParseInt<uint64_t>(line_number_, fields[1], "flags"));
     entry->rname = fields[2];
-    ASSIGN_OR_RETURN(entry->pos, ParseUInt32(line_number_, fields[3], "pos"));
+    ASSIGN_OR_RETURN(entry->pos,
+                     ParseInt<uint32_t>(line_number_, fields[3], "pos"));
     ASSIGN_OR_RETURN(entry->mapq, ParseUInt8(line_number_, fields[4], "mapq"));
     entry->cigar = fields[5];
     entry->rnext = fields[6];
     ASSIGN_OR_RETURN(entry->pnext,
-                     ParseUInt32(line_number_, fields[7], "pnext"));
-    ASSIGN_OR_RETURN(entry->tlen, ParseInt32(line_number_, fields[8], "tlen"));
+                     ParseInt<uint32_t>(line_number_, fields[7], "pnext"));
+    ASSIGN_OR_RETURN(entry->tlen,
+                     ParseInt<int32_t>(line_number_, fields[8], "tlen"));
 
     if (fields[9] != "*") {
       entry->seq = fields[9];

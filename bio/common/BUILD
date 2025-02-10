@@ -4,7 +4,12 @@ cc_library(
     name = "line-parser-base",
     hdrs = ["line-parser-base.h"],
     deps = [
+        ":sequence",
         "@abseil-cpp//absl/base:nullability",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
         "@gxl//gxl/file",
         "@gxl//gxl/file:filelineiter",
     ],
@@ -16,6 +21,7 @@ cc_test(
     data = ["//bio/common/testdata"],
     deps = [
         ":line-parser-base",
+        ":sequence",
         "@abseil-cpp//absl/base:nullability",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:status_matchers",

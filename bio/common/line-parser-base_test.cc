@@ -14,12 +14,15 @@
 
 #include "bio/common/line-parser-base.h"
 
+#include <cstdint>
 #include <optional>
 #include <string>
 
 #include "absl/base/nullability.h"
 #include "absl/status/status.h"
 #include "absl/status/status_matchers.h"
+#include "bio/common/sequence.h"
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "gxl/file/file.h"
 
@@ -27,7 +30,11 @@ namespace bio {
 namespace {
 
 namespace file = gxl::file;
+
 using ::absl_testing::IsOk;
+using ::absl_testing::IsOkAndHolds;
+using ::absl_testing::StatusIs;
+using ::testing::HasSubstr;
 
 class LineParserPeer : public LineParserBase {
  public:
@@ -35,6 +42,10 @@ class LineParserPeer : public LineParserBase {
       : LineParserBase(file) {}
 
   using LineParserBase::NextLine;
+  using LineParserBase::ParseDouble;
+  using LineParserBase::ParseInt;
+  using LineParserBase::ParseStrand;
+  using LineParserBase::ParseUInt8;
   using LineParserBase::PutBack;
 };
 
@@ -88,6 +99,135 @@ TEST(LineParserBase, PutBack) {
 
   line = parser.NextLine();
   EXPECT_EQ(line, "line 2");
+}
+
+TEST(LineParserBase, ParseIntUInt) {
+  gxl::File* file;
+  absl::Status status =
+      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  EXPECT_THAT(status, IsOk());
+
+  LineParserPeer parser(file);
+
+  // uint64_t
+  EXPECT_THAT(parser.ParseInt<uint64_t>(/*line_number=*/1, "0", "foo_field"),
+              IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseInt<uint64_t>(/*line_number=*/1,
+                                        "18446744073709551615", "foo_field"),
+              IsOkAndHolds(static_cast<uint64_t>(18446744073709551615)));
+  EXPECT_THAT(parser.ParseInt<uint64_t>(/*line_number=*/1, "-1", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(
+      parser.ParseInt<uint64_t>(/*line_number=*/1, "invalid", "foo_field"),
+      StatusIs(absl::StatusCode::kInvalidArgument,
+               HasSubstr("Invalid foo_field format")));
+
+  // int64_t
+  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1, "0", "foo_field"),
+              IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1, "9223372036854775807",
+                                       "foo_field"),
+              IsOkAndHolds(9223372036854775807));
+  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1,
+                                       "-9223372036854775807", "foo_field"),
+              IsOkAndHolds(-9223372036854775807));
+  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1, "9223372036854775808",
+                                       "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(
+      parser.ParseInt<uint64_t>(/*line_number=*/1, "invalid", "foo_field"),
+      StatusIs(absl::StatusCode::kInvalidArgument,
+               HasSubstr("Invalid foo_field format")));
+
+  // uint32_t
+  EXPECT_THAT(parser.ParseInt<uint32_t>(/*line_number=*/1, "0", "foo_field"),
+              IsOkAndHolds(0));
+  EXPECT_THAT(
+      parser.ParseInt<uint32_t>(/*line_number=*/1, "4294967295", "foo_field"),
+      IsOkAndHolds(4294967295));
+  EXPECT_THAT(
+      parser.ParseInt<uint32_t>(/*line_number=*/1, "4294967296", "foo_field"),
+      StatusIs(absl::StatusCode::kInvalidArgument,
+               HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<uint32_t>(/*line_number=*/1, "-1", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(
+      parser.ParseInt<uint64_t>(/*line_number=*/1, "invalid", "foo_field"),
+      StatusIs(absl::StatusCode::kInvalidArgument,
+               HasSubstr("Invalid foo_field format")));
+
+  // int32_t
+  EXPECT_THAT(parser.ParseInt<int32_t>(/*line_number=*/1, "0", "foo_field"),
+              IsOkAndHolds(0));
+  EXPECT_THAT(
+      parser.ParseInt<int32_t>(/*line_number=*/1, "2147483647", "foo_field"),
+      IsOkAndHolds(2147483647));
+  EXPECT_THAT(
+      parser.ParseInt<int32_t>(/*line_number=*/1, "-2147483648", "foo_field"),
+      IsOkAndHolds(-2147483648));
+  EXPECT_THAT(
+      parser.ParseInt<int32_t>(/*line_number=*/1, "2147483649", "foo_field"),
+      StatusIs(absl::StatusCode::kInvalidArgument,
+               HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(
+      parser.ParseInt<uint32_t>(/*line_number=*/1, "invalid", "foo_field"),
+      StatusIs(absl::StatusCode::kInvalidArgument,
+               HasSubstr("Invalid foo_field format")));
+}
+
+TEST(LineParserBase, ParseUInt8) {
+  gxl::File* file;
+  absl::Status status =
+      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  EXPECT_THAT(status, IsOk());
+
+  LineParserPeer parser(file);
+  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "0", "foo_field"),
+              IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "255", "foo_field"),
+              IsOkAndHolds(255));
+  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "-1", "foo_field"),
+              StatusIs(absl::StatusCode::kOutOfRange,
+                       HasSubstr("value is out of range for a uint8_t")));
+  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "256", "foo_field"),
+              StatusIs(absl::StatusCode::kOutOfRange,
+                       HasSubstr("value is out of range for a uint8_t")));
+  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "invalid", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Failed to parse")));
+}
+
+TEST(LineParseBase, ParseDouble) {
+  gxl::File* file;
+  absl::Status status =
+      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  EXPECT_THAT(status, IsOk());
+
+  LineParserPeer parser(file);
+  EXPECT_THAT(parser.ParseDouble(/*line_number=*/1, "0", "foo_field"),
+              IsOkAndHolds(0.0));
+  EXPECT_THAT(parser.ParseDouble(/*line_number=*/1, "invalid", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
+}
+
+TEST(LineParserBase, ParseStrand) {
+  gxl::File* file;
+  absl::Status status =
+      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  EXPECT_THAT(status, IsOk());
+
+  LineParserPeer parser(file);
+  EXPECT_THAT(parser.ParseStrand(/*line_number=*/1, "+"),
+              IsOkAndHolds(Strand::kSense));
+  EXPECT_THAT(parser.ParseStrand(/*line_number=*/1, "-"),
+              IsOkAndHolds(Strand::kAntisense));
+  EXPECT_THAT(parser.ParseStrand(/*line_number=*/1, "invalid"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid strand format")));
 }
 
 }  // namespace
