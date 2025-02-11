@@ -79,31 +79,35 @@ auto FastqParser::NextSequence(bool truncate_name)
     // Read sequence line.
     std::optional<std::string> sequence_line = NextLine();
     if (!sequence_line.has_value()) {
-      return absl::InvalidArgumentError("Expected sequence line but got EOF");
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Expected sequence line but got EOF", line_number()));
     }
     sequence->sequence = std::move(sequence_line.value());
 
     // Read sequence name line.
     std::optional<std::string> quality_id_line = NextLine();
     if (!quality_id_line.has_value()) {
-      return absl::InvalidArgumentError("Expected quality ID line but got EOF");
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Expected quality ID line but got EOF", line_number()));
     }
     if (!absl::StartsWith(*quality_id_line, kQualityIdPrefix)) {
       return absl::InvalidArgumentError(
-          absl::StrFormat("Expected quality ID: '%s' or '+%s'",
-                          kQualityIdPrefix, sequence->name));
+          absl::StrFormat("Line %d: Expected quality ID: '%s' or '+%s'",
+                          line_number(), kQualityIdPrefix, sequence->name));
     }
 
     // Read quality line.
     std::optional<std::string> quality_line = NextLine();
     if (!quality_line.has_value()) {
-      return absl::InvalidArgumentError("Expected quality line but got EOF");
+      return absl::InvalidArgumentError(absl::StrFormat(
+          "Line %d: Expected quality line but got EOF", line_number()));
     }
     sequence->quality = std::move(quality_line.value());
     if (sequence->quality.size() != sequence->sequence.size()) {
       return absl::InvalidArgumentError(absl::StrFormat(
-          "Sequence line length %d does not match quality line length %d",
-          sequence->sequence.size(), sequence->quality.size()));
+          "Line %d: Sequence line length %d does not match quality line length "
+          "%d",
+          line_number(), sequence->sequence.size(), sequence->quality.size()));
     }
 
     break;
