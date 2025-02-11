@@ -31,7 +31,7 @@ namespace bio {
 class BedGraphParser : public LineParserBase {
  public:
   explicit BedGraphParser(absl::Nonnull<gxl::File*> file)
-      : LineParserBase(file), line_number_(0) {}
+      : LineParserBase(file) {}
 
   ~BedGraphParser() = default;
 
@@ -50,10 +50,6 @@ class BedGraphParser : public LineParserBase {
   // Returns a vector of all entries from the file.
   auto AllEntries()
       -> absl::StatusOr<std::vector<std::unique_ptr<BedGraphEntry>>>;
-
- private:
-  // Used to track line numbers.
-  size_t line_number_;
 };
 
 }  // namespace bio

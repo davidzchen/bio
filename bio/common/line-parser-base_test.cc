@@ -110,72 +110,55 @@ TEST(LineParserBase, ParseIntUInt) {
   LineParserPeer parser(file);
 
   // uint64_t
-  EXPECT_THAT(parser.ParseInt<uint64_t>(/*line_number=*/1, "0", "foo_field"),
-              IsOkAndHolds(0));
-  EXPECT_THAT(parser.ParseInt<uint64_t>(/*line_number=*/1,
-                                        "18446744073709551615", "foo_field"),
+  EXPECT_THAT(parser.ParseInt<uint64_t>("0", "foo_field"), IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseInt<uint64_t>("18446744073709551615", "foo_field"),
               IsOkAndHolds(static_cast<uint64_t>(18446744073709551615)));
-  EXPECT_THAT(parser.ParseInt<uint64_t>(/*line_number=*/1, "-1", "foo_field"),
+  EXPECT_THAT(parser.ParseInt<uint64_t>("-1", "foo_field"),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Invalid foo_field format")));
-  EXPECT_THAT(
-      parser.ParseInt<uint64_t>(/*line_number=*/1, "invalid", "foo_field"),
-      StatusIs(absl::StatusCode::kInvalidArgument,
-               HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<uint64_t>("invalid", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
 
   // int64_t
-  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1, "0", "foo_field"),
-              IsOkAndHolds(0));
-  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1, "9223372036854775807",
-                                       "foo_field"),
+  EXPECT_THAT(parser.ParseInt<int64_t>("0", "foo_field"), IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseInt<int64_t>("9223372036854775807", "foo_field"),
               IsOkAndHolds(9223372036854775807));
-  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1,
-                                       "-9223372036854775807", "foo_field"),
+  EXPECT_THAT(parser.ParseInt<int64_t>("-9223372036854775807", "foo_field"),
               IsOkAndHolds(-9223372036854775807));
-  EXPECT_THAT(parser.ParseInt<int64_t>(/*line_number=*/1, "9223372036854775808",
-                                       "foo_field"),
+  EXPECT_THAT(parser.ParseInt<int64_t>("9223372036854775808", "foo_field"),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Invalid foo_field format")));
-  EXPECT_THAT(
-      parser.ParseInt<uint64_t>(/*line_number=*/1, "invalid", "foo_field"),
-      StatusIs(absl::StatusCode::kInvalidArgument,
-               HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<uint64_t>("invalid", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
 
   // uint32_t
-  EXPECT_THAT(parser.ParseInt<uint32_t>(/*line_number=*/1, "0", "foo_field"),
-              IsOkAndHolds(0));
-  EXPECT_THAT(
-      parser.ParseInt<uint32_t>(/*line_number=*/1, "4294967295", "foo_field"),
-      IsOkAndHolds(4294967295));
-  EXPECT_THAT(
-      parser.ParseInt<uint32_t>(/*line_number=*/1, "4294967296", "foo_field"),
-      StatusIs(absl::StatusCode::kInvalidArgument,
-               HasSubstr("Invalid foo_field format")));
-  EXPECT_THAT(parser.ParseInt<uint32_t>(/*line_number=*/1, "-1", "foo_field"),
+  EXPECT_THAT(parser.ParseInt<uint32_t>("0", "foo_field"), IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseInt<uint32_t>("4294967295", "foo_field"),
+              IsOkAndHolds(4294967295));
+  EXPECT_THAT(parser.ParseInt<uint32_t>("4294967296", "foo_field"),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Invalid foo_field format")));
-  EXPECT_THAT(
-      parser.ParseInt<uint64_t>(/*line_number=*/1, "invalid", "foo_field"),
-      StatusIs(absl::StatusCode::kInvalidArgument,
-               HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<uint32_t>("-1", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<uint64_t>("invalid", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
 
   // int32_t
-  EXPECT_THAT(parser.ParseInt<int32_t>(/*line_number=*/1, "0", "foo_field"),
-              IsOkAndHolds(0));
-  EXPECT_THAT(
-      parser.ParseInt<int32_t>(/*line_number=*/1, "2147483647", "foo_field"),
-      IsOkAndHolds(2147483647));
-  EXPECT_THAT(
-      parser.ParseInt<int32_t>(/*line_number=*/1, "-2147483648", "foo_field"),
-      IsOkAndHolds(-2147483648));
-  EXPECT_THAT(
-      parser.ParseInt<int32_t>(/*line_number=*/1, "2147483649", "foo_field"),
-      StatusIs(absl::StatusCode::kInvalidArgument,
-               HasSubstr("Invalid foo_field format")));
-  EXPECT_THAT(
-      parser.ParseInt<uint32_t>(/*line_number=*/1, "invalid", "foo_field"),
-      StatusIs(absl::StatusCode::kInvalidArgument,
-               HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<int32_t>("0", "foo_field"), IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseInt<int32_t>("2147483647", "foo_field"),
+              IsOkAndHolds(2147483647));
+  EXPECT_THAT(parser.ParseInt<int32_t>("-2147483648", "foo_field"),
+              IsOkAndHolds(-2147483648));
+  EXPECT_THAT(parser.ParseInt<int32_t>("2147483649", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
+  EXPECT_THAT(parser.ParseInt<uint32_t>("invalid", "foo_field"),
+              StatusIs(absl::StatusCode::kInvalidArgument,
+                       HasSubstr("Invalid foo_field format")));
 }
 
 TEST(LineParserBase, ParseUInt8) {
@@ -185,17 +168,15 @@ TEST(LineParserBase, ParseUInt8) {
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
-  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "0", "foo_field"),
-              IsOkAndHolds(0));
-  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "255", "foo_field"),
-              IsOkAndHolds(255));
-  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "-1", "foo_field"),
+  EXPECT_THAT(parser.ParseUInt8("0", "foo_field"), IsOkAndHolds(0));
+  EXPECT_THAT(parser.ParseUInt8("255", "foo_field"), IsOkAndHolds(255));
+  EXPECT_THAT(parser.ParseUInt8("-1", "foo_field"),
               StatusIs(absl::StatusCode::kOutOfRange,
                        HasSubstr("value is out of range for a uint8_t")));
-  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "256", "foo_field"),
+  EXPECT_THAT(parser.ParseUInt8("256", "foo_field"),
               StatusIs(absl::StatusCode::kOutOfRange,
                        HasSubstr("value is out of range for a uint8_t")));
-  EXPECT_THAT(parser.ParseUInt8(/*line_number=*/1, "invalid", "foo_field"),
+  EXPECT_THAT(parser.ParseUInt8("invalid", "foo_field"),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Failed to parse")));
 }
@@ -207,9 +188,8 @@ TEST(LineParseBase, ParseDouble) {
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
-  EXPECT_THAT(parser.ParseDouble(/*line_number=*/1, "0", "foo_field"),
-              IsOkAndHolds(0.0));
-  EXPECT_THAT(parser.ParseDouble(/*line_number=*/1, "invalid", "foo_field"),
+  EXPECT_THAT(parser.ParseDouble("0", "foo_field"), IsOkAndHolds(0.0));
+  EXPECT_THAT(parser.ParseDouble("invalid", "foo_field"),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Invalid foo_field format")));
 }
@@ -221,11 +201,9 @@ TEST(LineParserBase, ParseStrand) {
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
-  EXPECT_THAT(parser.ParseStrand(/*line_number=*/1, "+"),
-              IsOkAndHolds(Strand::kSense));
-  EXPECT_THAT(parser.ParseStrand(/*line_number=*/1, "-"),
-              IsOkAndHolds(Strand::kAntisense));
-  EXPECT_THAT(parser.ParseStrand(/*line_number=*/1, "invalid"),
+  EXPECT_THAT(parser.ParseStrand("+"), IsOkAndHolds(Strand::kSense));
+  EXPECT_THAT(parser.ParseStrand("-"), IsOkAndHolds(Strand::kAntisense));
+  EXPECT_THAT(parser.ParseStrand("invalid"),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Invalid strand format")));
 }

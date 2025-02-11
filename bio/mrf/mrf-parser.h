@@ -70,7 +70,7 @@ namespace bio {
 class MrfParser : public LineParserBase {
  public:
   explicit MrfParser(absl::Nonnull<gxl::File*> file)
-      : LineParserBase(file), started_(false), line_number_(0) {}
+      : LineParserBase(file), started_(false) {}
 
   ~MrfParser() = default;
 
@@ -90,16 +90,21 @@ class MrfParser : public LineParserBase {
   auto Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>>;
 
  private:
-  auto ParseAlignmentBlocks(size_t line_number, MrfEntry* entry,
-                            absl::string_view column) -> absl::Status;
-
-  auto ProcessBlocks(size_t line_number, MrfRead* read, absl::string_view token)
+  auto ParseAlignmentBlocks(MrfEntry* entry, absl::string_view column)
       -> absl::Status;
+
+  auto ProcessBlocks(MrfRead* read, absl::string_view token) -> absl::Status;
+
+  auto ParseSequence(MrfEntry* entry, absl::string_view column) -> absl::Status;
+
+  auto ParseQualityScores(MrfEntry* entry, absl::string_view column)
+      -> absl::Status;
+
+  auto ParseQueryId(MrfEntry* entry, absl::string_view column) -> absl::Status;
 
   std::vector<std::string> comments_;
   std::vector<MrfColumn> columns_;
   bool started_;
-  size_t line_number_;
 };
 
 }  // namespace bio

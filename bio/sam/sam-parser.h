@@ -15,6 +15,7 @@
 #ifndef BIO_SAM_SAM_PARSER_H_
 #define BIO_SAM_SAM_PARSER_H_
 
+#include <cstdlib>
 #include <memory>
 #include <vector>
 
@@ -62,8 +63,7 @@ namespace bio {
 // ```
 class SamParser : public LineParserBase {
  public:
-  explicit SamParser(absl::Nonnull<gxl::File*> file)
-      : LineParserBase(file), line_number_(0) {}
+  explicit SamParser(absl::Nonnull<gxl::File*> file) : LineParserBase(file) {}
 
   ~SamParser() = default;
 
@@ -80,9 +80,6 @@ class SamParser : public LineParserBase {
 
   // Reads a vector of a entries in the file.
   auto All() -> absl::StatusOr<std::vector<std::unique_ptr<SamEntry>>>;
-
- private:
-  size_t line_number_;
 };
 
 }  // namespace bio

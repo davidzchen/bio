@@ -69,7 +69,6 @@ auto BedGraphParser::NextEntry()
   auto entry = std::make_unique<BedGraphEntry>();
   for (std::optional<std::string> line = NextLine(); line.has_value();
        line = NextLine()) {
-    ++line_number_;
     if (line->empty() || absl::StartsWith(*line, kCommentPrefix) ||
         absl::StartsWith(*line, kTrackPrefix) ||
         absl::StartsWith(*line, kBrowserPrefix)) {
@@ -83,12 +82,9 @@ auto BedGraphParser::NextEntry()
     }
 
     entry->chromosome = parts[0];
-    ASSIGN_OR_RETURN(entry->start,
-                     ParseInt<uint64_t>(line_number_, parts[1], "start"));
-    ASSIGN_OR_RETURN(entry->end,
-                     ParseInt<uint64_t>(line_number_, parts[2], "end"));
-    ASSIGN_OR_RETURN(entry->value,
-                     ParseDouble(line_number_, parts[3], "value"));
+    ASSIGN_OR_RETURN(entry->start, ParseInt<uint64_t>(parts[1], "start"));
+    ASSIGN_OR_RETURN(entry->end, ParseInt<uint64_t>(parts[2], "end"));
+    ASSIGN_OR_RETURN(entry->value, ParseDouble(parts[3], "value"));
     break;
   }
   return entry;

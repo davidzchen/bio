@@ -76,7 +76,6 @@ auto MrfParser::Start() -> absl::StatusOr<std::unique_ptr<MrfHeader>> {
   std::vector<std::string> comments;
   for (std::optional<std::string> line = NextLine(); line.has_value();
        line = NextLine()) {
-    ++line_number_;
     if (line->empty()) {
       continue;
     }
@@ -99,14 +98,16 @@ auto IsPairedEnd(absl::string_view line) -> bool {
   return absl::StrContainsIgnoreCase(line, "|");
 }
 
-auto ParseSequence(size_t line_number, MrfEntry* entry,
-                   absl::string_view column) -> absl::Status {
+}  // namespace
+
+auto MrfParser::ParseSequence(MrfEntry* entry, absl::string_view column)
+    -> absl::Status {
   if (entry->is_paired_end) {
     std::vector<std::string> tokens = absl::StrSplit(column, "|");
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: invalid number of Sequence tokens: %s",
-                          line_number, column));
+                          line_number_, column));
     }
     entry->read1.sequence = tokens[0];
     entry->read2.sequence = tokens[1];
@@ -116,14 +117,14 @@ auto ParseSequence(size_t line_number, MrfEntry* entry,
   return absl::OkStatus();
 }
 
-auto ParseQualityScores(size_t line_number, MrfEntry* entry,
-                        absl::string_view column) -> absl::Status {
+auto MrfParser::ParseQualityScores(MrfEntry* entry, absl::string_view column)
+    -> absl::Status {
   if (entry->is_paired_end) {
     std::vector<std::string> tokens = absl::StrSplit(column, "|");
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: invalid number of QualityScores tokens: %s",
-                          line_number, column));
+                          line_number_, column));
     }
     entry->read1.quality_scores = tokens[0];
     entry->read2.quality_scores = tokens[1];
@@ -133,14 +134,14 @@ auto ParseQualityScores(size_t line_number, MrfEntry* entry,
   return absl::OkStatus();
 }
 
-auto ParseQueryId(size_t line_number, MrfEntry* entry, absl::string_view column)
+auto MrfParser::ParseQueryId(MrfEntry* entry, absl::string_view column)
     -> absl::Status {
   if (entry->is_paired_end) {
     std::vector<std::string> tokens = absl::StrSplit(column, "|");
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: invalid number of QueryId tokens: %s",
-                          line_number, column));
+                          line_number_, column));
     }
     entry->read1.query_id = tokens[0];
     entry->read2.query_id = tokens[1];
@@ -150,47 +151,44 @@ auto ParseQueryId(size_t line_number, MrfEntry* entry, absl::string_view column)
   return absl::OkStatus();
 }
 
-}  // namespace
-
-auto MrfParser::ParseAlignmentBlocks(size_t line_number, MrfEntry* entry,
-                                     absl::string_view column) -> absl::Status {
+auto MrfParser::ParseAlignmentBlocks(MrfEntry* entry, absl::string_view column)
+    -> absl::Status {
   if (entry->is_paired_end) {
     std::vector<std::string> tokens = absl::StrSplit(column, "|");
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(absl::StrFormat(
-          "Line %d: invalid number of AlignmentBlock tokens: %s", line_number,
+          "Line %d: invalid number of AlignmentBlock tokens: %s", line_number_,
           column));
     }
-    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read1, tokens[0]));
-    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read2, tokens[1]));
+    RETURN_IF_ERROR(ProcessBlocks(&entry->read1, tokens[0]));
+    RETURN_IF_ERROR(ProcessBlocks(&entry->read2, tokens[1]));
   } else {
-    RETURN_IF_ERROR(ProcessBlocks(line_number, &entry->read1, column));
+    RETURN_IF_ERROR(ProcessBlocks(&entry->read1, column));
   }
   return absl::OkStatus();
 }
 
-auto MrfParser::ProcessBlocks(size_t line_number, MrfRead* read,
-                              absl::string_view token) -> absl::Status {
+auto MrfParser::ProcessBlocks(MrfRead* read, absl::string_view token)
+    -> absl::Status {
   std::vector<std::string> blocks = absl::StrSplit(token, ",");
   for (const auto& block : blocks) {
     std::vector<std::string> fields = absl::StrSplit(block, ":");
     if (fields.size() != kNumBlockFields) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: Invalid number of fields for block: '%s'",
-                          line_number, block));
+                          line_number_, block));
     }
     MrfBlock mrf_block;
     mrf_block.target_name = fields[0];
-    ASSIGN_OR_RETURN(mrf_block.strand, ParseStrand(line_number, fields[1]));
-    ASSIGN_OR_RETURN(
-        mrf_block.target_start,
-        ParseInt<uint64_t>(line_number, fields[2], "target start"));
+    ASSIGN_OR_RETURN(mrf_block.strand, ParseStrand(fields[1]));
+    ASSIGN_OR_RETURN(mrf_block.target_start,
+                     ParseInt<uint64_t>(fields[2], "target start"));
     ASSIGN_OR_RETURN(mrf_block.target_end,
-                     ParseInt<uint64_t>(line_number, fields[3], "target end"));
+                     ParseInt<uint64_t>(fields[3], "target end"));
     ASSIGN_OR_RETURN(mrf_block.query_start,
-                     ParseInt<uint64_t>(line_number, fields[4], "query start"));
+                     ParseInt<uint64_t>(fields[4], "query start"));
     ASSIGN_OR_RETURN(mrf_block.query_end,
-                     ParseInt<uint64_t>(line_number, fields[5], "query end"));
+                     ParseInt<uint64_t>(fields[5], "query end"));
     read->blocks.push_back(mrf_block);
   }
   return absl::OkStatus();
@@ -207,7 +205,6 @@ auto MrfParser::Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>> {
 
   for (std::optional<std::string> line = NextLine(); line.has_value();
        line = NextLine()) {
-    ++line_number_;
     if (line->empty()) {
       continue;
     }
@@ -228,18 +225,16 @@ auto MrfParser::Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>> {
     for (int i = 0; i < columns.size(); ++i) {
       switch (columns_[i]) {
         case MrfColumn::kAlignmentBlocks:
-          RETURN_IF_ERROR(
-              ParseAlignmentBlocks(line_number_, entry.get(), columns[i]));
+          RETURN_IF_ERROR(ParseAlignmentBlocks(entry.get(), columns[i]));
           break;
         case MrfColumn::kSequence:
-          RETURN_IF_ERROR(ParseSequence(line_number_, entry.get(), columns[i]));
+          RETURN_IF_ERROR(ParseSequence(entry.get(), columns[i]));
           break;
         case MrfColumn::kQualityScores:
-          RETURN_IF_ERROR(
-              ParseQualityScores(line_number_, entry.get(), columns[i]));
+          RETURN_IF_ERROR(ParseQualityScores(entry.get(), columns[i]));
           break;
         case MrfColumn::kQueryId:
-          RETURN_IF_ERROR(ParseQueryId(line_number_, entry.get(), columns[i]));
+          RETURN_IF_ERROR(ParseQueryId(entry.get(), columns[i]));
           break;
         default:
           return absl::InternalError("Invalid column type found");

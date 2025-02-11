@@ -31,7 +31,7 @@ namespace bio {
 class BedParser : public LineParserBase {
  public:
   explicit BedParser(absl::Nonnull<gxl::File*> file)
-      : LineParserBase(file), line_number_(0), num_fields_(0) {}
+      : LineParserBase(file), num_fields_(0) {}
 
   ~BedParser() = default;
 
@@ -50,9 +50,6 @@ class BedParser : public LineParserBase {
   auto AllEntries() -> absl::StatusOr<std::vector<std::unique_ptr<BedEntry>>>;
 
  private:
-  // Used to track line numbers.
-  size_t line_number_;
-
   // Used to track the number of BED fields used by the file and whether
   // subsequent lines contain the same number of fields.
   int num_fields_;

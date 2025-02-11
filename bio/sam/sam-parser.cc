@@ -62,7 +62,6 @@ auto SamParser::Next() -> absl::StatusOr<std::unique_ptr<SamEntry>> {
   auto entry = std::make_unique<SamEntry>();
   for (std::optional<std::string> line = NextLine(); line.has_value();
        line = NextLine()) {
-    ++line_number_;
     if (line->empty()) {
       continue;
     }
@@ -76,18 +75,14 @@ auto SamParser::Next() -> absl::StatusOr<std::unique_ptr<SamEntry>> {
           "Line %d: Invalid number of fields: '%s'", line_number_, *line));
     }
     entry->qname = fields[0];
-    ASSIGN_OR_RETURN(entry->flags,
-                     ParseInt<uint64_t>(line_number_, fields[1], "flags"));
+    ASSIGN_OR_RETURN(entry->flags, ParseInt<uint64_t>(fields[1], "flags"));
     entry->rname = fields[2];
-    ASSIGN_OR_RETURN(entry->pos,
-                     ParseInt<uint32_t>(line_number_, fields[3], "pos"));
-    ASSIGN_OR_RETURN(entry->mapq, ParseUInt8(line_number_, fields[4], "mapq"));
+    ASSIGN_OR_RETURN(entry->pos, ParseInt<uint32_t>(fields[3], "pos"));
+    ASSIGN_OR_RETURN(entry->mapq, ParseUInt8(fields[4], "mapq"));
     entry->cigar = fields[5];
     entry->rnext = fields[6];
-    ASSIGN_OR_RETURN(entry->pnext,
-                     ParseInt<uint32_t>(line_number_, fields[7], "pnext"));
-    ASSIGN_OR_RETURN(entry->tlen,
-                     ParseInt<int32_t>(line_number_, fields[8], "tlen"));
+    ASSIGN_OR_RETURN(entry->pnext, ParseInt<uint32_t>(fields[7], "pnext"));
+    ASSIGN_OR_RETURN(entry->tlen, ParseInt<int32_t>(fields[8], "tlen"));
 
     if (fields[9] != "*") {
       entry->seq = fields[9];
