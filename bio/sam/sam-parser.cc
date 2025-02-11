@@ -72,7 +72,7 @@ auto SamParser::Next() -> absl::StatusOr<std::unique_ptr<SamEntry>> {
     const std::vector<std::string> fields = absl::StrSplit(*line, "\t");
     if (fields.size() < kMinSamFields) {
       return absl::InvalidArgumentError(absl::StrFormat(
-          "Line %d: Invalid number of fields: '%s'", line_number_, *line));
+          "Line %d: Invalid number of fields: '%s'", line_number(), *line));
     }
     entry->qname = fields[0];
     ASSIGN_OR_RETURN(entry->flags, ParseInt<uint64_t>(fields[1], "flags"));

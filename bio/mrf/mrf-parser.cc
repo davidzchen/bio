@@ -107,7 +107,7 @@ auto MrfParser::ParseSequence(MrfEntry* entry, absl::string_view column)
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: invalid number of Sequence tokens: %s",
-                          line_number_, column));
+                          line_number(), column));
     }
     entry->read1.sequence = tokens[0];
     entry->read2.sequence = tokens[1];
@@ -124,7 +124,7 @@ auto MrfParser::ParseQualityScores(MrfEntry* entry, absl::string_view column)
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: invalid number of QualityScores tokens: %s",
-                          line_number_, column));
+                          line_number(), column));
     }
     entry->read1.quality_scores = tokens[0];
     entry->read2.quality_scores = tokens[1];
@@ -141,7 +141,7 @@ auto MrfParser::ParseQueryId(MrfEntry* entry, absl::string_view column)
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: invalid number of QueryId tokens: %s",
-                          line_number_, column));
+                          line_number(), column));
     }
     entry->read1.query_id = tokens[0];
     entry->read2.query_id = tokens[1];
@@ -157,7 +157,7 @@ auto MrfParser::ParseAlignmentBlocks(MrfEntry* entry, absl::string_view column)
     std::vector<std::string> tokens = absl::StrSplit(column, "|");
     if (tokens.size() != 2) {
       return absl::InvalidArgumentError(absl::StrFormat(
-          "Line %d: invalid number of AlignmentBlock tokens: %s", line_number_,
+          "Line %d: invalid number of AlignmentBlock tokens: %s", line_number(),
           column));
     }
     RETURN_IF_ERROR(ProcessBlocks(&entry->read1, tokens[0]));
@@ -176,7 +176,7 @@ auto MrfParser::ProcessBlocks(MrfRead* read, absl::string_view token)
     if (fields.size() != kNumBlockFields) {
       return absl::InvalidArgumentError(
           absl::StrFormat("Line %d: Invalid number of fields for block: '%s'",
-                          line_number_, block));
+                          line_number(), block));
     }
     MrfBlock mrf_block;
     mrf_block.target_name = fields[0];
@@ -217,7 +217,7 @@ auto MrfParser::Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>> {
     std::vector<std::string> columns = absl::StrSplit(*line, "\t");
     if (columns.size() != columns_.size()) {
       return absl::InvalidArgumentError(absl::StrFormat(
-          "Line %d: number of columns do not match header", line_number_));
+          "Line %d: number of columns do not match header", line_number()));
     }
 
     auto entry = std::make_unique<MrfEntry>();

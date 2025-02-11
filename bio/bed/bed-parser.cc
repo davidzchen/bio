@@ -123,7 +123,7 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
     const std::vector<std::string> parts = absl::StrSplit(*line, '\t');
     if (parts.size() < kMinBedFields) {
       return absl::InvalidArgumentError(absl::StrFormat(
-          "Line %d: Expected at least %d fields but got only %d", line_number_,
+          "Line %d: Expected at least %d fields but got only %d", line_number(),
           kMinBedFields, parts.size()));
     }
     if (num_fields_ == 0) {
@@ -134,7 +134,7 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
       if (parts.size() != num_fields_) {
         return absl::InvalidArgumentError(
             absl::StrFormat("line %d: Expected %d fields but got %d",
-                            line_number_, num_fields_, parts.size()));
+                            line_number(), num_fields_, parts.size()));
       }
     }
 
@@ -187,7 +187,7 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
       return absl::InvalidArgumentError(absl::StrFormat(
           "Line %d: Expected 12 fields but got %d. Block count, block sizes, "
           "and block starts are all required for BED12+",
-          line_number_, parts.size()));
+          line_number(), parts.size()));
     }
     ASSIGN_OR_RETURN(const uint64_t block_count,
                      ParseInt<uint64_t>(parts[9], "block size"));
@@ -195,7 +195,7 @@ auto BedParser::NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
     const std::string block_starts = parts[11];
     ASSIGN_OR_RETURN(
         entry->sub_blocks,
-        ParseSubBlocks(line_number_, block_count, block_sizes, block_starts));
+        ParseSubBlocks(line_number(), block_count, block_sizes, block_starts));
     break;
   }
 

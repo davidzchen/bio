@@ -135,6 +135,10 @@ class LineParserBase {
     }
   }
 
+  // Returns the current line number.
+  auto line_number() const { return line_number_; }
+
+ private:
   gxl::File* file_;
   gxl::FileLines file_lines_;
   gxl::FileLineIterator it_;

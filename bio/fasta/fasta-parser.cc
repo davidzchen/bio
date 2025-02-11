@@ -56,7 +56,7 @@ auto FastaParser::NewOrDie(absl::string_view path)
 
 auto FastaParser::NextSequence(bool truncate_name)
     -> std::optional<std::unique_ptr<FastaSequence>> {
-  if (it_ == file_lines_.end()) {
+  if (eof()) {
     return std::nullopt;
   }
 
