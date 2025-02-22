@@ -69,3 +69,24 @@ cc_library(
     name = "sequence",
     hdrs = ["sequence.h"],
 )
+
+cc_library(
+    name = "word-iterator",
+    srcs = ["word-iterator.cc"],
+    hdrs = ["word-iterator.h"],
+    deps = [
+        "@abseil-cpp//absl/container:flat_hash_set",
+        "@abseil-cpp//absl/strings",
+    ],
+)
+
+cc_test(
+    name = "word-iterator_test",
+    srcs = ["word-iterator_test.cc"],
+    deps = [
+        ":word-iterator",
+        "@abseil-cpp//absl/strings",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
