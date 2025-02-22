@@ -27,24 +27,23 @@ namespace bio {
 // Iterates over a string, returning words separated by the specified separator
 // characters.
 //
-// Examples:
+// For example, the following:
 //
 // ```
-// WordIterator it("AA0BB1CC2DD", "012");
-// EXPECT_THAT(it.Next(), ::testing::Optional("AA"));
-// EXPECT_THAT(it.Next(), ::testing::Optional("BB"));
-// EXPECT_THAT(it.Next(), ::testing::Optional("CC"));
-// EXPECT_THAT(it.Next(), ::testing::Optional("DD"));
-// EXPECT_FALSE(it.Next().has_value());
+// WordIterator it("aa0bb1cc2dd", "012");
+// while (!it.eol()) {
+//   std::optional<absl::string_view> word = it.Next();
+//   std::cout << word << "\n";
+// }
 // ```
 //
+// would print:
+//
 // ```
-// WordIterator it("AA0BB12CC", "012");
-// EXPECT_THAT(it.Next(), ::testing::Optional("AA"));
-// EXPECT_THAT(it.Next(), ::testing::Optional("BB"));
-// EXPECT_THAT(it.Next(), ::testing::Optional(""));
-// EXPECT_THAT(it.Next(), ::testing::Optional("CC"));
-// EXPECT_FALSE(it.Next().has_value());
+// aa
+// bb
+// cc
+// dd
 // ```
 class WordIterator {
  public:
@@ -52,6 +51,9 @@ class WordIterator {
 
   // Returns the next word.
   auto Next() -> std::optional<absl::string_view>;
+
+  // Returns true if the end of the string has been reached.
+  auto eol() const -> bool;
 
  private:
   std::string str_;

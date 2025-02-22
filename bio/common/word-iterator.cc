@@ -54,4 +54,8 @@ auto WordIterator::Next() -> std::optional<absl::string_view> {
   return std::nullopt;
 }
 
+auto WordIterator::eol() const -> bool {
+  return lookahead_cursor_ == str_.size();
+}
+
 }  // namespace bio

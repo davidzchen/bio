@@ -12,29 +12,35 @@ using ::testing::Optional;
 TEST(WordIterator, NextIsEmpty) {
   WordIterator it("", "");
   EXPECT_FALSE(it.Next().has_value());
+  EXPECT_TRUE(it.eol());
 }
 
 TEST(WordIterator, NextIsEmptyWithSeparators) {
   WordIterator it("", "012");
   EXPECT_FALSE(it.Next().has_value());
+  EXPECT_TRUE(it.eol());
 }
 
 TEST(WordIterator, Next) {
   WordIterator it("AA0BB1CC2DD", "012");
+  EXPECT_FALSE(it.eol());
   EXPECT_THAT(it.Next(), Optional(absl::string_view("AA")));
   EXPECT_THAT(it.Next(), Optional(absl::string_view("BB")));
   EXPECT_THAT(it.Next(), Optional(absl::string_view("CC")));
   EXPECT_THAT(it.Next(), Optional(absl::string_view("DD")));
   EXPECT_FALSE(it.Next().has_value());
+  EXPECT_TRUE(it.eol());
 }
 
 TEST(WordIterator, NextWithEmptyStrings) {
   WordIterator it("AA0BB12CC", "012");
+  EXPECT_FALSE(it.eol());
   EXPECT_THAT(it.Next(), Optional(absl::string_view("AA")));
   EXPECT_THAT(it.Next(), Optional(absl::string_view("BB")));
   EXPECT_THAT(it.Next(), Optional(absl::string_view("")));
   EXPECT_THAT(it.Next(), Optional(absl::string_view("CC")));
   EXPECT_FALSE(it.Next().has_value());
+  EXPECT_TRUE(it.eol());
 }
 
 }  // namespace
