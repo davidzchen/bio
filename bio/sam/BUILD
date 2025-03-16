@@ -37,3 +37,37 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "cigar",
+    hdrs = ["cigar.h"],
+)
+
+cc_library(
+    name = "cigar-parser",
+    srcs = ["cigar-parser.cc"],
+    hdrs = ["cigar-parser.h"],
+    deps = [
+        ":cigar",
+        "//bio/sam/internal:cigar-lexer",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:statusor",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@gxl//gxl/status:status_macros",
+    ],
+)
+
+cc_test(
+    name = "cigar-parser_test",
+    srcs = ["cigar-parser_test.cc"],
+    deps = [
+        ":cigar",
+        ":cigar-parser",
+        "@abseil-cpp//absl/status",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@abseil-cpp//absl/status:statusor",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

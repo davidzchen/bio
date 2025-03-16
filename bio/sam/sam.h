@@ -16,7 +16,6 @@
 #define BIO_SAM_SAM_H_
 
 #include <cstdint>
-#include <cstdlib>
 #include <optional>
 #include <string>
 #include <vector>
@@ -56,26 +55,6 @@ struct SamEntry {
   std::optional<std::string> seq;   // Query sequence
   std::optional<std::string> qual;  // Query quality string
   std::vector<std::string> tags;    // Optional tags
-};
-
-// Represents a CIGAR operation type.
-enum class CigarType {
-  kAlignmentMatch,    // M: Alignment match
-  kInsertion,         // I: Insertion into the reference
-  kDeletion,          // D: Deletion from the reference
-  kSkippedRegion,     // N: Skipped region from the reference
-  kSoftClipping,      // S: Soft clipping
-  kHardClipping,      // H: Hard clipping
-  kPadding,           // P: Padding
-  kSequenceMatch,     // =: Sequence match
-  kSequenceMismatch,  // X: Sequence mismatch
-  kInvalid
-};
-
-// Represents a single CIGAR operation.
-struct CigarOperation {
-  CigarType type;
-  size_t length;
 };
 
 }  // namespace bio
