@@ -6,7 +6,6 @@ cc_library(
     hdrs = ["cigar-lexer.h"],
     deps = [
         "//bio/sam:cigar",
-        "@abseil-cpp//absl/container:flat_hash_set",
         "@abseil-cpp//absl/log:check",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:statusor",

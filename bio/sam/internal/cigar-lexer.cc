@@ -103,7 +103,6 @@ auto CigarLengthToken::New(absl::string_view text)
 
 CigarLexer::CigarLexer(absl::string_view cigar)
     : cigar_(std::string(cigar)),
-      separators_({'M', 'I', 'D', 'N', 'S', 'H', 'P', '=', 'X'}),
       start_cursor_(0),
       lookahead_cursor_(0),
       in_token_(std::nullopt) {}

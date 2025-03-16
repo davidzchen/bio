@@ -21,21 +21,26 @@
 #include <optional>
 #include <string>
 
-#include "absl/container/flat_hash_set.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "bio/sam/cigar.h"
 
 namespace bio::internal {
 
+// Represents a CIGAR token type.
 enum class CigarTokenType {
+  // Operation token, consisting of one of the characters denoting CIGAR
+  // operations.
   kOperation,
+
+  // Length token, consisting of integer values.
   kLength,
 };
 
 // std::ostream << overload for CigarTokenType.
 auto operator<<(std::ostream& os, CigarTokenType type) -> std::ostream&;
 
+// Base class for a CIGAR token.
 class CigarToken {
  public:
   explicit CigarToken(absl::string_view text) : text_(text) {}
@@ -51,6 +56,7 @@ class CigarToken {
   std::string text_;
 };
 
+// Represents a CIGAR operation token.
 class CigarOperationToken : public CigarToken {
  public:
   explicit CigarOperationToken(absl::string_view text);
@@ -71,6 +77,7 @@ class CigarOperationToken : public CigarToken {
   CigarType type_;
 };
 
+// Represents a CIGAR length token.
 class CigarLengthToken : public CigarToken {
  public:
   explicit CigarLengthToken(absl::string_view text);
@@ -106,7 +113,6 @@ class CigarLexer {
   auto TokenType() -> CigarTokenType;
 
   std::string cigar_;
-  absl::flat_hash_set<char> separators_;
   size_t start_cursor_;
   size_t lookahead_cursor_;
   std::optional<CigarTokenType> in_token_;
