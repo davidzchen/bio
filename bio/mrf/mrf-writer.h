@@ -27,6 +27,45 @@
 
 namespace bio {
 
+// Writer for MRF files.
+//
+// Example ussage:
+//
+// ```
+// MrfHeader mrf_header = {/* MRF header */};
+// absl::StatusOr<std::unique_ptr<MrfWriter>> writer_or =
+//     MrfWriter::New("path/to/file.mrf", mrf_header);
+// if (!writer_or.ok()) {
+//   // Handle error.
+// }
+// std::unique_ptr<MrfWriter> writer = std:::move(writer_or.value());
+//
+// MrfEntry entry = {/* MRF entry */};
+// absl::Status status = writer->Write(entry);
+// if (!status.ok()) {
+//   // Handle error.
+// }
+//
+// std::vector<MrfEntry> entries = {/* MRF entries */};
+// status = writer->Write(entries);
+// if (!status.ok()) {
+//   // Handle error
+// }
+// ```
+//
+// Or if using status macros:
+//
+// ```
+// MrfHeader mrf_header = {/* MRF header */};
+// ASSIGN_OR_RETURN(std::unique_ptr<MrfWriter> writer,
+//                  MrfWriter::New("/path/to/file.mrf", mrf_header));
+//
+// MrfEntry entry = {/* MRF entry */};
+// RETURN_IF_ERROR(writer->Write(entry));
+//
+// std::vector<MrfEntry> entries = {/* MRF entries */};
+// RETURN_IF_ERROR(writer->Write(entries));
+// ```
 class MrfWriter {
  public:
   explicit MrfWriter(absl::Nonnull<gxl::File*> file,
