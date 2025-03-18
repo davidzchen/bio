@@ -55,6 +55,9 @@ struct SamEntry {
   std::optional<std::string> seq;   // Query sequence
   std::optional<std::string> qual;  // Query quality string
   std::vector<std::string> tags;    // Optional tags
+
+  // Serializes the SamEntry to its string representation.
+  auto string() const -> std::string;
 };
 
 }  // namespace bio
