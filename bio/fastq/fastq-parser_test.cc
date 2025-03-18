@@ -32,12 +32,12 @@ using ::absl_testing::IsOk;
 using ::absl_testing::StatusIs;
 using ::testing::HasSubstr;
 
-TEST(FastqParser, NextSequenceEmpty) {
+TEST(FastqParser, NextEmpty) {
   std::unique_ptr<FastqParser> parser =
       FastqParser::NewOrDie("bio/fastq/testdata/empty.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(sequence.status(), IsOk());
   EXPECT_EQ(*sequence, nullptr);
   EXPECT_TRUE(parser->eof());
@@ -50,67 +50,67 @@ auto CheckSequenceEquals(const FastqSequence& expected,
   EXPECT_EQ(expected.quality, actual->quality);
 }
 
-TEST(FastqParser, NextSequenceMissingSequenceLine) {
+TEST(FastqParser, NextMissingSequenceLine) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/invalid-missing-sequence-line.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(sequence.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected sequence line but got EOF")));
 }
 
-TEST(FastqParser, NextSequenceMissingQualityIdLine) {
+TEST(FastqParser, NextMissingQualityIdLine) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/invalid-missing-quality-id-line.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(sequence.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected quality ID line but got EOF")));
 }
 
-TEST(FastqParser, NextSequenceInvalidQualityIdLine) {
+TEST(FastqParser, NextInvalidQualityIdLine) {
   std::unique_ptr<FastqParser> parser =
       FastqParser::NewOrDie("bio/fastq/testdata/invalid-quality-id-line.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(sequence.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected quality ID: '+' or")));
 }
 
-TEST(FastqParser, NextSequenceMissingQualityLine) {
+TEST(FastqParser, NextMissingQualityLine) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/invalid-missing-quality-line.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(sequence.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected quality line but got EOF")));
 }
 
-TEST(FastqParser, NextSequenceInvalidQualityLineLength) {
+TEST(FastqParser, NextInvalidQualityLineLength) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/invalid-quality-line-length.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(sequence.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("does not match quality line length")));
 }
 
-TEST(FastqParser, NextSequenceSingleSequenceWithoutQualityId) {
+TEST(FastqParser, NextSingleSequenceWithoutQualityId) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/single-sequence-without-quality-id.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(actual_or.status(), IsOk());
   std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
@@ -124,12 +124,12 @@ TEST(FastqParser, NextSequenceSingleSequenceWithoutQualityId) {
   CheckSequenceEquals(expected, actual.get());
 }
 
-TEST(FastqParser, NextSequenceSingleSequenceWithQualityId) {
+TEST(FastqParser, NextSingleSequenceWithQualityId) {
   std::unique_ptr<FastqParser> parser = FastqParser::NewOrDie(
       "bio/fastq/testdata/single-sequence-with-quality-id.fastq");
 
   absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_THAT(actual_or.status(), IsOk());
   std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
@@ -141,13 +141,13 @@ TEST(FastqParser, NextSequenceSingleSequenceWithQualityId) {
   CheckSequenceEquals(expected, actual.get());
 }
 
-TEST(FastqParser, NextSequenceMultiSequnce) {
+TEST(FastqParser, NextMultiSequnce) {
   std::unique_ptr<FastqParser> parser =
       FastqParser::NewOrDie("bio/fastq/testdata/multiple-sequence.fastq");
 
   {
     absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =
-        parser->NextSequence(/*truncate_name=*/false);
+        parser->Next(/*truncate_name=*/false);
     EXPECT_THAT(actual_or.status(), IsOk());
     std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
@@ -164,7 +164,7 @@ TEST(FastqParser, NextSequenceMultiSequnce) {
   }
   {
     absl::StatusOr<std::unique_ptr<FastqSequence>> actual_or =
-        parser->NextSequence(/*truncate_name=*/false);
+        parser->Next(/*truncate_name=*/false);
     EXPECT_THAT(actual_or.status(), IsOk());
     std::unique_ptr<FastqSequence> actual = std::move(actual_or.value());
 
@@ -181,12 +181,12 @@ TEST(FastqParser, NextSequenceMultiSequnce) {
   }
 }
 
-TEST(FastqParser, ReadAllSequencesEmpty) {
+TEST(FastqParser, AllEmpty) {
   std::unique_ptr<FastqParser> parser =
       FastqParser::NewOrDie("bio/fastq/testdata/empty.fastq");
 
   absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> sequences =
-      parser->ReadAllSequences(/*truncate_name=*/false);
+      parser->All(/*truncate_name=*/false);
   EXPECT_TRUE(sequences->empty());
 }
 
@@ -199,12 +199,12 @@ auto CheckSequencesEquals(
   }
 }
 
-TEST(FastqParser, ReadAllSequences) {
+TEST(FastqParser, All) {
   std::unique_ptr<FastqParser> parser =
       FastqParser::NewOrDie("bio/fastq/testdata/multiple-sequence.fastq");
 
   absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> actual_sequences =
-      parser->ReadAllSequences();
+      parser->All();
 
   std::vector<FastqSequence> expected_sequences = {
       {.name = "SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72",

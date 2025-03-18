@@ -42,7 +42,7 @@ namespace bio {
 // std::unique_ptr<FastqParser> parser = std::move(parser_or.value());
 // while (!parser->eof()) {
 //   absl::StatusOr<std::unique_ptr<FastqSequence>> sequence_or =
-//       parser->NextSequence(/*truncate_name=*/true);
+//       parser->Next(/*truncate_name=*/true);
 //   if (!sequence_or.ok()) {
 //     // Handle error.
 //   }
@@ -58,7 +58,7 @@ namespace bio {
 //                  FastqParser::New("path/to/file.fastq"));
 // while (!parser->eof()) {
 //   ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
-//                    parser->NextSequence(/*truncate_name=*/true));
+//                    parser->Next(/*truncate_name=*/true));
 //   // Do stuff with sequence.
 // }
 // ```
@@ -77,11 +77,11 @@ class FastqParser : public LineParserBase {
   static auto NewOrDie(absl::string_view path) -> std::unique_ptr<FastqParser>;
 
   // Returns the next FASTQ entry from the file.
-  auto NextSequence(bool truncate_name = false)
+  auto Next(bool truncate_name = false)
       -> absl::StatusOr<std::unique_ptr<FastqSequence>>;
 
   // Returns a vector of all sequences in the file.
-  auto ReadAllSequences(bool truncate_name = false)
+  auto All(bool truncate_name = false)
       -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>>;
 };
 

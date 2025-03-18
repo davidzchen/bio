@@ -56,7 +56,7 @@ auto FastqParser::NewOrDie(absl::string_view path)
   return std::move(parser.value());
 }
 
-auto FastqParser::NextSequence(bool truncate_name)
+auto FastqParser::Next(bool truncate_name)
     -> absl::StatusOr<std::unique_ptr<FastqSequence>> {
   if (eof()) {
     return nullptr;
@@ -115,12 +115,12 @@ auto FastqParser::NextSequence(bool truncate_name)
   return sequence;
 }
 
-auto FastqParser::ReadAllSequences(bool truncate_name)
+auto FastqParser::All(bool truncate_name)
     -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> {
   std::vector<std::unique_ptr<FastqSequence>> sequences;
   while (!eof()) {
     ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
-                     NextSequence(truncate_name));
+                     Next(truncate_name));
     sequences.push_back(std::move(sequence));
   }
   return sequences;
