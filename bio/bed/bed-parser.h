@@ -44,10 +44,10 @@ class BedParser : public LineParserBase {
   static auto NewOrDie(absl::string_view path) -> std::unique_ptr<BedParser>;
 
   // Returns the next BED entry from the file.
-  auto NextEntry() -> absl::StatusOr<std::unique_ptr<BedEntry>>;
+  auto Next() -> absl::StatusOr<std::unique_ptr<BedEntry>>;
 
   // Returns a vector of all entries from the file.
-  auto AllEntries() -> absl::StatusOr<std::vector<std::unique_ptr<BedEntry>>>;
+  auto All() -> absl::StatusOr<std::vector<std::unique_ptr<BedEntry>>>;
 
  private:
   // Used to track the number of BED fields used by the file and whether
