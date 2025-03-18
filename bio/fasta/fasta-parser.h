@@ -44,7 +44,7 @@ namespace bio {
 // std::unique_ptr<FastaParser> parser = std::move(parser_or.value());
 // while (!parser->eof()) {
 //   std::optional<std::unique_ptr<Sequence>> sequence =
-//       parser->NextSequence(/*truncate_name=*/true);
+//       parser->Next(/*truncate_name=*/true);
 //   if (!sequence.has_value()) {
 //     break;
 //   }
@@ -59,7 +59,7 @@ namespace bio {
 //                  FastaParser::New("path/to/in.fasta"));
 // while (!parser->eof()) {
 //   std::optional<std::unique_ptr<Sequence>> sequence =
-//       parser->NextSequence(/*truncate_name=*/true);
+//       parser->Next(/*truncate_name=*/true);
 //   if (!sequence.has_value()) {
 //     break;
 //   }
@@ -82,11 +82,11 @@ class FastaParser : public LineParserBase {
   static auto NewOrDie(absl::string_view path) -> std::unique_ptr<FastaParser>;
 
   // Returns the next sequence from the file.
-  auto NextSequence(bool truncate_name = false)
+  auto Next(bool truncate_name = false)
       -> std::optional<std::unique_ptr<FastaSequence>>;
 
   // Returns a vector of all sequences in the file.
-  auto ReadAllSequences(bool truncate_name = false)
+  auto All(bool truncate_name = false)
       -> std::vector<std::unique_ptr<FastaSequence>>;
 };
 

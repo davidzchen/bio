@@ -25,21 +25,21 @@
 namespace bio {
 namespace {
 
-TEST(FastaParser, NextSequenceEmpty) {
+TEST(FastaParser, NextEmpty) {
   std::unique_ptr<FastaParser> parser =
       FastaParser::NewOrDie("bio/fasta/testdata/empty.fasta");
 
   std::optional<std::unique_ptr<FastaSequence>> sequence =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_FALSE(sequence.has_value());
 }
 
-TEST(FastaParser, NextSequenceSingleSequence) {
+TEST(FastaParser, NextSingleSequence) {
   std::unique_ptr<FastaParser> parser =
       FastaParser::NewOrDie("bio/fasta/testdata/single-sequence.fasta");
 
   std::optional<std::unique_ptr<FastaSequence>> actual_opt =
-      parser->NextSequence(/*truncate_name=*/false);
+      parser->Next(/*truncate_name=*/false);
   EXPECT_TRUE(actual_opt.has_value());
   std::unique_ptr<FastaSequence> actual = std::move(actual_opt.value());
 
@@ -54,13 +54,13 @@ TEST(FastaParser, NextSequenceSingleSequence) {
   EXPECT_EQ(actual->sequence, expected.sequence);
 }
 
-TEST(FastaParser, NextSequenceMultiSequence) {
+TEST(FastaParser, NextMultiSequence) {
   std::unique_ptr<FastaParser> parser =
       FastaParser::NewOrDie("bio/fasta/testdata/multi-sequence.fasta");
 
   {
     std::optional<std::unique_ptr<FastaSequence>> actual_opt =
-        parser->NextSequence(/*truncate_name*/ false);
+        parser->Next(/*truncate_name*/ false);
     EXPECT_TRUE(actual_opt.has_value());
     std::unique_ptr<FastaSequence> actual = std::move(actual_opt.value());
 
@@ -77,7 +77,7 @@ TEST(FastaParser, NextSequenceMultiSequence) {
   }
   {
     std::optional<std::unique_ptr<FastaSequence>> actual_opt =
-        parser->NextSequence(/*truncate_name*/ false);
+        parser->Next(/*truncate_name*/ false);
     EXPECT_TRUE(actual_opt.has_value());
     std::unique_ptr<FastaSequence> actual = std::move(actual_opt.value());
 
@@ -92,11 +92,11 @@ TEST(FastaParser, NextSequenceMultiSequence) {
   }
 }
 
-TEST(FastaParser, ReadAllSequencesEmpty) {
+TEST(FastaParser, AllEmpty) {
   std::unique_ptr<FastaParser> parser =
       FastaParser::NewOrDie("bio/fasta/testdata/empty.fasta");
   std::vector<std::unique_ptr<FastaSequence>> sequences =
-      parser->ReadAllSequences(/*truncate_name=*/false);
+      parser->All(/*truncate_name=*/false);
   EXPECT_TRUE(sequences.empty());
 }
 
@@ -110,11 +110,11 @@ auto CheckSequencesEquals(
   }
 }
 
-TEST(FastaParser, ReadAllSequences) {
+TEST(FastaParser, All) {
   std::unique_ptr<FastaParser> parser =
       FastaParser::NewOrDie("bio/fasta/testdata/multi-sequence.fasta");
   std::vector<std::unique_ptr<FastaSequence>> actual_sequences =
-      parser->ReadAllSequences(/*truncate_name=*/false);
+      parser->All(/*truncate_name=*/false);
 
   std::vector<FastaSequence> expected_sequences = {
       {.name = "SEQUENCE_1",

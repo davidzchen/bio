@@ -54,7 +54,7 @@ auto FastaParser::NewOrDie(absl::string_view path)
   return std::move(parser.value());
 }
 
-auto FastaParser::NextSequence(bool truncate_name)
+auto FastaParser::Next(bool truncate_name)
     -> std::optional<std::unique_ptr<FastaSequence>> {
   if (eof()) {
     return std::nullopt;
@@ -91,12 +91,12 @@ auto FastaParser::NextSequence(bool truncate_name)
   return sequence;
 }
 
-auto FastaParser::ReadAllSequences(bool truncate_name)
+auto FastaParser::All(bool truncate_name)
     -> std::vector<std::unique_ptr<FastaSequence>> {
   std::vector<std::unique_ptr<FastaSequence>> sequences;
   while (true) {
     std::optional<std::unique_ptr<FastaSequence>> sequence =
-        NextSequence(truncate_name);
+        Next(truncate_name);
     if (!sequence.has_value()) {
       break;
     }
