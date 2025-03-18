@@ -54,6 +54,31 @@ cc_test(
 )
 
 cc_library(
+    name = "sam-writer",
+    hdrs = ["sam-writer.h"],
+    deps = [
+        ":sam",
+        "//bio/common:entry-writer-base",
+        "@abseil-cpp//absl/base:nullability",
+        "@gxl//gxl/file",
+    ],
+)
+
+cc_test(
+    name = "sam-writer_test",
+    srcs = ["sam-writer_test.cc"],
+    deps = [
+        ":sam",
+        ":sam-writer",
+        "@abseil-cpp//absl/status:status_matchers",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "@gxl//gxl/file",
+        "@gxl//gxl/file:path",
+    ],
+)
+
+cc_library(
     name = "cigar",
     hdrs = ["cigar.h"],
 )

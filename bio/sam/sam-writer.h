@@ -12,58 +12,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BIO_BEDGRAPH_BEDGRAPH_WriTER_H_
-#define BIO_BEDGRAPH_BEDGRAPH_WriTER_H_
+#ifndef BIO_SAM_SAM_WRITER_H_
+#define BIO_SAM_SAM_WRITER_H_
 
 #include "absl/base/nullability.h"
-#include "bio/bedgraph/bedgraph.h"
 #include "bio/common/entry-writer-base.h"
+#include "bio/sam/sam.h"
 #include "gxl/file/file.h"
 
 namespace bio {
 
-// Writer for BedGraph files.
+// Writer for SAM files.
 //
 // Example usage:
 //
 // ```
-// absl::StatusOr<std::unique_ptr<BedGraphWriter>> writer_or =
-//     BedWriter::New("path/to/out.bedgraph");
+// absl::StatusOr<std::unique_ptr<SamWriter>> writer_or =
+//     SamWriter::New("path/to/out.sam");
 // if (!writer_or.ok()) {
-//   // Handle error.
+//   // Handle error
 // }
-// std::unique_ptr<BedGraphWriter> writer = std::move(writer_or.value());
+// std::unique_ptr<SamWriter> writer = std::move(writer_or.value());
 //
-// std::vector<BedGraphEntry> entries = {/* BED entries */};
+// const std::vector<SamEntry> entries = {/* SAM entries */};
 // absl::Status status = writer->Write(entries);
 // if (!status.ok()) {
-//   // Handle error.
+//   // Handle error
 // }
 //
-// BedGraphEntry entry = {/*BED entry*/};
+// const SamEntry entry = {/* SAM entry */};
 // status = writer->Write(entry);
 // if (!status.ok()) {
-//   // Handle error.
+//   // Handle error
 // }
 // ```
 //
-// Or if using status macros:
+// Or, if using status macros:
 //
 // ```
-// ASSIGN_OR_RETURN(std::unique_ptr<BedGraphWriter> writer,
-//                  BedWriter::New("path/to/out.fastq"));
-// std::vector<BedGraphEntry> entries = {/*BED entries*/};
+// ASSIGN_OR_RETURN(std::unique_ptr<SamWriter> writer,
+//                  SamWriter::New("path/to/out.sam"));
+// const std::vector<SamEntry> entries = {/* SAM entries */};
 // RETURN_IF_ERROR(writer->Write(entries));
 //
-// BedGraphEntry entry = {/*BED entry*/};
+// const SamEntry entry = {/* SAM entry */};
 // RETURN_IF_ERROR(writer->Write(entry));
 // ```
-class BedGraphWriter : public EntryWriterBase<BedGraphWriter, BedGraphEntry> {
+class SamWriter : public EntryWriterBase<SamWriter, SamEntry> {
  public:
-  explicit BedGraphWriter(absl::Nonnull<gxl::File*> file)
-      : EntryWriterBase(file) {}
+  explicit SamWriter(absl::Nonnull<gxl::File*> file) : EntryWriterBase(file) {}
 };
 
 }  // namespace bio
 
-#endif  // BIO_BEDGRAPH_BEDGRAPH_WriTER_H_
+#endif  // BIO_SAM_SAM_WRITER_H_
