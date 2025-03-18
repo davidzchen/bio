@@ -31,68 +31,68 @@ using ::absl_testing::IsOk;
 using ::absl_testing::StatusIs;
 using ::testing::HasSubstr;
 
-TEST(BedGraphParser, NextEntryEmpty) {
+TEST(BedGraphParser, NextEmpty) {
   std::unique_ptr<BedGraphParser> parser =
       BedGraphParser::NewOrDie("bio/bedgraph/testdata/empty.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_EQ(*entry, nullptr);
   EXPECT_TRUE(parser->eof());
 }
 
-TEST(BedGraphParser, NextEntryMissingStart) {
+TEST(BedGraphParser, NextMissingStart) {
   std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
       "bio/bedgraph/testdata/invalid-num-fields-1.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_THAT(entry.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected 3 fields but got ")));
 }
 
-TEST(BedGraphParser, NextEntryMissingEnd) {
+TEST(BedGraphParser, NextMissingEnd) {
   std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
       "bio/bedgraph/testdata/invalid-num-fields-2.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_THAT(entry.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected 3 fields but got ")));
 }
 
-TEST(BedGraphParser, NextEntryMissingValue) {
+TEST(BedGraphParser, NextMissingValue) {
   std::unique_ptr<BedGraphParser> parser = BedGraphParser::NewOrDie(
       "bio/bedgraph/testdata/invalid-num-fields-3.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_THAT(entry.status(),
               StatusIs(absl::StatusCode::kInvalidArgument,
                        HasSubstr("Expected 3 fields but got ")));
 }
 
-TEST(BedGraphParser, NextEntryInvalidStart) {
+TEST(BedGraphParser, NextInvalidStart) {
   std::unique_ptr<BedGraphParser> parser =
       BedGraphParser::NewOrDie("bio/bedgraph/testdata/invalid-start.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_THAT(entry.status(), StatusIs(absl::StatusCode::kInvalidArgument,
                                        HasSubstr("Invalid start format")));
 }
 
-TEST(BedGraphParser, NextEntryInvalidEnd) {
+TEST(BedGraphParser, NextInvalidEnd) {
   std::unique_ptr<BedGraphParser> parser =
       BedGraphParser::NewOrDie("bio/bedgraph/testdata/invalid-end.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_THAT(entry.status(), StatusIs(absl::StatusCode::kInvalidArgument,
                                        HasSubstr("Invalid end format")));
 }
 
-TEST(BedGraphParser, NextEntryInvalidValue) {
+TEST(BedGraphParser, NextInvalidValue) {
   std::unique_ptr<BedGraphParser> parser =
       BedGraphParser::NewOrDie("bio/bedgraph/testdata/invalid-value.bedgraph");
 
-  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->NextEntry();
+  absl::StatusOr<std::unique_ptr<BedGraphEntry>> entry = parser->Next();
   EXPECT_THAT(entry.status(), StatusIs(absl::StatusCode::kInvalidArgument,
                                        HasSubstr("Invalid value format")));
 }
@@ -105,12 +105,12 @@ auto CheckEntryEquals(const BedGraphEntry* actual,
   EXPECT_NEAR(actual->value, expected.value, 0.05);
 }
 
-TEST(BedGraphParser, NextEntryValid) {
+TEST(BedGraphParser, NextValid) {
   std::unique_ptr<BedGraphParser> parser =
       BedGraphParser::NewOrDie("bio/bedgraph/testdata/valid.bedgraph");
 
   {
-    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->NextEntry();
+    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->Next();
     EXPECT_THAT(actual.status(), IsOk());
     BedGraphEntry expected = {
         .chromosome = "chr19",
@@ -121,7 +121,7 @@ TEST(BedGraphParser, NextEntryValid) {
     CheckEntryEquals(actual->get(), expected);
   }
   {
-    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->NextEntry();
+    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->Next();
     EXPECT_THAT(actual.status(), IsOk());
     BedGraphEntry expected = {
         .chromosome = "chr19",
@@ -133,12 +133,12 @@ TEST(BedGraphParser, NextEntryValid) {
   }
 }
 
-TEST(BedGraphParser, NextEntryValidGenomeBrowser) {
+TEST(BedGraphParser, NextValidGenomeBrowser) {
   std::unique_ptr<BedGraphParser> parser =
       BedGraphParser::NewOrDie("bio/bedgraph/testdata/genome-browser.bedgraph");
 
   {
-    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->NextEntry();
+    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->Next();
     EXPECT_THAT(actual.status(), IsOk());
     BedGraphEntry expected = {
         .chromosome = "chr17",
@@ -149,7 +149,7 @@ TEST(BedGraphParser, NextEntryValidGenomeBrowser) {
     CheckEntryEquals(actual->get(), expected);
   }
   {
-    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->NextEntry();
+    absl::StatusOr<std::unique_ptr<BedGraphEntry>> actual = parser->Next();
     EXPECT_THAT(actual.status(), IsOk());
     BedGraphEntry expected = {
         .chromosome = "chr17",

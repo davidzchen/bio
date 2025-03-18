@@ -61,8 +61,7 @@ auto BedGraphParser::NewOrDie(absl::string_view path)
   return std::move(parser.value());
 }
 
-auto BedGraphParser::NextEntry()
-    -> absl::StatusOr<std::unique_ptr<BedGraphEntry>> {
+auto BedGraphParser::Next() -> absl::StatusOr<std::unique_ptr<BedGraphEntry>> {
   if (eof()) {
     return nullptr;
   }
@@ -90,11 +89,11 @@ auto BedGraphParser::NextEntry()
   return entry;
 }
 
-auto BedGraphParser::AllEntries()
+auto BedGraphParser::All()
     -> absl::StatusOr<std::vector<std::unique_ptr<BedGraphEntry>>> {
   std::vector<std::unique_ptr<BedGraphEntry>> entries;
   while (!eof()) {
-    ASSIGN_OR_RETURN(std::unique_ptr<BedGraphEntry> entry, NextEntry());
+    ASSIGN_OR_RETURN(std::unique_ptr<BedGraphEntry> entry, Next());
     entries.push_back(std::move(entry));
   }
   return entries;

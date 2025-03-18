@@ -45,11 +45,10 @@ class BedGraphParser : public LineParserBase {
       -> std::unique_ptr<BedGraphParser>;
 
   // Returns the next BedGraph entry from the file.
-  auto NextEntry() -> absl::StatusOr<std::unique_ptr<BedGraphEntry>>;
+  auto Next() -> absl::StatusOr<std::unique_ptr<BedGraphEntry>>;
 
   // Returns a vector of all entries from the file.
-  auto AllEntries()
-      -> absl::StatusOr<std::vector<std::unique_ptr<BedGraphEntry>>>;
+  auto All() -> absl::StatusOr<std::vector<std::unique_ptr<BedGraphEntry>>>;
 };
 
 }  // namespace bio
