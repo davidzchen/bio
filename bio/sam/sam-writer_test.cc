@@ -18,6 +18,7 @@
 #include <string>
 
 #include "absl/status/status_matchers.h"
+#include "bio/sam/cigar-parser.h"
 #include "bio/sam/sam.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -54,7 +55,7 @@ TEST(SamWriter, WriteSingleEntry) {
                   .rname = "ref",
                   .pos = 7,
                   .mapq = 30,
-                  .cigar = "8M2I4M1D3M",
+                  .cigar = ParseCigarOrDie("8M2I4M1D3M"),
                   .rnext = "=",
                   .pnext = 37,
                   .tlen = 39,
@@ -81,7 +82,7 @@ TEST(SamWriter, WriteMultipleEntries) {
                   .rname = "ref",
                   .pos = 9,
                   .mapq = 30,
-                  .cigar = "5S6M",
+                  .cigar = ParseCigarOrDie("5S6M"),
                   .rnext = "*",
                   .pnext = 0,
                   .tlen = 0,
@@ -95,7 +96,7 @@ TEST(SamWriter, WriteMultipleEntries) {
                   .rname = "ref",
                   .pos = 29,
                   .mapq = 17,
-                  .cigar = "6H5M",
+                  .cigar = ParseCigarOrDie("6H5M"),
                   .rnext = "*",
                   .pnext = 0,
                   .tlen = 0,
@@ -124,7 +125,7 @@ TEST(SamWriter, WriteVector) {
                               .rname = "ref",
                               .pos = 9,
                               .mapq = 30,
-                              .cigar = "5S6M",
+                              .cigar = ParseCigarOrDie("5S6M"),
                               .rnext = "*",
                               .pnext = 0,
                               .tlen = 0,
@@ -135,7 +136,7 @@ TEST(SamWriter, WriteVector) {
                               .rname = "ref",
                               .pos = 29,
                               .mapq = 17,
-                              .cigar = "6H5M",
+                              .cigar = ParseCigarOrDie("6H5M"),
                               .rnext = "*",
                               .pnext = 0,
                               .tlen = 0,

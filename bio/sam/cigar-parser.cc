@@ -18,6 +18,7 @@
 #include <optional>
 #include <vector>
 
+#include "absl/log/check.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_format.h"
@@ -76,6 +77,13 @@ auto CigarParser::Parse(absl::string_view cigar) -> absl::StatusOr<Cigar> {
     }
   }
   return Cigar{.operations = operations};
+}
+
+auto ParseCigarOrDie(absl::string_view cigar_str) -> Cigar {
+  CigarParser parser;
+  absl::StatusOr<Cigar> cigar = parser.Parse(cigar_str);
+  CHECK_OK(cigar.status()) << "Failed to parse CIGAR string: " << cigar_str;
+  return *cigar;
 }
 
 }  // namespace bio

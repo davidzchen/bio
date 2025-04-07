@@ -53,6 +53,18 @@ auto CigarOperation::string() const -> std::string {
   return absl::StrFormat("%d%c", length, CigarTypeChar(type));
 }
 
+auto Cigar::operator==(const Cigar& rhs) const -> bool {
+  if (rhs.operations.size() != operations.size()) {
+    return false;
+  }
+  for (int i = 0; i < operations.size(); ++i) {
+    if (rhs.operations[i] != operations[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 auto Cigar::string() const -> std::string {
   std::string output;
   for (const auto& operation : operations) {

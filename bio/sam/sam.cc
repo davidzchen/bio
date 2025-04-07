@@ -25,7 +25,7 @@ namespace bio {
 auto SamEntry::string() const -> std::string {
   std::string str =
       absl::StrFormat("%s\t%d\t%s\t%d\t%d\t%s\t%s\t%d\t%d", qname, flags, rname,
-                      pos, mapq, cigar, rnext, pnext, tlen);
+                      pos, mapq, cigar.string(), rnext, pnext, tlen);
 
   if (seq.has_value()) {
     absl::StrAppend(&str, absl::StrFormat("\t%s", *seq));

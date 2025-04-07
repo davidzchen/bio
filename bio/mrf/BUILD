@@ -87,6 +87,7 @@ cc_test(
     deps = [
         ":mrf",
         ":mrf-writer",
+        "//bio/common:sequence",
         "@abseil-cpp//absl/status:status_matchers",
         "@googletest//:gtest",
         "@googletest//:gtest_main",

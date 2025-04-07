@@ -15,7 +15,7 @@
 #ifndef BIO_SAM_CIGAR_PARSER_H_
 #define BIO_SAM_CIGAR_PARSER_H_
 
-#include <vector>
+#include <string>
 
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
@@ -32,6 +32,9 @@ class CigarParser {
   // Parses the CIGAR string into a vector of operations.
   auto Parse(absl::string_view cigar) -> absl::StatusOr<Cigar>;
 };
+
+// Parses the CIGAR string or kills the program if parsing fails.
+auto ParseCigarOrDie(absl::string_view cigar) -> Cigar;
 
 }  // namespace bio
 

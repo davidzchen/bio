@@ -14,6 +14,7 @@
 
 #include "bio/sam/sam-parser.h"
 
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <optional>
@@ -27,6 +28,7 @@
 #include "absl/strings/match.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
+#include "bio/sam/cigar-parser.h"
 #include "bio/sam/sam.h"
 #include "gxl/file/file.h"
 #include "gxl/status/status_macros.h"
@@ -79,7 +81,9 @@ auto SamParser::Next() -> absl::StatusOr<std::unique_ptr<SamEntry>> {
     entry->rname = fields[2];
     ASSIGN_OR_RETURN(entry->pos, ParseInt<uint32_t>(fields[3], "pos"));
     ASSIGN_OR_RETURN(entry->mapq, ParseUInt8(fields[4], "mapq"));
-    entry->cigar = fields[5];
+
+    CigarParser cigar_parser;
+    ASSIGN_OR_RETURN(entry->cigar, cigar_parser.Parse(fields[5]));
     entry->rnext = fields[6];
     ASSIGN_OR_RETURN(entry->pnext, ParseInt<uint32_t>(fields[7], "pnext"));
     ASSIGN_OR_RETURN(entry->tlen, ParseInt<int32_t>(fields[8], "tlen"));

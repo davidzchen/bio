@@ -5,6 +5,7 @@ cc_library(
     srcs = ["sam.cc"],
     hdrs = ["sam.h"],
     deps = [
+        ":cigar",
         "@abseil-cpp//absl/strings",
         "@abseil-cpp//absl/strings:str_format",
     ],
@@ -14,6 +15,7 @@ cc_test(
     name = "sam_test",
     srcs = ["sam_test.cc"],
     deps = [
+        ":cigar-parser",
         ":sam",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
@@ -25,6 +27,7 @@ cc_library(
     srcs = ["sam-parser.cc"],
     hdrs = ["sam-parser.h"],
     deps = [
+        ":cigar-parser",
         ":sam",
         "//bio/common:line-parser-base",
         "@abseil-cpp//absl/base:nullability",
@@ -43,6 +46,7 @@ cc_test(
     srcs = ["sam-parser_test.cc"],
     data = ["//bio/sam/testdata"],
     deps = [
+        ":cigar-parser",
         ":sam",
         ":sam-parser",
         "@abseil-cpp//absl/status",
@@ -68,6 +72,7 @@ cc_test(
     name = "sam-writer_test",
     srcs = ["sam-writer_test.cc"],
     deps = [
+        ":cigar-parser",
         ":sam",
         ":sam-writer",
         "@abseil-cpp//absl/status:status_matchers",
@@ -105,6 +110,7 @@ cc_library(
     deps = [
         ":cigar",
         "//bio/sam/internal:cigar-lexer",
+        "@abseil-cpp//absl/log:check",
         "@abseil-cpp//absl/status",
         "@abseil-cpp//absl/status:statusor",
         "@abseil-cpp//absl/strings",

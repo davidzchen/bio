@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include "bio/sam/cigar.h"
+
 namespace bio {
 
 // Bitwise flags for FLAGS field in SAM entry
@@ -48,7 +50,7 @@ struct SamEntry {
   std::string rname;  // Reference sequence name
   uint32_t pos;       // 1-based leftmost position/coordinate of clipped seq.
   uint8_t mapq;       // Mapping quality
-  std::string cigar;  // Extended CIGAR string
+  Cigar cigar;        // Extended CIGAR string
   std::string rnext;  // Mate reference sequence name ("=" if same as rname)
   uint32_t pnext;     // 1-based leftmost mate position of clipped sequence
   int32_t tlen;       // Observed Template Length

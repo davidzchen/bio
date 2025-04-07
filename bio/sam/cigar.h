@@ -56,6 +56,9 @@ struct CigarOperation {
 struct Cigar {
   std::vector<CigarOperation> operations;
 
+  // Checks for equality.
+  auto operator==(const Cigar& rhs) const -> bool;
+
   // Serializes the CigarString into a string.
   auto string() const -> std::string;
 };

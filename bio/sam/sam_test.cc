@@ -14,6 +14,7 @@
 
 #include "bio/sam/sam.h"
 
+#include "bio/sam/cigar-parser.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -27,7 +28,7 @@ TEST(SamEntry, String) {
       .rname = "ref",
       .pos = 9,
       .mapq = 30,
-      .cigar = "5S6M",
+      .cigar = ParseCigarOrDie("5S6M"),
       .rnext = "*",
       .pnext = 0,
       .tlen = 0,
@@ -42,7 +43,7 @@ TEST(SamEntry, StringWithtags) {
       .rname = "ref",
       .pos = 9,
       .mapq = 30,
-      .cigar = "5S6M",
+      .cigar = ParseCigarOrDie("5S6M"),
       .rnext = "*",
       .pnext = 0,
       .tlen = 0,
@@ -60,7 +61,7 @@ TEST(SamEntry, StringWithSeq) {
       .rname = "ref",
       .pos = 9,
       .mapq = 30,
-      .cigar = "5S6M",
+      .cigar = ParseCigarOrDie("5S6M"),
       .rnext = "*",
       .pnext = 0,
       .tlen = 0,
@@ -79,7 +80,7 @@ TEST(SamEntry, StringWithQual) {
       .rname = "ref",
       .pos = 9,
       .mapq = 30,
-      .cigar = "5S6M",
+      .cigar = ParseCigarOrDie("5S6M"),
       .rnext = "*",
       .pnext = 0,
       .tlen = 0,
