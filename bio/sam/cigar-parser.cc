@@ -37,8 +37,7 @@ using ::bio::internal::CigarTokenType;
 
 }  // namespace
 
-auto CigarParser::Parse(absl::string_view cigar)
-    -> absl::StatusOr<std::vector<CigarOperation>> {
+auto CigarParser::Parse(absl::string_view cigar) -> absl::StatusOr<Cigar> {
   CigarLexer lexer(cigar);
   std::vector<CigarOperation> operations;
   std::optional<CigarOperation> operation;
@@ -76,7 +75,7 @@ auto CigarParser::Parse(absl::string_view cigar)
       operation = {.length = length_token->length()};
     }
   }
-  return operations;
+  return Cigar{.operations = operations};
 }
 
 }  // namespace bio

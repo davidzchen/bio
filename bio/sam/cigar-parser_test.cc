@@ -33,34 +33,34 @@ using ::testing::HasSubstr;
 
 TEST(CigarParser, ParseEmpty) {
   CigarParser parser;
-  absl::StatusOr<std::vector<CigarOperation>> ops = parser.Parse("");
-  EXPECT_THAT(ops.status(), IsOk());
-  EXPECT_TRUE(ops->empty());
+  absl::StatusOr<Cigar> cigar = parser.Parse("");
+  EXPECT_THAT(cigar.status(), IsOk());
+  EXPECT_TRUE(cigar->operations.empty());
 }
 
 TEST(CigarParser, ParseInvalidConsecutiveOps) {
   CigarParser parser;
   {
-    absl::StatusOr<std::vector<CigarOperation>> ops = parser.Parse("M");
-    EXPECT_THAT(ops.status(),
+    absl::StatusOr<Cigar> cigar = parser.Parse("M");
+    EXPECT_THAT(cigar.status(),
                 StatusIs(absl::StatusCode::kInvalidArgument,
                          HasSubstr("consecutive operations found")));
   }
   {
-    absl::StatusOr<std::vector<CigarOperation>> ops = parser.Parse("MM");
-    EXPECT_THAT(ops.status(),
+    absl::StatusOr<Cigar> cigar = parser.Parse("MM");
+    EXPECT_THAT(cigar.status(),
                 StatusIs(absl::StatusCode::kInvalidArgument,
                          HasSubstr("consecutive operations found")));
   }
   {
-    absl::StatusOr<std::vector<CigarOperation>> ops = parser.Parse("12MM");
-    EXPECT_THAT(ops.status(),
+    absl::StatusOr<Cigar> cigar = parser.Parse("12MM");
+    EXPECT_THAT(cigar.status(),
                 StatusIs(absl::StatusCode::kInvalidArgument,
                          HasSubstr("consecutive operations found")));
   }
   {
-    absl::StatusOr<std::vector<CigarOperation>> ops = parser.Parse("1I2MM3D");
-    EXPECT_THAT(ops.status(),
+    absl::StatusOr<Cigar> cigar = parser.Parse("1I2MM3D");
+    EXPECT_THAT(cigar.status(),
                 StatusIs(absl::StatusCode::kInvalidArgument,
                          HasSubstr("consecutive operations found")));
   }
@@ -69,21 +69,20 @@ TEST(CigarParser, ParseInvalidConsecutiveOps) {
 TEST(CigarParser, Parse) {
   CigarParser parser;
   {
-    absl::StatusOr<std::vector<CigarOperation>> ops = parser.Parse("3M2I3M");
-    EXPECT_THAT(ops.status(), IsOk());
+    absl::StatusOr<Cigar> cigar = parser.Parse("3M2I3M");
+    EXPECT_THAT(cigar.status(), IsOk());
     EXPECT_THAT(
-        *ops,
+        cigar->operations,
         ElementsAre(
             CigarOperation{.type = CigarType::kAlignmentMatch, .length = 3},
             CigarOperation{.type = CigarType::kInsertion, .length = 2},
             CigarOperation{.type = CigarType::kAlignmentMatch, .length = 3}));
   }
   {
-    absl::StatusOr<std::vector<CigarOperation>> ops =
-        parser.Parse("3M20I30D200N3S4H99P10=11X");
-    EXPECT_THAT(ops.status(), IsOk());
+    absl::StatusOr<Cigar> cigar = parser.Parse("3M20I30D200N3S4H99P10=11X");
+    EXPECT_THAT(cigar.status(), IsOk());
     EXPECT_THAT(
-        *ops,
+        cigar->operations,
         ElementsAre(
             CigarOperation{.type = CigarType::kAlignmentMatch, .length = 3},
             CigarOperation{.type = CigarType::kInsertion, .length = 20},

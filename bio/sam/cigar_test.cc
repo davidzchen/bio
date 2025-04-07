@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef BIO_SAM_CIGAR_PARSER_H_
-#define BIO_SAM_CIGAR_PARSER_H_
-
-#include <vector>
-
-#include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
 #include "bio/sam/cigar.h"
 
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
 namespace bio {
+namespace {
 
-// Parser for CIGAR strings.
-class CigarParser {
- public:
-  CigarParser() = default;
-  ~CigarParser() = default;
+TEST(Cigar, ToStringEmpty) {
+  Cigar cigar;
+  EXPECT_EQ(cigar.string(), "");
+}
 
-  // Parses the CIGAR string into a vector of operations.
-  auto Parse(absl::string_view cigar) -> absl::StatusOr<Cigar>;
-};
+TEST(Cigar, ToString) {
+  Cigar cigar = {
+      .operations = {{CigarType::kAlignmentMatch, 3},
+                     {CigarType::kInsertion, 2},
+                     {CigarType::kAlignmentMatch, 3}},
+  };
+  EXPECT_EQ(cigar.string(), "3M2I3M");
+}
 
+}  // namespace
 }  // namespace bio
-
-#endif  // BIO_SAM_CIGAR_PARSER_H_
