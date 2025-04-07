@@ -80,7 +80,22 @@ cc_test(
 
 cc_library(
     name = "cigar",
+    srcs = ["cigar.cc"],
     hdrs = ["cigar.h"],
+    deps = [
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+    ],
+)
+
+cc_test(
+    name = "cigar_test",
+    srcs = ["cigar_test.cc"],
+    deps = [
+        ":cigar",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
 )
 
 cc_library(

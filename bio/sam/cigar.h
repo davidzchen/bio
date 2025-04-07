@@ -2,6 +2,8 @@
 #define BIO_SAM_CIGAR_H_
 
 #include <cstdlib>
+#include <string>
+#include <vector>
 
 namespace bio {
 
@@ -31,6 +33,17 @@ struct CigarOperation {
   auto operator==(const CigarOperation& rhs) const -> bool {
     return type == rhs.type && length == rhs.length;
   }
+
+  // Serializes the CigarOperation into a string.
+  auto string() const -> std::string;
+};
+
+// Represents a CIGAR string.
+struct Cigar {
+  std::vector<CigarOperation> operations;
+
+  // Serializes the CigarString into a string.
+  auto string() const -> std::string;
 };
 
 }  // namespace bio
