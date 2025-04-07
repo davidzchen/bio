@@ -47,6 +47,9 @@ class BedParser : public LineParserBase {
   auto Next() -> absl::StatusOr<std::unique_ptr<BedEntry>>;
 
   // Returns a vector of all entries from the file.
+  //
+  // N.B. `Next()` should not be called before `All()` or else `All()` will
+  // simply return the remaining entries in the file.
   auto All() -> absl::StatusOr<std::vector<std::unique_ptr<BedEntry>>>;
 
  private:

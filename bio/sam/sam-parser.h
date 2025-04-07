@@ -79,6 +79,9 @@ class SamParser : public LineParserBase {
   auto Next() -> absl::StatusOr<std::unique_ptr<SamEntry>>;
 
   // Reads a vector of a entries in the file.
+  //
+  // N.B. `Next()` should not be called before `All()` or else `All()` will
+  // simply return the remaining entries in the file.
   auto All() -> absl::StatusOr<std::vector<std::unique_ptr<SamEntry>>>;
 };
 

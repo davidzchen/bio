@@ -18,6 +18,7 @@
 #include <string>
 
 #include "absl/status/status_matchers.h"
+#include "bio/common/sequence.h"
 #include "bio/mrf/mrf.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"

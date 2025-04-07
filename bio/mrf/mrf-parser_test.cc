@@ -181,16 +181,13 @@ TEST(MrfParser, NextSingleAlignmentBlock) {
     EXPECT_THAT(actual.status(), IsOk());
     MrfEntry expected = {
         .is_paired_end = false,
-        .read1 =
-            {
-                .blocks = {{.target_name = "chr4",
-                            .strand = Strand::kAntisense,
-                            .target_start = 1221,
-                            .target_end = 1270,
-                            .query_start = 1,
-                            .query_end = 50}},
-                .query_id = "1",
-            },
+        .read1 = {.blocks = {{.target_name = "chr4",
+                              .strand = Strand::kAntisense,
+                              .target_start = 1221,
+                              .target_end = 1270,
+                              .query_start = 1,
+                              .query_end = 50}},
+                  .query_id = "1"},
     };
     CheckMrfEntryEquals(actual->get(), expected);
   }
@@ -199,16 +196,13 @@ TEST(MrfParser, NextSingleAlignmentBlock) {
     EXPECT_THAT(actual.status(), IsOk());
     MrfEntry expected = {
         .is_paired_end = false,
-        .read1 =
-            {
-                .blocks = {{.target_name = "chr16",
-                            .strand = Strand::kSense,
-                            .target_start = 511,
-                            .target_end = 560,
-                            .query_start = 1,
-                            .query_end = 50}},
-                .query_id = "2",
-            },
+        .read1 = {.blocks = {{.target_name = "chr16",
+                              .strand = Strand::kSense,
+                              .target_start = 511,
+                              .target_end = 560,
+                              .query_start = 1,
+                              .query_end = 50}},
+                  .query_id = "2"},
     };
     CheckMrfEntryEquals(actual->get(), expected);
   }
@@ -324,6 +318,54 @@ TEST(MrfParser, NextAllFieldsPairedEnd) {
           },
   };
   CheckMrfEntryEquals(actual->get(), expected);
+}
+
+auto CheckMrfEntriesEqual(const std::vector<std::unique_ptr<MrfEntry>>& actual,
+                          const std::vector<MrfEntry>& expected) {
+  EXPECT_EQ(actual.size(), expected.size());
+  for (int i = 0; i < actual.size(); ++i) {
+    CheckMrfEntryEquals(actual[i].get(), expected[i]);
+  }
+}
+
+TEST(MrfParser, All) {
+  std::unique_ptr<MrfParser> parser =
+      MrfParser::NewOrDie("bio/mrf/testdata/single-alignment-block.mrf");
+
+  absl::StatusOr<std::unique_ptr<MrfHeader>> header = parser->Start();
+  EXPECT_THAT(header.status(), IsOk());
+  EXPECT_THAT((*header)->columns(),
+              ElementsAre(MrfColumn::kAlignmentBlocks, MrfColumn::kQueryId));
+  EXPECT_THAT((*header)->comments(), ElementsAre("Example 2"));
+
+  absl::StatusOr<std::vector<std::unique_ptr<MrfEntry>>> actual_or =
+      parser->All();
+  EXPECT_THAT(actual_or.status(), IsOk());
+
+  std::vector<std::unique_ptr<MrfEntry>> actual = std::move(actual_or.value());
+  std::vector<MrfEntry> expected = {
+      {
+          .is_paired_end = false,
+          .read1 = {.blocks = {{.target_name = "chr4",
+                                .strand = Strand::kAntisense,
+                                .target_start = 1221,
+                                .target_end = 1270,
+                                .query_start = 1,
+                                .query_end = 50}},
+                    .query_id = "1"},
+      },
+      {
+          .is_paired_end = false,
+          .read1 = {.blocks = {{.target_name = "chr16",
+                                .strand = Strand::kSense,
+                                .target_start = 511,
+                                .target_end = 560,
+                                .query_start = 1,
+                                .query_end = 50}},
+                    .query_id = "2"},
+      },
+  };
+  CheckMrfEntriesEqual(actual, expected);
 }
 
 }  // namespace

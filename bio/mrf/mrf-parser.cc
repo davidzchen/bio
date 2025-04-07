@@ -245,4 +245,17 @@ auto MrfParser::Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>> {
   return absl::InternalError("Should not be reached");
 }
 
+auto MrfParser::All()
+    -> absl::StatusOr<std::vector<std::unique_ptr<MrfEntry>>> {
+  std::vector<std::unique_ptr<MrfEntry>> entries;
+  while (true) {
+    ASSIGN_OR_RETURN(std::unique_ptr<MrfEntry> entry, Next());
+    if (entry == nullptr) {
+      break;
+    }
+    entries.push_back(std::move(entry));
+  }
+  return entries;
+}
+
 }  // namespace bio
