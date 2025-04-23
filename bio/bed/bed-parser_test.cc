@@ -360,48 +360,5 @@ TEST(BedParser, NextBed12) {
   }
 }
 
-auto CheckEntriesEquals(const std::vector<std::unique_ptr<BedEntry>>& actual,
-                        const std::vector<BedEntry>& expected) -> void {
-  EXPECT_EQ(actual.size(), expected.size());
-  for (int i = 0; i < actual.size(); ++i) {
-    CheckEntryEquals(actual[i].get(), expected[i]);
-  }
-}
-
-TEST(BedParser, All) {
-  std::unique_ptr<BedParser> parser =
-      BedParser::NewOrDie("bio/bed/testdata/bed12.bed");
-  absl::StatusOr<std::vector<std::unique_ptr<BedEntry>>> actual = parser->All();
-
-  std::vector<BedEntry> expected = {
-      {
-          .chromosome = "chr22",
-          .start = 1000,
-          .end = 5000,
-          .name = "cloneA",
-          .score = 960,
-          .strand = Strand::kSense,
-          .thick_start = 1000,
-          .thick_end = 5000,
-          .item_rgb = "0",
-          .sub_blocks = {{.size = 567, .start = 0},
-                         {.size = 488, .start = 3512}},
-      },
-      {
-          .chromosome = "chr22",
-          .start = 2000,
-          .end = 6000,
-          .name = "cloneB",
-          .score = 900,
-          .strand = Strand::kAntisense,
-          .thick_start = 2000,
-          .thick_end = 6000,
-          .item_rgb = "0",
-          .sub_blocks = {{.size = 433, .start = 0},
-                         {.size = 399, .start = 3601}},
-      }};
-  CheckEntriesEquals(*actual, expected);
-}
-
 }  // namespace
 }  // namespace bio

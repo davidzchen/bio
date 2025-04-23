@@ -89,18 +89,4 @@ auto FastaParser::Next(bool truncate_name)
   return sequence;
 }
 
-auto FastaParser::All(bool truncate_name)
-    -> std::vector<std::unique_ptr<FastaSequence>> {
-  std::vector<std::unique_ptr<FastaSequence>> sequences;
-  while (true) {
-    std::optional<std::unique_ptr<FastaSequence>> sequence =
-        Next(truncate_name);
-    if (!sequence.has_value()) {
-      break;
-    }
-    sequences.push_back(std::move(sequence.value()));
-  }
-  return sequences;
-}
-
 }  // namespace bio

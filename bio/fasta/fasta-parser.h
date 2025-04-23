@@ -84,13 +84,6 @@ class FastaParser : public LineParserBase {
   // Returns the next sequence from the file.
   auto Next(bool truncate_name = false)
       -> std::optional<std::unique_ptr<FastaSequence>>;
-
-  // Returns a vector of all sequences in the file.
-  //
-  // N.B. `Next()` should not be called before `All()` or else `All()` will
-  // simply return the remaining entries in the file.
-  auto All(bool truncate_name = false)
-      -> std::vector<std::unique_ptr<FastaSequence>>;
 };
 
 }  // namespace bio

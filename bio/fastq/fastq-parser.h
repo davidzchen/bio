@@ -79,10 +79,6 @@ class FastqParser : public LineParserBase {
   // Returns the next FASTQ entry from the file.
   auto Next(bool truncate_name = false)
       -> absl::StatusOr<std::unique_ptr<FastqSequence>>;
-
-  // Returns a vector of all sequences in the file.
-  auto All(bool truncate_name = false)
-      -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>>;
 };
 
 }  // namespace bio

@@ -113,15 +113,4 @@ auto FastqParser::Next(bool truncate_name)
   return sequence;
 }
 
-auto FastqParser::All(bool truncate_name)
-    -> absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> {
-  std::vector<std::unique_ptr<FastqSequence>> sequences;
-  while (!eof()) {
-    ASSIGN_OR_RETURN(std::unique_ptr<FastqSequence> sequence,
-                     Next(truncate_name));
-    sequences.push_back(std::move(sequence));
-  }
-  return sequences;
-}
-
 }  // namespace bio

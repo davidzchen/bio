@@ -200,14 +200,4 @@ auto BedParser::Next() -> absl::StatusOr<std::unique_ptr<BedEntry>> {
   return entry;
 }
 
-auto BedParser::All()
-    -> absl::StatusOr<std::vector<std::unique_ptr<BedEntry>>> {
-  std::vector<std::unique_ptr<BedEntry>> entries;
-  while (!eof()) {
-    ASSIGN_OR_RETURN(std::unique_ptr<BedEntry> entry, Next());
-    entries.push_back(std::move(entry));
-  }
-  return entries;
-}
-
 }  // namespace bio

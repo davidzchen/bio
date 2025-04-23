@@ -89,12 +89,6 @@ class MrfParser : public LineParserBase {
   // before calling this method.
   auto Next() -> absl::StatusOr<std::unique_ptr<MrfEntry>>;
 
-  // Returns a vector of all sequences in the file.
-  //
-  // N.B. `Next()` should not be called before `All()` or else `All()` will
-  // simply return the remaining entries in the file.
-  auto All() -> absl::StatusOr<std::vector<std::unique_ptr<MrfEntry>>>;
-
  private:
   auto ParseAlignmentBlocks(MrfEntry* entry, absl::string_view column)
       -> absl::Status;

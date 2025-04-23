@@ -181,45 +181,5 @@ TEST(FastqParser, NextMultiSequnce) {
   }
 }
 
-TEST(FastqParser, AllEmpty) {
-  std::unique_ptr<FastqParser> parser =
-      FastqParser::NewOrDie("bio/fastq/testdata/empty.fastq");
-
-  absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> sequences =
-      parser->All(/*truncate_name=*/false);
-  EXPECT_TRUE(sequences->empty());
-}
-
-auto CheckSequencesEquals(
-    const std::vector<FastqSequence>& expected,
-    const std::vector<std::unique_ptr<FastqSequence>>& actual) -> void {
-  EXPECT_EQ(expected.size(), actual.size());
-  for (int i = 0; i < actual.size(); ++i) {
-    CheckSequenceEquals(expected[i], actual[i].get());
-  }
-}
-
-TEST(FastqParser, All) {
-  std::unique_ptr<FastqParser> parser =
-      FastqParser::NewOrDie("bio/fastq/testdata/multiple-sequence.fastq");
-
-  absl::StatusOr<std::vector<std::unique_ptr<FastqSequence>>> actual_sequences =
-      parser->All();
-
-  std::vector<FastqSequence> expected_sequences = {
-      {.name = "SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72",
-       .sequence = "GGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACCAAGTTACCCTTAACAACTTAAGG"
-                   "GTTTTCAAATAGA",
-       .quality =
-           "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9ICIIIIIIIIIIIIIIIIIIIIDIIIIIII>"
-           "IIIIII/"},
-      {.name = "SRR001666.2 071112_SLXA-EAS1_s_7:5:1:801:338 length=72",
-       .sequence = "GTTCAGGGATACGACGTTTGTATTTTAAGAATCTGAAGCAGAAGTCGATGATAATACGC"
-                   "GTCGTTTTATCAT",
-       .quality = "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII6IBIIIIIIIIIIIIIIIIIIIIIIIGI"
-                  "I>IIIII-I)8I"}};
-  CheckSequencesEquals(expected_sequences, *actual_sequences);
-}
-
 }  // namespace
 }  // namespace bio

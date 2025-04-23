@@ -87,14 +87,4 @@ auto BedGraphParser::Next() -> absl::StatusOr<std::unique_ptr<BedGraphEntry>> {
   return entry;
 }
 
-auto BedGraphParser::All()
-    -> absl::StatusOr<std::vector<std::unique_ptr<BedGraphEntry>>> {
-  std::vector<std::unique_ptr<BedGraphEntry>> entries;
-  while (!eof()) {
-    ASSIGN_OR_RETURN(std::unique_ptr<BedGraphEntry> entry, Next());
-    entries.push_back(std::move(entry));
-  }
-  return entries;
-}
-
 }  // namespace bio
