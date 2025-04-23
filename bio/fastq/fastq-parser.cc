@@ -35,8 +35,6 @@
 namespace bio {
 namespace {
 
-namespace file = gxl::file;
-
 static constexpr char kIdentifierPrefix[] = "@";
 static constexpr char kQualityIdPrefix[] = "+";
 
@@ -45,7 +43,7 @@ static constexpr char kQualityIdPrefix[] = "+";
 auto FastqParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<FastqParser>> {
   gxl::File* file;
-  RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
+  RETURN_IF_ERROR(gxl::Open(path, "r", &file, gxl::file::Defaults()));
   return std::make_unique<FastqParser>(file);
 }
 

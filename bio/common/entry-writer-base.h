@@ -45,7 +45,7 @@ class EntryWriterBase {
   static auto New(absl::string_view path)
       -> absl::StatusOr<std::unique_ptr<Writer>> {
     gxl::File* file;
-    RETURN_IF_ERROR(gxl::file::Open(path, "w", &file, gxl::file::Defaults()));
+    RETURN_IF_ERROR(gxl::Open(path, "w", &file, gxl::file::Defaults()));
     return std::make_unique<Writer>(file);
   }
 

@@ -39,7 +39,7 @@ TEST(SamWriter, Empty) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "");
 }
@@ -65,7 +65,7 @@ TEST(SamWriter, WriteSingleEntry) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(
       contents,
@@ -107,7 +107,7 @@ TEST(SamWriter, WriteMultipleEntries) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "r003\t0\tref\t9\t30\t5S6M\t*\t0\t0\tGCCTAAGCTAA\t*\tSA:Z:ref,29,-,"
@@ -146,7 +146,7 @@ TEST(SamWriter, WriteVector) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "r003\t0\tref\t9\t30\t5S6M\t*\t0\t0\tGCCTAAGCTAA\t*\tSA:Z:ref,29,-,"

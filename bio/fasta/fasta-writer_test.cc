@@ -28,15 +28,13 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::gxl::file;
-
 TEST(FastaWriter, Empty) {
   const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastaWriter> writer = FastaWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "");
 }
@@ -57,7 +55,7 @@ TEST(FastaWriter, WriteSingleSequence) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             R"(>MCHU - Calmodulin - Human, rabbit, bovine, rat, and chicken
@@ -90,7 +88,7 @@ TEST(FastaWriter, WriteMultipleSequences) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_THAT(contents,
               R"(>SEQUENCE_1
@@ -124,7 +122,7 @@ TEST(FastaWriter, WriteMultipleSequencesArray) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_THAT(contents,
               R"(>SEQUENCE_1

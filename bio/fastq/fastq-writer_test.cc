@@ -29,15 +29,13 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::gxl::file;
-
 TEST(FastqWriter, Empty) {
   const std::string output_path = gxl::JoinPath(TempDir(), "out.fasta");
   std::unique_ptr<FastqWriter> writer = FastqWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "");
 }
@@ -58,7 +56,7 @@ TEST(FastqWriter, WriteSingleSequence) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             R"(@SEQ_ID
@@ -92,7 +90,7 @@ TEST(FastqWriter, WriteMultipleSequences) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             R"(@SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72
@@ -127,7 +125,7 @@ TEST(FastqWriter, WriteVector) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             R"(@SRR001666.1 071112_SLXA-EAS1_s_7:5:1:817:345 length=72

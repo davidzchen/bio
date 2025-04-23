@@ -3,7 +3,7 @@ load("//tools:repository.bzl", "github_archive")
 def gxl_dependency():
     github_archive(
         name = "gxl",
-        commit = "9054f670640ccd9142c4b9257a22c4dc617a0730",
+        commit = "3d401da08d1b6253fc42012e2744f29e7022734a",
         repo_name = "davidzchen/gxl",
     )
 

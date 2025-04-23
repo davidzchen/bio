@@ -29,8 +29,6 @@
 namespace bio {
 namespace {
 
-namespace file = gxl::file;
-
 using ::absl_testing::IsOk;
 using ::absl_testing::IsOkAndHolds;
 using ::absl_testing::StatusIs;
@@ -52,7 +50,7 @@ class LineParserPeer : public LineParserBase {
 TEST(LineParserBase, NextLineEmptyFile) {
   gxl::File* file;
   absl::Status status =
-      file::Open("bio/common/testdata/empty", "r", &file, file::Defaults());
+      gxl::Open("bio/common/testdata/empty", "r", &file, gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
@@ -63,7 +61,7 @@ TEST(LineParserBase, NextLineEmptyFile) {
 TEST(LineParserBase, NextLine) {
   gxl::File* file;
   absl::Status status =
-      file::Open("bio/common/testdata/lines", "r", &file, file::Defaults());
+      gxl::Open("bio/common/testdata/lines", "r", &file, gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
@@ -86,7 +84,7 @@ TEST(LineParserBase, NextLine) {
 TEST(LineParserBase, PutBack) {
   gxl::File* file;
   absl::Status status =
-      file::Open("bio/common/testdata/lines", "r", &file, file::Defaults());
+      gxl::Open("bio/common/testdata/lines", "r", &file, gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
@@ -103,8 +101,8 @@ TEST(LineParserBase, PutBack) {
 
 TEST(LineParserBase, ParseIntUInt) {
   gxl::File* file;
-  absl::Status status =
-      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  absl::Status status = gxl::Open("bio/common/testdata/unused", "r", &file,
+                                  gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
@@ -163,8 +161,8 @@ TEST(LineParserBase, ParseIntUInt) {
 
 TEST(LineParserBase, ParseUInt8) {
   gxl::File* file;
-  absl::Status status =
-      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  absl::Status status = gxl::Open("bio/common/testdata/unused", "r", &file,
+                                  gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
@@ -183,8 +181,8 @@ TEST(LineParserBase, ParseUInt8) {
 
 TEST(LineParseBase, ParseDouble) {
   gxl::File* file;
-  absl::Status status =
-      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  absl::Status status = gxl::Open("bio/common/testdata/unused", "r", &file,
+                                  gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);
@@ -196,8 +194,8 @@ TEST(LineParseBase, ParseDouble) {
 
 TEST(LineParserBase, ParseStrand) {
   gxl::File* file;
-  absl::Status status =
-      file::Open("bio/common/testdata/unused", "r", &file, file::Defaults());
+  absl::Status status = gxl::Open("bio/common/testdata/unused", "r", &file,
+                                  gxl::file::Defaults());
   EXPECT_THAT(status, IsOk());
 
   LineParserPeer parser(file);

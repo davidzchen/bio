@@ -37,8 +37,6 @@
 namespace bio {
 namespace {
 
-namespace file = gxl::file;
-
 // The minimum number of BED fields.
 static constexpr int kMinBedFields = 3;
 
@@ -52,7 +50,7 @@ static constexpr char kBrowserPrefix[] = "browser";
 auto BedParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<BedParser>> {
   gxl::File* file;
-  RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
+  RETURN_IF_ERROR(gxl::Open(path, "r", &file, gxl::file::Defaults()));
   return std::make_unique<BedParser>(file);
 }
 

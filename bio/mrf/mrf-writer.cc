@@ -32,11 +32,6 @@
 #include "gxl/status/status_macros.h"
 
 namespace bio {
-namespace {
-
-namespace file = ::gxl::file;
-
-}  // namespace
 
 auto MrfWriter::New(absl::string_view path, absl::Nonnull<MrfHeader*> header)
     -> absl::StatusOr<std::unique_ptr<MrfWriter>> {
@@ -44,7 +39,7 @@ auto MrfWriter::New(absl::string_view path, absl::Nonnull<MrfHeader*> header)
     return absl::InvalidArgumentError("header cannot be null");
   }
   gxl::File* file;
-  RETURN_IF_ERROR(file::Open(path, "w", &file, file::Defaults()));
+  RETURN_IF_ERROR(gxl::Open(path, "w", &file, gxl::file::Defaults()));
   return std::make_unique<MrfWriter>(file, header);
 }
 
@@ -187,7 +182,7 @@ auto MrfWriter::Close() -> absl::Status {
     return absl::FailedPreconditionError(
         "Start() must be called before Close()");
   }
-  return file_->Close(file::Defaults());
+  return file_->Close(gxl::file::Defaults());
 }
 
 }  // namespace bio

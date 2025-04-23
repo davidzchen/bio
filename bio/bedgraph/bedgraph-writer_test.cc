@@ -30,8 +30,6 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::gxl::file;
-
 TEST(BedGraphWriter, Empty) {
   const std::string output_path = gxl::JoinPath(TempDir(), "out.bedgraph");
   std::unique_ptr<BedGraphWriter> writer =
@@ -39,7 +37,7 @@ TEST(BedGraphWriter, Empty) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "");
 }
@@ -59,7 +57,7 @@ TEST(BedGraphWriter, WriteSingleEntry) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "chr7\t0\t2000\t-1.00\n");
 }
@@ -86,7 +84,7 @@ TEST(BedGraphWriter, WriteMultipleEntries) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "chr7\t0\t1000\t-1.00\n"
@@ -106,7 +104,7 @@ TEST(BedGraphWriter, WriteVector) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "chr7\t0\t1000\t-1.00\n"

@@ -34,8 +34,6 @@
 namespace bio {
 namespace {
 
-namespace file = gxl::file;
-
 static constexpr char kDescriptionPrefix[] = ">";
 
 }  // namespace
@@ -43,7 +41,7 @@ static constexpr char kDescriptionPrefix[] = ">";
 auto FastaParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<FastaParser>> {
   gxl::File* file;
-  RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
+  RETURN_IF_ERROR(gxl::Open(path, "r", &file, gxl::file::Defaults()));
   return std::make_unique<FastaParser>(file);
 }
 

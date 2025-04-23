@@ -33,8 +33,6 @@ using ::absl_testing::StatusIs;
 using ::testing::HasSubstr;
 using ::testing::TempDir;
 
-namespace file = ::gxl::file;
-
 TEST(MrfWriter, Empty) {
   const std::string output_path = gxl::JoinPath(TempDir(), "out.mrf");
   MrfHeader header({MrfColumn::kAlignmentBlocks});
@@ -44,7 +42,7 @@ TEST(MrfWriter, Empty) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "AlignmentBlocks\n");
 }
@@ -59,7 +57,7 @@ TEST(MrfWriter, EmptyAllColumns) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "AlignmentBlocks\tSequence\tQualityScores\tQueryId\n");
 }
@@ -104,7 +102,7 @@ TEST(MrfWriter, WriteSingleEndEntryRequiredColumn) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "AlignmentBlocks\n"
@@ -137,7 +135,7 @@ TEST(MrfWriter, WriteSingleEndEntryAllColumns) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "AlignmentBlocks\tSequence\tQualityScores\tQueryId\n"
@@ -177,7 +175,7 @@ TEST(MrfWriter, WritePairedEndEntry) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "AlignmentBlocks\n"
@@ -223,7 +221,7 @@ TEST(MrfWriter, WritePairedEndAllColumns) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "# Paired End All Columns\n"
@@ -263,7 +261,7 @@ TEST(MrfWriter, WriteMultipleEntries) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "AlignmentBlocks\n"
@@ -300,7 +298,7 @@ TEST(MrfWriter, WriteMultipleEntriesVector) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents,
             "AlignmentBlocks\n"

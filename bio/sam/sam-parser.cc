@@ -36,8 +36,6 @@
 namespace bio {
 namespace {
 
-namespace file = gxl::file;
-
 static constexpr char kHeaderLinePrefix[] = "@";
 static constexpr size_t kMinSamFields = 11;
 
@@ -46,7 +44,7 @@ static constexpr size_t kMinSamFields = 11;
 auto SamParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<SamParser>> {
   gxl::File* file;
-  RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
+  RETURN_IF_ERROR(gxl::Open(path, "r", &file, gxl::file::Defaults()));
   return std::make_unique<SamParser>(file);
 }
 

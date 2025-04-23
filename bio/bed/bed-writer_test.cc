@@ -30,15 +30,13 @@ namespace {
 using ::absl_testing::IsOk;
 using ::testing::TempDir;
 
-namespace file = ::gxl::file;
-
 TEST(BedWriter, Empty) {
   const std::string output_path = gxl::JoinPath(TempDir(), "out.bed");
   std::unique_ptr<BedWriter> writer = BedWriter::NewOrDie(output_path);
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(contents, "");
 }
@@ -64,7 +62,7 @@ TEST(BedWriter, WriteSingleEntry) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(
       contents,
@@ -106,7 +104,7 @@ TEST(BedWriter, WriteMultipleEntries) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(
       contents,
@@ -148,7 +146,7 @@ TEST(BedWriter, WriteVector) {
   EXPECT_THAT(writer->Close(), IsOk());
 
   std::string contents;
-  EXPECT_THAT(file::GetContents(output_path, &contents, file::Defaults()),
+  EXPECT_THAT(gxl::GetContents(output_path, &contents, gxl::file::Defaults()),
               IsOk());
   EXPECT_EQ(
       contents,

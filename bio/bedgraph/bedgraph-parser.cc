@@ -35,8 +35,6 @@
 namespace bio {
 namespace {
 
-namespace file = gxl::file;
-
 // Number of fields expected for each line.
 static constexpr int kNumFields = 4;
 
@@ -50,7 +48,7 @@ static constexpr char kBrowserPrefix[] = "browser";
 auto BedGraphParser::New(absl::string_view path)
     -> absl::StatusOr<std::unique_ptr<BedGraphParser>> {
   gxl::File* file;
-  RETURN_IF_ERROR(file::Open(path, "r", &file, file::Defaults()));
+  RETURN_IF_ERROR(gxl::Open(path, "r", &file, gxl::file::Defaults()));
   return std::make_unique<BedGraphParser>(file);
 }
 
